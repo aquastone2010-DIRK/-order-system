@@ -1,0 +1,3263 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>出單助手 — 全物流出單與集點系統</title>
+
+<!-- PWA 完整設定 -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="出單助手">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a56db">
+<meta name="description" content="全物流出單、帳款管理、QR碼集點一站式系統">
+<meta name="application-name" content="出單助手">
+
+<!-- Apple Touch Icons (各尺寸) -->
+<link rel="apple-touch-icon" sizes="180x180" id="appleIcon180">
+<link rel="apple-touch-icon" sizes="152x152" id="appleIcon152">
+<link rel="apple-touch-icon" sizes="120x120" id="appleIcon120">
+<link rel="icon" type="image/png" sizes="32x32" id="favicon32">
+<link rel="manifest" id="pwaManifest">
+
+<!-- Splash screens for iOS -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style>
+:root{
+  --primary:#1a56db;--primary-dark:#1245b8;--primary-light:#e8f0fe;
+  --success:#059669;--success-light:#d1fae5;
+  --warning:#d97706;--warning-light:#fef3c7;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --purple:#7c3aed;--purple-light:#ede9fe;
+  --sidebar:240px;--header:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'PingFang TC','Microsoft JhengHei',sans-serif;background:#f8fafc;color:#1e293b;min-height:100vh;}
+.app-layout{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar);background:#0f172a;color:#fff;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s;}
+.sidebar-logo{padding:16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;}
+.logo-icon{width:36px;height:36px;background:var(--primary);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.logo-txt{font-size:12px;font-weight:800;line-height:1.3;}
+.logo-sub{font-size:10px;color:#64748b;}
+.sidebar-nav{flex:1;padding:10px 8px;overflow-y:auto;}
+.nav-sec{font-size:9px;font-weight:700;color:#475569;letter-spacing:.1em;text-transform:uppercase;padding:10px 8px 4px;}
+.nav-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;color:#94a3b8;transition:all .15s;margin-bottom:1px;}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff;}
+.nav-item.active{background:var(--primary);color:#fff;font-weight:700;}
+.nav-badge{margin-left:auto;background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;}
+.sidebar-footer{padding:12px;border-top:1px solid rgba(255,255,255,.08);}
+.user-card{display:flex;align-items:center;gap:8px;padding:8px;border-radius:7px;background:rgba(255,255,255,.06);cursor:pointer;}
+.user-card:hover{background:rgba(255,255,255,.1);}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;flex-shrink:0;}
+.main-content{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+.top-header{height:var(--header);background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;}
+.header-title{font-size:16px;font-weight:800;flex:1;}
+.hbtn{width:34px;height:34px;border-radius:7px;border:none;background:#f1f5f9;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.hbtn:hover{background:var(--primary-light);}
+.page-content{flex:1;padding:20px;}
+.mobile-header{display:none;position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #e2e8f0;padding:10px 14px;align-items:center;gap:10px;}
+.hamburger{width:34px;height:34px;background:#f1f5f9;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;font-size:16px;}
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;z-index:200;padding:6px 0 env(safe-area-inset-bottom);}
+.mobile-nav-inner{display:flex;justify-content:space-around;}
+.mnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 8px;cursor:pointer;border-radius:7px;min-width:46px;}
+.mnav-item.active .mi-icon,.mnav-item.active .mi-label{color:var(--primary);}
+.mi-icon{font-size:18px;color:#94a3b8;}
+.mi-label{font-size:9px;color:#94a3b8;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;}
+.sidebar-overlay.show{display:block;}
+.stat-card{background:#fff;border-radius:11px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.07);border:1px solid #e2e8f0;}
+.stat-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px;}
+.stat-value{font-size:24px;font-weight:900;color:#0f172a;margin-bottom:2px;}
+.stat-label{font-size:11px;color:#64748b;}
+.stat-trend{font-size:10px;font-weight:700;margin-top:6px;}
+.panel{background:#fff;border-radius:11px;box-shadow:0 1px 3px rgba(0,0,0,.07);border:1px solid #e2e8f0;overflow:hidden;}
+.panel-header{padding:14px 18px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:10px;}
+.panel-title{font-size:13px;font-weight:800;flex:1;}
+.panel-body{padding:16px;}
+.dtable{width:100%;border-collapse:collapse;}
+.dtable th{padding:9px 12px;text-align:left;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;background:#f8fafc;border-bottom:1px solid #e2e8f0;white-space:nowrap;}
+.dtable td{padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:12px;vertical-align:middle;}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:#f8fafc;}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700;white-space:nowrap;}
+.badge-green{background:var(--success-light);color:var(--success);}
+.badge-blue{background:var(--primary-light);color:var(--primary);}
+.badge-orange{background:var(--warning-light);color:var(--warning);}
+.badge-red{background:var(--danger-light);color:var(--danger);}
+.badge-gray{background:#f1f5f9;color:#475569;}
+.badge-purple{background:var(--purple-light);color:var(--purple);}
+.ps-paid{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;background:var(--success-light);color:var(--success);}
+.ps-pending{background:var(--warning-light);color:var(--warning);display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;}
+.ps-overdue{background:var(--danger-light);color:var(--danger);display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.6;}}
+.qr-wrap{width:50px;height:50px;border:1.5px solid #e2e8f0;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#fff;position:relative;}
+.qr-wrap.qr-active{border-color:var(--success);}
+.qr-wrap.qr-locked{opacity:.5;}
+.qr-lock-overlay{position:absolute;inset:0;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .15s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-success{background:var(--success);color:#fff;}
+.btn-success:hover{background:#047857;}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-warning{background:var(--warning);color:#fff;}
+.btn-outline{background:#fff;color:#475569;border:1px solid #e2e8f0;}
+.btn-outline:hover{background:#f8fafc;}
+.btn-purple{background:var(--purple);color:#fff;}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.btn-xs{padding:3px 7px;font-size:10px;}
+.act-btn{width:26px;height:26px;border-radius:5px;border:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.act-pay{background:var(--success-light);color:var(--success);}
+.act-pay:hover{background:var(--success);color:#fff;}
+.act-print{background:var(--primary-light);color:var(--primary);}
+.act-print:hover{background:var(--primary);color:#fff;}
+.act-edit{background:var(--warning-light);color:var(--warning);}
+.act-edit:hover{background:var(--warning);color:#fff;}
+.act-del{background:var(--danger-light);color:var(--danger);}
+.act-del:hover{background:var(--danger);color:#fff;}
+.form-label{font-size:11px;font-weight:700;color:#475569;margin-bottom:5px;display:block;}
+.form-input{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;outline:none;transition:all .15s;}
+.form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,86,219,.08);}
+.form-select{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:12px;background:#fff;cursor:pointer;outline:none;}
+.form-select:focus{border-color:var(--primary);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.show{display:flex;}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:520px;box-shadow:0 20px 50px rgba(0,0,0,.2);overflow:hidden;max-height:90vh;overflow-y:auto;}
+.modal-lg{max-width:720px;}
+.modal-header{padding:18px 20px 14px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:1;}
+.modal-title{font-size:15px;font-weight:800;}
+.modal-close{width:28px;height:28px;border-radius:6px;border:none;background:#f1f5f9;cursor:pointer;font-size:16px;}
+.modal-body{padding:20px;}
+.modal-footer{padding:14px 20px;border-top:1px solid #f1f5f9;display:flex;justify-content:flex-end;gap:8px;position:sticky;bottom:0;background:#fff;}
+.order-card{background:#fff;border-radius:10px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.07);border:1px solid #e2e8f0;margin-bottom:10px;}
+.order-card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.order-card-body{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;}
+.ocf label{color:#64748b;display:block;margin-bottom:1px;font-size:10px;}
+.ocf span{font-weight:700;color:#0f172a;}
+.order-card-foot{margin-top:10px;padding-top:10px;border-top:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;}
+@media print{
+  .no-print{display:none!important;}
+  body{background:#fff!important;}
+  .print-area{display:block!important;}
+}
+.thermal-label{width:100mm;height:148mm;box-sizing:border-box;background:#fff;margin:0 auto 10mm;padding:6mm;page-break-after:always;page-break-inside:avoid;color:#000;font-family:sans-serif;overflow:hidden;}
+.thermal-80{width:78mm;min-height:100mm;box-sizing:border-box;background:#fff;margin:0 auto 10mm;padding:4mm;page-break-after:always;color:#000;border-bottom:2px dashed #000;}
+.a4-page{width:21cm;min-height:29.7cm;margin:0 auto 2rem;background:#fff;box-shadow:0 4px 6px rgba(0,0,0,.08);padding:.8cm;display:grid;gap:.5cm;grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);page-break-after:always;}
+.layout-2x2{grid-template-columns:1fr 1fr;grid-template-rows:repeat(2,1fr);}
+.card-container{border:1px solid #000;padding:.4cm;display:flex;flex-direction:column;overflow:hidden;color:#000;font-size:12px;}
+.field-row{display:flex;margin-bottom:3px;font-size:12px;line-height:1.4;}
+.field-label{font-weight:700;width:130px;flex-shrink:0;}
+.field-value{flex-grow:1;word-break:break-all;}
+.thermal-divider{border-top:2px dashed #000;margin:5px 0;}
+.statement-page{width:21cm;min-height:29.7cm;margin:0 auto 2rem;background:#fff;box-shadow:0 4px 6px rgba(0,0,0,.08);padding:1.5cm;page-break-after:always;}
+.stmt-table th{background:#f3f4f6!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;border:1px solid #000;padding:8px;font-size:12px;}
+.stmt-table td{border:1px solid #000;padding:8px;font-size:11px;word-break:break-all;}
+#loginScreen{position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 60%,#1a56db 100%);display:flex;align-items:center;justify-content:center;}
+.login-card{background:#fff;border-radius:18px;padding:40px 36px;width:100%;max-width:380px;box-shadow:0 25px 60px rgba(0,0,0,.3);position:relative;overflow:hidden;}
+.login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--purple),var(--success));}
+#redeemScreen{position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,#0f172a,#1e3a8a);display:none;align-items:center;justify-content:center;padding:16px;}
+.progress-bg{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:3px;transition:width .5s;}
+.toggle{width:38px;height:20px;border-radius:10px;background:var(--success);position:relative;cursor:pointer;transition:all .2s;flex-shrink:0;}
+.toggle::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:2px;right:2px;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle.off{background:#cbd5e1;}
+.toggle.off::after{right:auto;left:2px;}
+.tab-nav{display:flex;border-bottom:1px solid #e2e8f0;padding:0 16px;}
+.tab-btn{padding:10px 14px;font-size:12px;font-weight:600;color:#64748b;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;}
+.tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:700;}
+.alert-box{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;border-radius:8px;margin-bottom:8px;font-size:12px;}
+.alert-warn{background:var(--warning-light);color:var(--warning);}
+.alert-danger{background:var(--danger-light);color:var(--danger);}
+.alert-info{background:var(--primary-light);color:var(--primary);}
+.alert-success{background:var(--success-light);color:var(--success);}
+.alert-purple{background:var(--purple-light);color:var(--purple);}
+.empty-state{text-align:center;padding:48px 20px;color:#94a3b8;}
+.empty-state .ei{font-size:48px;margin-bottom:12px;}
+.empty-state .et{font-size:15px;font-weight:700;margin-bottom:6px;}
+.empty-state .es{font-size:12px;}
+/* Bar chart */
+.bar-chart{display:flex;align-items:flex-end;gap:3px;height:100px;}
+.bar{flex:1;border-radius:3px 3px 0 0;transition:all .3s;cursor:pointer;min-width:6px;}
+.bar:hover{opacity:.8;}
+/* Rank badge */
+.rank-1{background:#fef9c3;color:#854d0e;border:1px solid #fde047;}
+.rank-2{background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;}
+.rank-3{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;}
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:#f1f5f9;}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px;}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main-content{margin-left:0;}
+  .top-header{display:none;}
+  .mobile-header{display:flex;}
+  .mobile-nav{display:block;}
+  .page-content{padding:12px 12px 80px;}
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important;gap:10px!important;}
+  .desktop-only{display:none!important;}
+  .mobile-only{display:block!important;}
+  .content-grid{grid-template-columns:1fr!important;}
+  .grid-3{grid-template-columns:1fr!important;}
+}
+.mobile-only{display:none;}
+
+/* ── PWA & 手機觸控強化 ─────────────────── */
+/* 手機上按鈕放大到 44px（Apple HIG 標準） */
+@media(max-width:768px){
+  .act-btn{width:36px!important;height:36px!important;font-size:15px!important;}
+  .btn-xs{padding:7px 12px!important;font-size:12px!important;}
+  .btn-sm{padding:9px 14px!important;font-size:12px!important;}
+  .form-input,.form-select{font-size:16px!important;padding:12px!important;}
+  /* 防止 iOS 自動縮放輸入框 */
+  input,select,textarea{font-size:16px!important;}
+  /* 手機底部留空間給安裝橫幅 */
+  .mobile-nav{padding-bottom:calc(6px + env(safe-area-inset-bottom));}
+  /* 加大手機卡片間距 */
+  .order-card{padding:16px!important;margin-bottom:12px!important;}
+  /* 卡片按鈕列加大 */
+  .order-card-foot .btn-xs{min-height:36px;}
+}
+
+/* 觸控裝置取消 hover 效果（避免殘影）*/
+@media(hover:none){
+  .nav-item:hover{background:transparent;}
+  .dtable tr:hover td{background:transparent;}
+}
+
+/* 安全區域適配（iPhone 瀏海/底部橫條）*/
+.sidebar{padding-bottom:env(safe-area-inset-bottom);}
+.top-header{padding-top:env(safe-area-inset-top);}
+
+/* PWA standalone 模式下隱藏瀏覽器提示 */
+@media(display-mode:standalone){
+  .mobile-header{padding-top:calc(10px + env(safe-area-inset-top))!important;}
+}
+
+/* 離線橫幅出現時下移內容 */
+body.offline .main-content{margin-top:36px;}
+body.offline .top-header{top:36px!important;}
+
+/* 長按選單防止干擾 */
+.act-btn,.btn,.mnav-item{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;}
+
+/* 捲動流暢度 */
+.sidebar-nav,.modal,.customersList,#ordersTbody{-webkit-overflow-scrolling:touch;}
+
+/* 安裝橫幅動畫 */
+#installBanner,#iosInstallBanner{animation:slideUp .3s ease;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+</style>
+<style id="printStyleTag"></style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="width:60px;height:60px;background:var(--primary-light);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;">🏪</div>
+      <div style="font-size:20px;font-weight:900;margin-bottom:4px;">全物流出單與集點系統</div>
+      <div style="font-size:12px;color:#64748b;">v3.0 — 請輸入管理員帳號登入</div>
+    </div>
+    <div style="margin-bottom:14px;"><label class="form-label">帳號</label><input id="loginUser" class="form-input" placeholder="輸入帳號" autocomplete="username"></div>
+    <div style="margin-bottom:20px;"><label class="form-label">密碼</label><input id="loginPass" class="form-input" type="password" placeholder="輸入密碼" autocomplete="current-password"></div>
+    <div id="loginErr" style="display:none;" class="alert-box alert-danger" style="margin-bottom:12px;">帳號或密碼錯誤，請重新輸入</div>
+    <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px;" onclick="doLogin()">登入系統</button>
+    <div style="margin-top:12px;text-align:center;font-size:11px;color:#94a3b8;">
+      忘記密碼？請聯絡超級管理員重設
+    </div>
+  </div>
+</div>
+
+<!-- REDEEM -->
+<div id="redeemScreen">
+  <div style="background:#fff;border-radius:18px;padding:32px 28px;width:100%;max-width:360px;text-align:center;">
+    <div style="font-size:48px;margin-bottom:12px;" id="redeemEmoji">⭐</div>
+    <div style="font-size:20px;font-weight:900;margin-bottom:6px;" id="redeemTitle">集點兌換</div>
+    <div style="font-size:13px;color:#64748b;margin-bottom:20px;" id="redeemSubtitle">請輸入手機號碼以領取點數</div>
+    <div id="redeemForm">
+      <div id="redeemInfo" style="background:#f8fafc;border-radius:8px;padding:12px;margin-bottom:16px;font-size:12px;text-align:left;"></div>
+      <input id="redeemPhone" class="form-input" placeholder="手機號碼（09開頭）" style="margin-bottom:12px;">
+      <button class="btn btn-primary" style="width:100%;padding:12px;" onclick="doRedeem()">確認領取點數</button>
+    </div>
+    <div id="redeemSuccess" style="display:none;">
+      <div style="font-size:64px;margin-bottom:12px;">🎉</div>
+      <div id="redeemSuccessMsg" style="font-size:16px;font-weight:700;margin-bottom:8px;"></div>
+      <div id="redeemProgressDiv" style="margin:16px 0;"></div>
+      <button class="btn btn-outline" style="width:100%;" onclick="window.close()">關閉</button>
+    </div>
+    <div id="redeemError" style="display:none;" class="alert-box alert-danger"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen" style="display:none;">
+<div class="app-layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🏪</div>
+    <div><div class="logo-txt">全物流出單系統</div><div class="logo-sub">v3.0 集點行銷版</div></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-sec">主要功能</div>
+    <div class="nav-item active" id="nav-dashboard" onclick="showPage('dashboard')"><span>📊</span>儀表板總覽</div>
+    <div class="nav-item" id="nav-upload" onclick="showPage('upload')"><span>📤</span>上傳與出單</div>
+    <div class="nav-item" id="nav-orders" onclick="showPage('orders')"><span>📦</span>帳款管理<span class="nav-badge" id="overdueCount" style="display:none">0</span></div>
+    <div class="nav-item" id="nav-points" onclick="showPage('points')"><span>⭐</span>集點管理<span class="nav-badge" id="pendingQRCount" style="display:none">0</span></div>
+    <div class="nav-sec">分析管理</div>
+    <div class="nav-item" id="nav-activities" onclick="showPage('activities')"><span>🎯</span>集點活動管理<span class="nav-badge" id="activeActivityCount" style="display:none">0</span></div>
+    <div class="nav-item" id="nav-products" onclick="showPage('products')"><span>🍃</span>商品目錄管理</div>
+    <div class="nav-item" id="nav-customers" onclick="showPage('customers')"><span>👥</span>客戶管理</div>
+    <div class="nav-sec">系統</div>
+    <div class="nav-item" id="nav-export" onclick="showPage('export')"><span>📥</span>匯出報表</div>
+    <div class="nav-item" id="nav-settings" onclick="showPage('settings')"><span>⚙️</span>系統設定</div>
+    <div class="nav-item" id="nav-print" style="display:none" onclick="showPage('print')"><span>🖨️</span>列印預覽</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar" id="sidebarAvatar">?</div>
+      <div>
+        <div style="font-size:11px;font-weight:700;" id="sidebarName">-</div>
+        <div style="font-size:10px;color:#64748b;" id="sidebarRole">-</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-left:auto;">
+        <span style="font-size:10px;color:#94a3b8;cursor:pointer;text-align:right;" onclick="openChangePassword()">🔑 改密碼</span>
+        <span style="font-size:10px;color:#94a3b8;cursor:pointer;text-align:right;" onclick="doLogout()">登出</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- MAIN -->
+<div class="main-content">
+  <div class="top-header no-print">
+    <div class="header-title" id="pageTitle">📊 儀表板總覽</div>
+    <button class="hbtn" onclick="showPage('print')">🖨️</button>
+    <button class="hbtn" onclick="doLogout()">👤</button>
+  </div>
+  <div class="mobile-header no-print">
+    <button class="hamburger" onclick="openSidebar()">☰</button>
+    <div style="flex:1;font-size:14px;font-weight:800;" id="mobileTitleBar">📊 儀表板</div>
+    <button class="hbtn" onclick="showPage('print')">🖨️</button>
+  </div>
+
+  <div class="page-content">
+
+    <!-- DASHBOARD -->
+    <div id="page-dashboard">
+      <div class="stats-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;">
+        <div class="stat-card"><div class="stat-icon" style="background:var(--primary-light);">💰</div><div class="stat-value" id="statMonthAmount">$0</div><div class="stat-label">本月總金額</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:var(--success-light);">📦</div><div class="stat-value" id="statMonthCount">0</div><div class="stat-label">本月出貨筆數</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:var(--warning-light);">⏳</div><div class="stat-value" id="statPending">$0</div><div class="stat-label">待收款金額</div><div class="stat-trend" id="statOverdueTrend" style="color:var(--danger);"></div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:var(--purple-light);">⭐</div><div class="stat-value" id="statPoints">0</div><div class="stat-label">累計發放點數</div></div>
+      </div>
+      <div class="content-grid" style="display:grid;grid-template-columns:1fr 310px;gap:16px;">
+        <div>
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">📋 最近訂單</div>
+              <button class="btn btn-sm btn-outline" onclick="showPage('orders')">查看全部</button>
+            </div>
+            <div style="overflow-x:auto;" class="desktop-only"><table class="dtable"><thead><tr><th>日期</th><th>收件人</th><th>物流</th><th>商品</th><th>金額</th><th>付款</th><th>QR</th><th>操作</th></tr></thead><tbody id="dashboardTbody"></tbody></table></div>
+            <div id="dashboardMobileCards" class="mobile-only" style="padding:10px;"></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="panel"><div class="panel-header"><div class="panel-title">🔔 待處理通知</div></div><div id="alertsBody" style="padding:12px;"></div></div>
+          <div class="panel"><div class="panel-header"><div class="panel-title">📊 物流佔比</div></div><div id="logisticsChart" style="padding:14px;font-size:12px;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UPLOAD -->
+    <div id="page-upload" style="display:none;">
+      <div style="max-width:700px;margin:0 auto;">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">📤 上傳 Excel / CSV</div>
+            <select id="layoutSelect" class="form-select" style="width:auto;font-size:11px;">
+              <option value="thermal-100x150">熱感應 100x150mm</option>
+              <option value="thermal-80">熱感應 80mm</option>
+              <option value="1x4">A4 一頁4格</option>
+              <option value="2x2">A4 田字2x2</option>
+            </select>
+          </div>
+          <div class="panel-body">
+            <label for="fileUpload" style="display:block;border:3px dashed #e2e8f0;border-radius:12px;padding:40px;text-align:center;cursor:pointer;background:#f8fafc;" id="dropZone">
+              <div style="font-size:44px;margin-bottom:10px;">📂</div>
+              <div style="font-size:16px;font-weight:800;margin-bottom:6px;">拖曳或點擊上傳</div>
+              <div style="font-size:12px;color:#64748b;margin-bottom:14px;">支援：賣貨便、全家大量匯單、每日明細表（CSV / Excel）</div>
+              <button class="btn btn-primary" type="button" onclick="event.preventDefault();document.getElementById('fileUpload').click()">選擇檔案</button>
+              <input id="fileUpload" type="file" multiple style="display:none;" accept=".csv,.xlsx,.xls">
+            </label>
+            <div id="loadingMsg" style="display:none;text-align:center;padding:20px;color:var(--primary);font-weight:700;">⏳ 正在解析中，請稍候...</div>
+            <div id="uploadResult" style="display:none;margin-top:14px;"></div>
+          </div>
+        </div>
+        <div id="uploadPreviewArea" style="display:none;margin-top:16px;">
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title" id="uploadPreviewTitle">預覽出單（0筆）</div>
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-sm btn-outline" onclick="resetUpload()">重新上傳</button>
+                <button class="btn btn-sm btn-success" onclick="saveAndPrint()">💾 儲存並列印</button>
+              </div>
+            </div>
+            <div id="previewTableArea" style="overflow-x:auto;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div id="page-orders" style="display:none;">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">📦 帳款管理</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;">
+            <select id="ordMonthFilter" class="form-select" style="width:auto;font-size:11px;" onchange="renderOrders()"><option value="">全部月份</option></select>
+            <select id="ordTypeFilter" class="form-select" style="width:auto;font-size:11px;" onchange="renderOrders()">
+              <option value="">所有物流</option><option value="711">7-11</option><option value="family">全家</option><option value="delivery">宅配</option>
+            </select>
+            <select id="ordPayFilter" class="form-select" style="width:auto;font-size:11px;" onchange="renderOrders()">
+              <option value="">所有付款</option><option value="paid">已收款</option><option value="pending">待收款</option><option value="overdue">逾期</option>
+            </select>
+            <input id="ordSearch" class="form-input" placeholder="搜尋..." style="width:130px;font-size:11px;padding:6px 10px;" oninput="renderOrders()">
+          </div>
+        </div>
+        <div id="ordOverdueBanner" style="display:none;" class="alert-box alert-danger" style="margin:0;border-radius:0;"></div>
+        <div style="padding:10px 16px;background:#f8fafc;border-bottom:1px solid #f1f5f9;font-size:12px;display:flex;gap:20px;flex-wrap:wrap;" id="ordSummaryBar"></div>
+        <div style="overflow-x:auto;" class="desktop-only">
+          <table class="dtable"><thead><tr><th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th><th>日期</th><th>收件人</th><th>物流</th><th>商品</th><th>金額</th><th>付款</th><th>QR集點</th><th>操作</th></tr></thead><tbody id="ordersTbody"></tbody></table>
+        </div>
+        <div id="ordersMobileCards" class="mobile-only" style="padding:10px;"></div>
+        <div style="padding:10px 16px;border-top:1px solid #f1f5f9;display:flex;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:11px;color:#64748b;align-self:center;" id="selectedCount">已選：0筆</span>
+          <button class="btn btn-sm btn-success" onclick="batchActivateQR()">批次啟用QR</button>
+          <button class="btn btn-sm btn-outline" onclick="batchMarkPaid()">批次標記收款</button>
+          <button class="btn btn-sm btn-outline" style="margin-left:auto;" onclick="exportExcel()">📥 匯出Excel</button>
+          <button class="btn btn-sm btn-primary" onclick="previewStatement()">📄 帳款明細表</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- POINTS -->
+    <div id="page-points" style="display:none;">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;" class="stats-grid">
+        <div class="stat-card"><div class="stat-icon" style="background:var(--purple-light);">⭐</div><div class="stat-value" id="ptsTotalIssued">0</div><div class="stat-label">累計發放點數</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:var(--warning-light);">🔒</div><div class="stat-value" id="ptsPendingQR">0</div><div class="stat-label">待啟用QR（已收款）</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:var(--success-light);">🎁</div><div class="stat-value" id="ptsRedeemable">0</div><div class="stat-label">可兌換客戶數</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">⭐ 集點管理</div>
+          <div style="display:flex;gap:8px;margin-left:auto;">
+            <button class="btn btn-sm btn-outline" onclick="batchActivateQRAll()">批次啟用（宅配已收款）</button>
+          </div>
+        </div>
+        <div style="background:#f8fafc;padding:12px 16px;border-bottom:1px solid #f1f5f9;display:flex;gap:10px;flex-wrap:wrap;align-items:center;" id="pointsRuleBar"></div>
+        <div style="overflow-x:auto;">
+          <table class="dtable"><thead><tr><th>客戶</th><th>金額</th><th>點數</th><th>QR狀態</th><th>日期</th><th>操作</th></tr></thead><tbody id="pointsTbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS CATALOG -->
+    <div id="page-products" style="display:none;">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;" class="stats-grid" id="prodStatCards"></div>
+      <div class="tab-nav" style="background:#fff;border-radius:11px 11px 0 0;border:1px solid #e2e8f0;border-bottom:none;margin-bottom:0;">
+        <button class="tab-btn active" id="prodTab-catalog" onclick="showProdTab('catalog')">📋 商品目錄</button>
+        <button class="tab-btn" id="prodTab-rank" onclick="showProdTab('rank')">🏆 銷售排名</button>
+        <button class="tab-btn" id="prodTab-revenue" onclick="showProdTab('revenue')">💰 營收排名</button>
+        <button class="tab-btn" id="prodTab-trend" onclick="showProdTab('trend')">📈 每月趨勢</button>
+      </div>
+      <!-- Catalog -->
+      <div id="prodContent-catalog" class="panel" style="border-radius:0 0 11px 11px;">
+        <div class="panel-header">
+          <div class="panel-title">商品清單</div>
+          <div style="display:flex;gap:8px;margin-left:auto;">
+            <button class="btn btn-sm btn-outline" onclick="autoExtractProducts()">🔄 自動從訂單抓取</button>
+            <button class="btn btn-sm btn-primary" onclick="openAddProduct()">+ 新增商品</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;"><table class="dtable"><thead><tr><th>商品名稱</th><th>規格</th><th>售價</th><th>集點</th><th>已銷售</th><th>營收</th><th>操作</th></tr></thead><tbody id="productsTbody"></tbody></table></div>
+      </div>
+      <!-- Rank by qty -->
+      <div id="prodContent-rank" class="panel" style="display:none;border-radius:0 0 11px 11px;">
+        <div class="panel-header"><div class="panel-title">🏆 銷售數量排名</div><div style="margin-left:auto;font-size:11px;color:#64748b;">統計所有已存訂單</div></div>
+        <div id="rankByQtyContent" style="padding:16px;"></div>
+      </div>
+      <!-- Rank by revenue -->
+      <div id="prodContent-revenue" class="panel" style="display:none;border-radius:0 0 11px 11px;">
+        <div class="panel-header"><div class="panel-title">💰 營收貢獻排名</div></div>
+        <div id="rankByRevenueContent" style="padding:16px;"></div>
+      </div>
+      <!-- Monthly trend -->
+      <div id="prodContent-trend" class="panel" style="display:none;border-radius:0 0 11px 11px;">
+        <div class="panel-header">
+          <div class="panel-title">📈 每月銷售趨勢</div>
+          <select id="trendProductSelect" class="form-select" style="width:auto;font-size:11px;" onchange="renderTrend()"><option value="">全部商品</option></select>
+        </div>
+        <div id="trendContent" style="padding:16px;"></div>
+      </div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div id="page-customers" style="display:none;">
+      <div class="tab-nav" style="background:#fff;border-radius:11px 11px 0 0;border:1px solid #e2e8f0;border-bottom:none;">
+        <button class="tab-btn active" id="custTab-list" onclick="showCustTab('list')">👥 客戶列表</button>
+        <button class="tab-btn" id="custTab-rank" onclick="showCustTab('rank')">🏆 銷售排名</button>
+        <button class="tab-btn" id="custTab-import" onclick="showCustTab('import')">📥 匯入舊資料</button>
+      </div>
+      <!-- List -->
+      <div id="custContent-list" class="panel" style="border-radius:0 0 11px 11px;">
+        <div class="panel-header">
+          <div class="panel-title" id="custListTitle">客戶列表</div>
+          <div style="margin-left:auto;display:flex;gap:8px;">
+            <select id="custFilter" class="form-select" style="width:auto;font-size:11px;" onchange="renderCustomers()">
+              <option value="">所有客戶</option><option value="vip">⭐ VIP</option><option value="blacklist">⚠️ 黑名單</option><option value="redeemable">🎁 可兌換</option><option value="history">📁 歷史客戶</option>
+            </select>
+            <input id="custSearch" class="form-input" placeholder="搜尋姓名/電話..." style="width:160px;font-size:11px;padding:6px 10px;" oninput="renderCustomers()">
+          </div>
+        </div>
+        <div id="customersList"></div>
+        <div style="padding:10px 16px;border-top:1px solid #f1f5f9;font-size:11px;color:#64748b;" id="custPager"></div>
+      </div>
+      <!-- Rank -->
+      <div id="custContent-rank" class="panel" style="display:none;border-radius:0 0 11px 11px;">
+        <div class="panel-header"><div class="panel-title">🏆 客戶銷售排名（Top 50）</div></div>
+        <div id="custRankContent" style="overflow-x:auto;"></div>
+      </div>
+      <!-- Import -->
+      <div id="custContent-import" class="panel" style="display:none;border-radius:0 0 11px 11px;">
+        <div class="panel-header"><div class="panel-title">📥 匯入舊客戶資料</div></div>
+        <div class="panel-body">
+          <div class="alert-box alert-warn" style="margin-bottom:16px;">⚠️ 舊資料匯入後會標記為「歷史記錄」，不計算集點，僅供查詢與統計使用。</div>
+          <div style="margin-bottom:16px;">
+            <div style="font-weight:700;font-size:13px;margin-bottom:10px;">方法一：上傳 Excel / CSV</div>
+            <div style="background:#f8fafc;border-radius:8px;padding:14px;border:1px solid #e2e8f0;margin-bottom:8px;font-size:12px;color:#475569;">
+              <div style="font-weight:700;margin-bottom:4px;">📋 必要欄位（至少需要以下其中幾個）：</div>
+              姓名 / 電話 / 地址 / 消費金額 / 購買商品 / 日期
+            </div>
+            <label for="custImportFile" style="cursor:pointer;display:inline-block;">
+              <span class="btn btn-outline">📂 選擇檔案</span>
+              <input id="custImportFile" type="file" style="display:none;" accept=".csv,.xlsx,.xls" onchange="handleCustImportFile(this)">
+            </label>
+          </div>
+          <div style="margin-bottom:16px;">
+            <div style="font-weight:700;font-size:13px;margin-bottom:10px;">方法二：貼上文字</div>
+            <div style="font-size:11px;color:#64748b;margin-bottom:8px;">每行一筆，格式：姓名,電話,消費金額（或貼上任何包含電話的文字）</div>
+            <textarea id="custImportText" class="form-input" rows="6" placeholder="王小明,0912345678,799&#10;李大華,0923456789,1299&#10;..."></textarea>
+          </div>
+          <div id="custImportPreview" style="display:none;margin-bottom:16px;"></div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-outline" onclick="previewCustImport()">預覽匯入</button>
+            <button class="btn btn-primary" id="doCustImportBtn" style="display:none;" onclick="doImportCustomers()">確認匯入</button>
+          </div>
+          <div id="custImportResult" style="margin-top:12px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPORT -->
+    <div id="page-export" style="display:none;">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">📥 匯出報表</div></div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:20px;">
+            <div style="border:1px solid #e2e8f0;border-radius:10px;padding:18px;text-align:center;" onclick="exportExcel()">
+              <div style="font-size:32px;margin-bottom:8px;">📊</div><div style="font-size:13px;font-weight:800;margin-bottom:4px;">完整訂單 Excel</div>
+              <div style="font-size:11px;color:#64748b;margin-bottom:12px;">含付款狀態、點數</div>
+              <button class="btn btn-sm btn-success" onclick="event.stopPropagation();exportExcel()">匯出 .xlsx</button>
+            </div>
+            <div style="border:1px solid #e2e8f0;border-radius:10px;padding:18px;text-align:center;" onclick="previewStatement()">
+              <div style="font-size:32px;margin-bottom:8px;">📄</div><div style="font-size:13px;font-weight:800;margin-bottom:4px;">帳款結算明細</div>
+              <div style="font-size:11px;color:#64748b;margin-bottom:12px;">A4格式，含簽章欄</div>
+              <button class="btn btn-sm btn-primary" onclick="event.stopPropagation();previewStatement()">預覽列印</button>
+            </div>
+            <div style="border:1px solid #e2e8f0;border-radius:10px;padding:18px;text-align:center;" onclick="exportPointsExcel()">
+              <div style="font-size:32px;margin-bottom:8px;">⭐</div><div style="font-size:13px;font-weight:800;margin-bottom:4px;">客戶點數報表</div>
+              <div style="font-size:11px;color:#64748b;margin-bottom:12px;">各客戶累積點數記錄</div>
+              <button class="btn btn-sm btn-purple" onclick="event.stopPropagation();exportPointsExcel()">匯出報表</button>
+            </div>
+            <div style="border:1px solid #e2e8f0;border-radius:10px;padding:18px;text-align:center;" onclick="exportProductsExcel()">
+              <div style="font-size:32px;margin-bottom:8px;">🍃</div><div style="font-size:13px;font-weight:800;margin-bottom:4px;">商品銷售報表</div>
+              <div style="font-size:11px;color:#64748b;margin-bottom:12px;">各商品銷售數量與營收</div>
+              <button class="btn btn-sm btn-warning" onclick="event.stopPropagation();exportProductsExcel()">匯出報表</button>
+            </div>
+          </div>
+          <div style="padding:14px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">
+            <div style="font-weight:700;font-size:12px;margin-bottom:10px;">篩選條件：</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <select id="expMonthFilter" class="form-select" style="width:auto;font-size:11px;"><option value="">全部月份</option></select>
+              <select id="expTypeFilter" class="form-select" style="width:auto;font-size:11px;"><option value="">所有物流</option><option value="711">7-11</option><option value="family">全家</option><option value="delivery">宅配</option></select>
+              <select id="expPayFilter" class="form-select" style="width:auto;font-size:11px;"><option value="">所有付款</option><option value="paid">已收款</option><option value="pending">待收款</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="page-settings" style="display:none;">
+      <div style="display:grid;grid-template-columns:200px 1fr;gap:16px;" class="content-grid">
+        <div class="panel" style="padding:10px;height:fit-content;">
+          <div id="settingsNav">
+            <div class="sn-item" onclick="showSettingsTab('admins')" style="padding:9px 12px;border-radius:7px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:700;background:var(--primary-light);color:var(--primary);">👥 管理員帳號</div>
+            <div class="sn-item" onclick="showSettingsTab('points')" style="padding:9px 12px;border-radius:7px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:8px;color:#64748b;margin-top:2px;">⭐ 集點規則</div>
+            <div class="sn-item" onclick="showSettingsTab('shop')" style="padding:9px 12px;border-radius:7px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:8px;color:#64748b;margin-top:2px;">🏪 店家資訊</div>
+            <div class="sn-item" onclick="showSettingsTab('tier')" style="padding:9px 12px;border-radius:7px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:8px;color:#64748b;margin-top:2px;">👑 會員等級設定</div>
+            <div class="sn-item" onclick="showSettingsTab('pwa')" style="padding:9px 12px;border-radius:7px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:8px;color:#64748b;margin-top:2px;">📱 安裝為 APP</div>
+            <div class="sn-item" onclick="clearAllData()" style="padding:9px 12px;border-radius:7px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--danger);margin-top:8px;">🗑️ 清除全部資料</div>
+          </div>
+        </div>
+        <div>
+          <div id="settingsTab-admins" class="panel">
+            <div class="panel-header"><div class="panel-title">👥 管理員帳號</div><button class="btn btn-sm btn-primary" style="margin-left:auto;" onclick="openAddAdmin()">+ 新增</button></div>
+            <div class="panel-body" id="adminsList"></div>
+          </div>
+          <div id="settingsTab-points" class="panel" style="display:none;">
+            <div class="panel-header"><div class="panel-title">⭐ 集點規則</div></div>
+            <div class="panel-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div><label class="form-label">每 $100 獲得點數</label><input id="setPointsRate" class="form-input" type="number" value="1" min="1"></div>
+                <div><label class="form-label">兌換門檻（點）</label><input id="setPointsGoal" class="form-input" type="number" value="200" min="50"></div>
+                <div><label class="form-label">兌換等值商品（元）</label><input id="setRewardValue" class="form-input" type="number" value="200" min="50"></div>
+                <div><label class="form-label">逾期天數警示</label><input id="setOverdueDays" class="form-input" type="number" value="7" min="1"></div>
+              </div>
+              <button class="btn btn-primary" style="margin-top:16px;" onclick="savePointsSettings()">儲存規則</button>
+            </div>
+          </div>
+          <div id="settingsTab-shop" class="panel" style="display:none;">
+            <div class="panel-header"><div class="panel-title">🏪 店家資訊</div></div>
+            <div class="panel-body">
+              <div style="margin-bottom:14px;"><label class="form-label">店家名稱</label><input id="setShopName" class="form-input" placeholder="例：梨山茶行"></div>
+              <div style="margin-bottom:14px;"><label class="form-label">集點網址（空白=使用本機路徑）</label><input id="setRedeemUrl" class="form-input" placeholder="https://yoursite.github.io/index.html"></div>
+              <button class="btn btn-primary" onclick="saveShopSettings()">儲存設定</button>
+            </div>
+          </div>
+
+          <!-- PWA 安裝頁籤 -->
+          <!-- 會員等級設定 -->
+          <div id="settingsTab-tier" class="panel" style="display:none;">
+            <div class="panel-header">
+              <div class="panel-title">👑 會員等級制度設定</div>
+              <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
+                <span style="font-size:12px;color:#64748b;">啟用會員等級：</span>
+                <div id="tierToggle" class="toggle off" onclick="toggleTierSystem()"></div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="alert-box alert-info" style="margin-bottom:16px;">
+                💡 啟用後，客戶的點數倍率會依據累計消費金額自動升級。與「限時活動」可同時疊加計算。
+              </div>
+              <div style="display:flex;flex-direction:column;gap:12px;" id="tierSettingsList"></div>
+              <div style="margin-top:16px;padding:12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">
+                <div style="font-size:12px;font-weight:700;margin-bottom:8px;">計算範例：</div>
+                <div id="tierCalcExample" style="font-size:12px;color:#475569;"></div>
+              </div>
+              <button class="btn btn-primary" style="margin-top:16px;" onclick="saveTierSettings()">儲存等級設定</button>
+            </div>
+          </div>
+
+          <div id="settingsTab-pwa" class="panel" style="display:none;">
+            <div class="panel-header"><div class="panel-title">📱 安裝為 APP</div></div>
+            <div class="panel-body">
+              <div id="pwaStatusCard" style="background:var(--primary-light);border-radius:10px;padding:16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">
+                <div style="font-size:36px;">🏪</div>
+                <div>
+                  <div style="font-size:14px;font-weight:800;color:var(--primary);">出單助手</div>
+                  <div id="pwaStatusText" style="font-size:12px;color:#64748b;margin-top:2px;">正在偵測安裝狀態...</div>
+                </div>
+              </div>
+
+              <!-- Android -->
+              <div id="androidInstallSection" style="display:none;margin-bottom:20px;">
+                <div style="font-weight:700;font-size:13px;margin-bottom:10px;color:#334155;">📲 Android 安裝</div>
+                <button onclick="doInstallPWA()" class="btn btn-primary" style="width:100%;padding:14px;font-size:15px;">
+                  點此安裝到主畫面
+                </button>
+              </div>
+
+              <!-- iOS -->
+              <div style="margin-bottom:20px;">
+                <div style="font-weight:700;font-size:13px;margin-bottom:12px;color:#334155;">🍎 iPhone / iPad 安裝步驟</div>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                  <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">
+                    <div style="width:32px;height:32px;background:#1a56db;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;flex-shrink:0;">1</div>
+                    <div style="font-size:13px;">用 <strong>Safari</strong> 開啟系統網址<br><span style="font-size:11px;color:#64748b;">（Chrome 不支援 iOS PWA 安裝）</span></div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">
+                    <div style="width:32px;height:32px;background:#1a56db;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;flex-shrink:0;">2</div>
+                    <div style="font-size:13px;">點下方中間的 <strong>「分享」</strong> 按鈕 <span style="font-size:18px;">□↑</span></div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">
+                    <div style="width:32px;height:32px;background:#1a56db;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;flex-shrink:0;">3</div>
+                    <div style="font-size:13px;">向下滑，選 <strong>「加入主畫面」</strong></div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--success-light);border-radius:8px;border:1px solid #bbf7d0;">
+                    <div style="width:32px;height:32px;background:#059669;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;">✓</div>
+                    <div style="font-size:13px;color:#065f46;font-weight:700;">完成！桌面出現「出單助手」圖示</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Android 步驟 -->
+              <div>
+                <div style="font-weight:700;font-size:13px;margin-bottom:12px;color:#334155;">🤖 Android 安裝步驟</div>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                  <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">
+                    <div style="width:32px;height:32px;background:#1a56db;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;flex-shrink:0;">1</div>
+                    <div style="font-size:13px;">用 <strong>Chrome</strong> 開啟系統網址</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">
+                    <div style="width:32px;height:32px;background:#1a56db;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;flex-shrink:0;">2</div>
+                    <div style="font-size:13px;">點右上角 <strong>「⋮」</strong> 選單</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">
+                    <div style="width:32px;height:32px;background:#1a56db;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;flex-shrink:0;">3</div>
+                    <div style="font-size:13px;">點 <strong>「新增到主畫面」</strong> 或彈出的安裝提示</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--success-light);border-radius:8px;border:1px solid #bbf7d0;">
+                    <div style="width:32px;height:32px;background:#059669;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;">✓</div>
+                    <div style="font-size:13px;color:#065f46;font-weight:700;">完成！桌面出現「出單助手」圖示</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top:20px;padding:12px;background:var(--warning-light);border-radius:8px;font-size:12px;color:#92400e;">
+                <strong>⚠️ 重要提醒：</strong>安裝前請先確認「店家資訊」中的集點網址已設定正確，這樣 QR 碼才能正常運作。
+              </div>
+              <div style="margin-top:14px;padding:14px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">
+                <div style="font-size:12px;font-weight:700;margin-bottom:8px;">🚀 部署到 GitHub Pages 時需要的額外檔案：</div>
+                <div style="font-size:11px;color:#64748b;margin-bottom:10px;">部署後必須把 sw.js 放在與 HTML 同一個資料夾，PWA 離線功能才能正常運作。</div>
+                <button onclick="downloadSW()" class="btn btn-outline" style="font-size:12px;">
+                  📥 下載 sw.js 檔案
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVITIES -->
+    <div id="page-activities" style="display:none;">
+      <!-- 活動狀態統計 -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;" class="stats-grid" id="activityStatCards"></div>
+
+      <!-- 會員等級說明橫幅 -->
+      <div id="tierBanner" style="display:none;background:linear-gradient(135deg,#1a56db,#7c3aed);border-radius:11px;padding:16px 20px;margin-bottom:18px;color:#fff;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="font-size:14px;font-weight:800;">👑 會員等級制度（啟用中）</div>
+          <button onclick="toggleTierSystem()" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:none;">停用</button>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;" id="tierBannerContent"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">🎯 集點活動管理</div>
+          <div style="display:flex;gap:8px;margin-left:auto;">
+            <button onclick="openAddActivity()" class="btn btn-sm btn-primary">+ 新增活動</button>
+            <button onclick="showPage('settings');showSettingsTab('tier')" class="btn btn-sm btn-outline">👑 會員等級設定</button>
+          </div>
+        </div>
+
+        <!-- 活動類型說明 -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;padding:14px 18px;background:#f8fafc;border-bottom:1px solid #e2e8f0;">
+          <div style="background:#fff;border-radius:8px;padding:10px;border:1px solid #e2e8f0;text-align:center;font-size:11px;">
+            <div style="font-size:20px;margin-bottom:4px;">⏰</div>
+            <div style="font-weight:700;margin-bottom:2px;">限時倍數活動</div>
+            <div style="color:#64748b;">設定期間內 N 倍點數</div>
+          </div>
+          <div style="background:#fff;border-radius:8px;padding:10px;border:1px solid #e2e8f0;text-align:center;font-size:11px;">
+            <div style="font-size:20px;margin-bottom:4px;">💰</div>
+            <div style="font-weight:700;margin-bottom:2px;">滿額加點</div>
+            <div style="color:#64748b;">單筆滿 X 元額外加 Y 點</div>
+          </div>
+          <div style="background:#fff;border-radius:8px;padding:10px;border:1px solid #e2e8f0;text-align:center;font-size:11px;">
+            <div style="font-size:20px;margin-bottom:4px;">🍃</div>
+            <div style="font-weight:700;margin-bottom:2px;">指定商品加倍</div>
+            <div style="color:#64748b;">特定商品 N 倍點數</div>
+          </div>
+          <div style="background:#fff;border-radius:8px;padding:10px;border:1px solid #e2e8f0;text-align:center;font-size:11px;">
+            <div style="font-size:20px;margin-bottom:4px;">👑</div>
+            <div style="font-weight:700;margin-bottom:2px;">會員等級制度</div>
+            <div style="color:#64748b;">消費越多倍率越高</div>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="dtable">
+            <thead><tr><th>活動名稱</th><th>類型</th><th>活動期間</th><th>規則說明</th><th>狀態</th><th>操作</th></tr></thead>
+            <tbody id="activitiesTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRINT -->
+    <div id="page-print" style="display:none;">
+      <div class="no-print" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;background:#f8fafc;padding:12px;border-radius:8px;border:1px solid #e2e8f0;">
+        <div style="font-weight:700;font-size:13px;">🖨️ 列印預覽</div>
+        <div style="display:flex;gap:8px;">
+          <select id="printLayoutSelect" class="form-select" style="width:auto;font-size:11px;" onchange="rerenderPrint()">
+            <option value="thermal-100x150">熱感應 100x150mm</option>
+            <option value="thermal-80">熱感應 80mm</option>
+            <option value="1x4">A4 一頁4格</option>
+            <option value="2x2">A4 田字2x2</option>
+          </select>
+          <button class="btn btn-sm btn-outline" onclick="history.back()">← 返回</button>
+          <button class="btn btn-sm btn-primary" onclick="window.print()">🖨️ 確認列印</button>
+        </div>
+      </div>
+      <div id="printPreviewArea"></div>
+    </div>
+
+  </div><!-- page-content -->
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav no-print">
+    <div class="mobile-nav-inner">
+      <div class="mnav-item active" id="mnav-dashboard" onclick="showPage('dashboard')"><div class="mi-icon">📊</div><div class="mi-label">總覽</div></div>
+      <div class="mnav-item" id="mnav-upload" onclick="showPage('upload')"><div class="mi-icon">📤</div><div class="mi-label">出單</div></div>
+      <div class="mnav-item" id="mnav-orders" onclick="showPage('orders')"><div class="mi-icon">📦</div><div class="mi-label">帳款</div></div>
+      <div class="mnav-item" id="mnav-customers" onclick="showPage('customers')"><div class="mi-icon">👥</div><div class="mi-label">客戶</div></div>
+      <div class="mnav-item" id="mnav-settings" onclick="showPage('settings')"><div class="mi-icon">⚙️</div><div class="mi-label">設定</div></div>
+    </div>
+  </div>
+</div><!-- main-content -->
+</div><!-- app-layout -->
+</div><!-- appScreen -->
+
+<!-- MODALS -->
+<!-- 修改密碼 Modal -->
+<div class="modal-overlay" id="changePasswordModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">🔑 修改密碼</div><button class="modal-close" onclick="closeModal('changePasswordModal')">✕</button></div>
+    <div class="modal-body">
+      <div id="changePwdTarget" style="margin-bottom:14px;padding:10px;background:#f8fafc;border-radius:8px;font-size:12px;color:#64748b;"></div>
+      <input type="hidden" id="changePwdUserId">
+      <div id="oldPwdRow" style="margin-bottom:12px;"><label class="form-label">目前密碼</label><input id="oldPassword" class="form-input" type="password" placeholder="輸入目前密碼"></div>
+      <div style="margin-bottom:12px;"><label class="form-label">新密碼（至少4碼）</label><input id="newPassword" class="form-input" type="password" placeholder="輸入新密碼"></div>
+      <div style="margin-bottom:12px;"><label class="form-label">確認新密碼</label><input id="confirmPassword" class="form-input" type="password" placeholder="再次輸入新密碼"></div>
+      <div id="changePwdErr" style="display:none;" class="alert-box alert-danger"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('changePasswordModal')">取消</button><button class="btn btn-primary" onclick="doChangePassword()">確認修改</button></div>
+  </div>
+</div>
+
+<!-- 新增/編輯活動 Modal -->
+<div class="modal-overlay" id="addActivityModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="activityModalTitle">🎯 新增集點活動</div><button class="modal-close" onclick="closeModal('addActivityModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editActivityId">
+      <div style="margin-bottom:14px;">
+        <label class="form-label">活動名稱</label>
+        <input id="actName" class="form-input" placeholder="例：中秋雙倍集點活動">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">活動類型</label>
+        <select id="actType" class="form-select" onchange="updateActivityForm()">
+          <option value="multiplier">⏰ 限時倍數活動</option>
+          <option value="threshold">💰 滿額加點</option>
+          <option value="product">🍃 指定商品加倍</option>
+        </select>
+      </div>
+      <!-- 限時倍數 -->
+      <div id="actForm-multiplier">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+          <div><label class="form-label">開始日期</label><input id="actStartDate" class="form-input" type="date"></div>
+          <div><label class="form-label">結束日期</label><input id="actEndDate" class="form-input" type="date"></div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <label class="form-label">點數倍率</label>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input id="actMultiplier" class="form-input" type="number" min="2" max="10" value="2" style="width:100px;">
+            <span style="font-size:13px;color:#64748b;">倍（例如：2 = 雙倍點數）</span>
+          </div>
+        </div>
+        <div style="background:var(--primary-light);border-radius:8px;padding:10px;font-size:12px;color:var(--primary);" id="actMultiplierPreview">
+          💡 活動期間內，原本 $799 得 8 點 → 活動期間得 16 點
+        </div>
+      </div>
+      <!-- 滿額加點 -->
+      <div id="actForm-threshold" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+          <div><label class="form-label">開始日期</label><input id="actStartDate2" class="form-input" type="date"></div>
+          <div><label class="form-label">結束日期</label><input id="actEndDate2" class="form-input" type="date"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+          <div><label class="form-label">單筆消費滿（元）</label><input id="actThresholdAmt" class="form-input" type="number" value="1000" placeholder="1000"></div>
+          <div><label class="form-label">額外加贈點數</label><input id="actBonusPoints" class="form-input" type="number" value="20" placeholder="20"></div>
+        </div>
+        <div style="background:var(--success-light);border-radius:8px;padding:10px;font-size:12px;color:var(--success);">
+          💡 單筆消費滿 $1,000 額外加贈 20 點（疊加在原有點數上）
+        </div>
+      </div>
+      <!-- 指定商品 -->
+      <div id="actForm-product" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+          <div><label class="form-label">開始日期</label><input id="actStartDate3" class="form-input" type="date"></div>
+          <div><label class="form-label">結束日期</label><input id="actEndDate3" class="form-input" type="date"></div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <label class="form-label">指定商品（可選多個）</label>
+          <div id="actProductList" style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:7px;padding:10px;max-height:150px;overflow-y:auto;"></div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <label class="form-label">點數倍率</label>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input id="actProductMultiplier" class="form-input" type="number" min="2" max="10" value="2" style="width:100px;">
+            <span style="font-size:13px;color:#64748b;">倍</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:0;">
+        <label class="form-label">活動備註（選填）</label>
+        <input id="actNote" class="form-input" placeholder="例：中秋節限定，活動不可與其他優惠並用">
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('addActivityModal')">取消</button><button class="btn btn-primary" onclick="saveActivity()">儲存活動</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="editOrderModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">✏️ 編輯訂單</div><button class="modal-close" onclick="closeModal('editOrderModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editOrderId">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div><label class="form-label">訂購日期</label><input id="editDate" class="form-input"></div>
+        <div><label class="form-label">金額</label><input id="editPrice" class="form-input" type="number"></div>
+        <div style="grid-column:1/-1;"><label class="form-label">收件人姓名及電話</label><input id="editRecipient" class="form-input"></div>
+        <div style="grid-column:1/-1;"><label class="form-label">配送單號</label><input id="editTrackingNo" class="form-input"></div>
+        <div><label class="form-label">取件門市/地址</label><input id="editStore" class="form-input"></div>
+        <div><label class="form-label">付款狀態</label><select id="editPayStatus" class="form-select"><option value="pending">待收款</option><option value="paid">已收款</option><option value="overdue">逾期</option></select></div>
+        <div style="grid-column:1/-1;"><label class="form-label">商品名稱</label><input id="editProduct" class="form-input"></div>
+        <div style="grid-column:1/-1;"><label class="form-label">備註</label><input id="editNote" class="form-input"></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('editOrderModal')">取消</button><button class="btn btn-primary" onclick="saveEditOrder()">儲存</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="addProductModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="addProductTitle">➕ 新增商品</div><button class="modal-close" onclick="closeModal('addProductModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editProductId">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div><label class="form-label">商品名稱</label><input id="addProdName" class="form-input" placeholder="例：頭等賞三斤"></div>
+        <div><label class="form-label">規格</label><input id="addProdSpec" class="form-input" placeholder="例：150g x 2罐"></div>
+        <div><label class="form-label">標準售價（元）</label><input id="addProdPrice" class="form-input" type="number" placeholder="799" oninput="calcProductPoints()"></div>
+        <div><label class="form-label">預計集點</label><div id="addProdPoints" style="padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-weight:700;color:var(--primary);">0 點</div></div>
+        <div><label class="form-label">圖示 Emoji</label><input id="addProdEmoji" class="form-input" placeholder="🍃" maxlength="4"></div>
+        <div><label class="form-label">備註</label><input id="addProdNote" class="form-input" placeholder="選填"></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('addProductModal')">取消</button><button class="btn btn-primary" onclick="saveProduct()">儲存</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="addAdminModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">➕ 新增管理員</div><button class="modal-close" onclick="closeModal('addAdminModal')">✕</button></div>
+    <div class="modal-body">
+      <div style="margin-bottom:12px;"><label class="form-label">顯示姓名</label><input id="addAdminName" class="form-input"></div>
+      <div style="margin-bottom:12px;"><label class="form-label">帳號</label><input id="addAdminUser" class="form-input"></div>
+      <div style="margin-bottom:12px;"><label class="form-label">密碼（至少4碼）</label><input id="addAdminPass" class="form-input" type="password"></div>
+      <div><label class="form-label">權限</label><select id="addAdminRole" class="form-select"><option value="admin">一般管理員</option><option value="superadmin">超級管理員</option></select></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('addAdminModal')">取消</button><button class="btn btn-primary" onclick="saveAdmin()">新增</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="custDetailModal">
+  <div class="modal modal-lg">
+    <div class="modal-header"><div class="modal-title" id="custDetailTitle">客戶詳情</div><button class="modal-close" onclick="closeModal('custDetailModal')">✕</button></div>
+    <div class="modal-body" id="custDetailBody"></div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('custDetailModal')">關閉</button></div>
+  </div>
+</div>
+<div id="toast" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:8px;max-width:90vw;" class="no-print">
+  <span id="toastIcon">✅</span><span id="toastMsg"></span>
+</div>
+
+<!-- 離線指示器 -->
+<div id="offlineIndicator" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10000;background:#dc2626;color:#fff;padding:8px 16px;font-size:12px;font-weight:700;text-align:center;align-items:center;justify-content:center;gap:8px;" class="no-print">
+  <span>📵</span>
+  <span>目前離線中 — 基本功能仍可使用，資料將在連線後同步</span>
+</div>
+
+<!-- Android 安裝提示橫幅 -->
+<div id="installBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9998;background:#fff;border-top:2px solid #e2e8f0;padding:14px 16px;align-items:center;gap:12px;box-shadow:0 -4px 20px rgba(0,0,0,.12);" class="no-print">
+  <div style="width:44px;height:44px;background:#1a56db;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🏪</div>
+  <div style="flex:1;min-width:0;">
+    <div style="font-size:14px;font-weight:800;color:#0f172a;">安裝出單助手</div>
+    <div style="font-size:11px;color:#64748b;margin-top:2px;">加到主畫面，像 APP 一樣使用</div>
+  </div>
+  <button onclick="doInstallPWA()" style="background:#1a56db;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">安裝</button>
+  <button onclick="document.getElementById('installBanner').style.display='none'" style="background:#f1f5f9;color:#475569;border:none;border-radius:8px;padding:10px 12px;font-size:13px;cursor:pointer;flex-shrink:0;">✕</button>
+</div>
+
+<!-- iOS 安裝說明橫幅 -->
+<div id="iosInstallBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9998;background:#fff;border-top:2px solid #1a56db;padding:16px;box-shadow:0 -4px 20px rgba(0,0,0,.15);" class="no-print">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+    <div style="font-size:14px;font-weight:800;color:#0f172a;">📱 將出單助手加到主畫面</div>
+    <button onclick="document.getElementById('iosInstallBanner').style.display='none';localStorage.setItem('iosInstallDismissed','1')" style="background:none;border:none;font-size:20px;color:#94a3b8;cursor:pointer;padding:0;">✕</button>
+  </div>
+  <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;">
+    <div style="width:28px;height:28px;background:#1a56db;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px;flex-shrink:0;">1</div>
+    <div style="font-size:13px;color:#334155;">點下方工具列的 <strong style="color:#1a56db;">「分享」</strong> 按鈕 <span style="font-size:16px;">□↑</span></div>
+  </div>
+  <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;">
+    <div style="width:28px;height:28px;background:#1a56db;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px;flex-shrink:0;">2</div>
+    <div style="font-size:13px;color:#334155;">向下滑找到 <strong style="color:#1a56db;">「加入主畫面」</strong> 並點擊</div>
+  </div>
+  <div style="display:flex;align-items:flex-start;gap:10px;">
+    <div style="width:28px;height:28px;background:#059669;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px;flex-shrink:0;">✓</div>
+    <div style="font-size:13px;color:#334155;">完成！桌面出現 <strong>出單助手</strong> 圖示</div>
+  </div>
+</div>
+
+<script>
+// =====================================================================
+// CONFIGURATION & STORAGE
+// =====================================================================
+const TOKEN_SALT = 'teashop2026v3';
+let idbDB = null; // IndexedDB instance
+let currentUser = null;
+let currentPage = 'dashboard';
+let printData = [];
+let currentParseData = [];
+let custPage = 0; const CUST_PER_PAGE = 50;
+let custImportPreviewData = [];
+
+// IndexedDB setup
+function openIDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('OrderSystemDB', 2);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('orders')) {
+        const os = db.createObjectStore('orders', {keyPath:'id'});
+        os.createIndex('date','date',{unique:false});
+        os.createIndex('payStatus','payStatus',{unique:false});
+      }
+      if (!db.objectStoreNames.contains('customers')) {
+        const cs = db.createObjectStore('customers', {keyPath:'phone'});
+        cs.createIndex('name','name',{unique:false});
+        cs.createIndex('totalSpent','totalSpent',{unique:false});
+      }
+      if (!db.objectStoreNames.contains('products')) {
+        db.createObjectStore('products', {keyPath:'id'});
+      }
+    };
+    req.onsuccess = e => { idbDB = e.target.result; resolve(idbDB); };
+    req.onerror = () => reject(req.error);
+  });
+}
+function idbGetAll(store) {
+  return new Promise((resolve, reject) => {
+    const tx = idbDB.transaction(store,'readonly');
+    const req = tx.objectStore(store).getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+function idbPut(store, item) {
+  return new Promise((resolve, reject) => {
+    const tx = idbDB.transaction(store,'readwrite');
+    const req = tx.objectStore(store).put(item);
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+function idbPutBulk(store, items) {
+  return new Promise((resolve, reject) => {
+    const tx = idbDB.transaction(store,'readwrite');
+    const os = tx.objectStore(store);
+    items.forEach(item => os.put(item));
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+function idbDelete(store, key) {
+  return new Promise((resolve, reject) => {
+    const tx = idbDB.transaction(store,'readwrite');
+    const req = tx.objectStore(store).delete(key);
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+function idbClear(store) {
+  return new Promise((resolve, reject) => {
+    const tx = idbDB.transaction(store,'readwrite');
+    const req = tx.objectStore(store).clear();
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+
+// Settings & Admins still in localStorage (small data)
+function getSettings() {
+  return JSON.parse(localStorage.getItem('appSettings') || JSON.stringify({
+    pointsRate:1, pointsGoal:200, rewardValue:200, overdueDays:7, shopName:'茗茶專賣店', redeemUrl:''
+  }));
+}
+function saveSettings(s) { localStorage.setItem('appSettings', JSON.stringify(s)); }
+function getAdmins() {
+  return JSON.parse(localStorage.getItem('admins') || JSON.stringify([
+    {id:'a1',username:'admin',password:'111111',role:'superadmin',name:'超級管理員',active:true},
+    {id:'a2',username:'staff',password:'00000',role:'admin',name:'一般管理員',active:true}
+  ]));
+}
+function saveAdmins(a) { localStorage.setItem('admins', JSON.stringify(a)); }
+
+// =====================================================================
+// UTILITIES
+// =====================================================================
+function calcPoints(price) {
+  const s = getSettings();
+  return Math.max(1, Math.round(parseInt(price||0) / 100) * s.pointsRate);
+}
+
+// BUG FIX #7: Enhanced customer type detection for FamilyMart
+function getCustomerType(order) {
+  const str = `${order.store||''} ${order.trackingNo||''} ${order.note||''} ${order.product||''} ${order.orderId||''}`.toLowerCase();
+  const storeStr = (order.store||'').toLowerCase();
+  // 7-11 detection
+  if (/7-11|711|交貨便|賣貨便|i-bon|ibon/.test(str)) return {id:'711',name:'7-11',badge:'badge-green'};
+  // FamilyMart detection - expanded keywords
+  if (/全家|familymart|family mart|好賣+|fami/.test(str)) return {id:'family',name:'全家',badge:'badge-blue'};
+  // Check tracking number format (FamilyMart tracking usually starts with specific patterns)
+  const tn = (order.trackingNo||'').toUpperCase();
+  if (/^(FM|FAM|FP|927|928)/.test(tn)) return {id:'family',name:'全家',badge:'badge-blue'};
+  if (/^(EM|EF|EZ|LM|LI|RR|RB|RA|CP)/.test(tn)) return {id:'711',name:'7-11',badge:'badge-green'};
+  // Delivery
+  if (/宅配|新竹|大榮|黑貓|t-cat|tcatbox|pelican|物流|貨運|郵局|宅急便|post/.test(str)) return {id:'delivery',name:'宅配',badge:'badge-purple'};
+  return {id:'other',name:'其他',badge:'badge-gray'};
+}
+
+function getMonthKey(dateStr) {
+  const m = (dateStr||'').match(/(\d{4})[\/-](\d{1,2})/);
+  return m ? `${m[1]}/${m[2].padStart(2,'0')}` : '未分類';
+}
+function isOverdue(order) {
+  if (order.payStatus==='paid') return false;
+  const s = getSettings();
+  try {
+    const d = new Date((order.date||'').replace(/\//g,'-'));
+    if (isNaN(d.getTime())) return false;
+    return (Date.now() - d.getTime()) / (1000*60*60*24) > s.overdueDays;
+  } catch(e) { return false; }
+}
+function genId() { return 'o_'+Date.now()+'_'+Math.random().toString(36).substring(2,7); }
+function genToken(orderId, points) {
+  const p = JSON.stringify({orderId, points, cs: btoa(orderId+TOKEN_SALT+points).substring(0,8)});
+  return btoa(unescape(encodeURIComponent(p)));
+}
+function validateToken(token) {
+  try {
+    const p = JSON.parse(decodeURIComponent(escape(atob(token))));
+    return p.cs === btoa(p.orderId+TOKEN_SALT+p.points).substring(0,8) ? p : null;
+  } catch(e) { return null; }
+}
+function getRedeemURL(token) {
+  const s = getSettings();
+  const base = s.redeemUrl || window.location.href.split('#')[0];
+  return base + '#redeem/' + token;
+}
+// QR碼產生（有網路用線上服務，離線顯示替代圖示）
+const qrCache = {};
+function getQRImageURL(text, size=100) {
+  const cKey = text + size;
+  if (qrCache[cKey]) return qrCache[cKey];
+  const url = 'https://api.qrserver.com/v1/create-qr-code/?size=' + size + 'x' + size + '&data=' + encodeURIComponent(text);
+  qrCache[cKey] = url;
+  return url;
+}
+function showToast(msg, isErr=false) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastIcon').textContent = isErr?'❌':'✅';
+  document.getElementById('toastMsg').textContent = msg;
+  t.style.opacity = '1';
+  setTimeout(()=>t.style.opacity='0', 3200);
+}
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('show'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); }
+
+// =====================================================================
+// AUTH
+// =====================================================================
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const admins = getAdmins();
+  const found = admins.find(a => a.username===u && a.password===p && a.active!==false);
+  if (!found) { document.getElementById('loginErr').style.display='flex'; return; }
+  currentUser = found;
+  sessionStorage.setItem('currentUser', JSON.stringify(found));
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appScreen').style.display='block';
+  document.getElementById('sidebarAvatar').textContent = found.name.charAt(0);
+  document.getElementById('sidebarName').textContent = found.name;
+  document.getElementById('sidebarRole').textContent = found.role==='superadmin'?'🔴 超級管理員':'🔵 一般管理員';
+  if (found.role!=='superadmin') document.getElementById('nav-settings').style.display='none';
+  showPage('dashboard');
+}
+document.getElementById('loginPass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+document.getElementById('loginUser').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('loginPass').focus(); });
+function doLogout() {
+  sessionStorage.removeItem('currentUser');
+  currentUser = null;
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+}
+
+// =====================================================================
+// ROUTER
+// =====================================================================
+const PAGE_TITLES = {
+  dashboard:'📊 儀表板總覽', upload:'📤 上傳與出單', orders:'📦 帳款管理',
+  points:'⭐ 集點管理', activities:'🎯 集點活動管理', products:'🍃 商品目錄管理',
+  customers:'👥 客戶管理', export:'📥 匯出報表', settings:'⚙️ 系統設定', print:'🖨️ 列印預覽'
+};
+const ALL_PAGES = Object.keys(PAGE_TITLES);
+
+function showPage(name) {
+  ALL_PAGES.forEach(p => {
+    const el = document.getElementById('page-'+p);
+    if(el) el.style.display = p===name?'block':'none';
+  });
+  document.getElementById('pageTitle').textContent = PAGE_TITLES[name]||name;
+  document.getElementById('mobileTitleBar').textContent = PAGE_TITLES[name]||name;
+  document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+  const nav = document.getElementById('nav-'+name);
+  if(nav) nav.classList.add('active');
+  document.querySelectorAll('.mnav-item').forEach(i=>i.classList.remove('active'));
+  const mnav = document.getElementById('mnav-'+name);
+  if(mnav) mnav.classList.add('active');
+  currentPage = name;
+  closeSidebar();
+  const actions = {
+    dashboard: renderDashboard,
+    orders: renderOrders,
+    points: renderPoints,
+    activities: renderActivities,
+    products: renderProductsCatalog,
+    customers: renderCustomers,
+    export: renderExportFilters,
+    settings: renderSettings,
+    print: rerenderPrint
+  };
+  if(actions[name]) actions[name]();
+}
+
+// =====================================================================
+// DASHBOARD
+// =====================================================================
+async function renderDashboard() {
+  await checkOverdue();
+  const orders = await idbGetAll('orders');
+  const today = new Date();
+  const thisMonth = `${today.getFullYear()}/${String(today.getMonth()+1).padStart(2,'0')}`;
+  const monthOrders = orders.filter(o=>getMonthKey(o.date)===thisMonth);
+  const totalAmt = monthOrders.reduce((s,o)=>s+parseInt(o.price||0),0);
+  const pendingAmt = orders.filter(o=>o.payStatus!=='paid').reduce((s,o)=>s+parseInt(o.price||0),0);
+  const overdueCount = orders.filter(o=>o.payStatus==='overdue').length;
+  const totalPoints = orders.reduce((s,o)=>s+(o.qrStatus==='scanned'?o.qrPoints||0:0),0);
+  document.getElementById('statMonthAmount').textContent = '$'+totalAmt.toLocaleString();
+  document.getElementById('statMonthCount').textContent = monthOrders.length;
+  document.getElementById('statPending').textContent = '$'+pendingAmt.toLocaleString();
+  document.getElementById('statOverdueTrend').textContent = overdueCount>0?`⚠ ${overdueCount} 筆逾期`:'';
+  document.getElementById('statPoints').textContent = totalPoints;
+  const recent = [...orders].sort((a,b)=>b.createdAt-a.createdAt).slice(0,8);
+  renderOrderRows(recent,'dashboardTbody','dashboardMobileCards');
+  renderAlerts(orders);
+  renderLogisticsChart(orders);
+  updateBadges(orders);
+}
+
+async function checkOverdue() {
+  const orders = await idbGetAll('orders');
+  let changed = false;
+  orders.forEach(o => {
+    if(o.payStatus!=='paid' && isOverdue(o) && o.payStatus!=='overdue') {
+      o.payStatus='overdue'; changed=true;
+    }
+  });
+  if(changed) await idbPutBulk('orders', orders.filter(o=>o.payStatus==='overdue'));
+}
+
+function updateBadges(orders) {
+  if(!orders) return;
+  const overdue = orders.filter(o=>o.payStatus==='overdue').length;
+  const pendingQR = orders.filter(o=>o.qrStatus==='locked'&&o.payStatus==='paid').length;
+  const ob = document.getElementById('overdueCount');
+  const pb = document.getElementById('pendingQRCount');
+  if(ob){ob.textContent=overdue;ob.style.display=overdue>0?'inline':'none';}
+  if(pb){pb.textContent=pendingQR;pb.style.display=pendingQR>0?'inline':'none';}
+}
+
+async function renderAlerts(orders) {
+  const s = getSettings();
+  const overdueOrders = orders.filter(o=>o.payStatus==='overdue');
+  const pendingQR = orders.filter(o=>o.qrStatus==='locked'&&o.payStatus==='paid');
+  const customers = await idbGetAll('customers');
+  const redeemable = customers.filter(c=>(c.totalPoints-(c.redeemedPoints||0))>=s.pointsGoal && !c.isHistory);
+  let html = '';
+  if(overdueOrders.length>0) html+=`<div class="alert-box alert-danger"><span>🔴</span><div><strong>${overdueOrders.length} 筆逾期未收款</strong><br><span style="font-size:11px;">$${overdueOrders.reduce((s,o)=>s+parseInt(o.price||0),0).toLocaleString()}</span></div></div>`;
+  if(pendingQR.length>0) html+=`<div class="alert-box alert-info"><span>⭐</span><div><strong>${pendingQR.length} 個QR等待啟用</strong><br><span style="font-size:11px;">已收款但未啟用</span></div></div>`;
+  if(redeemable.length>0) html+=`<div class="alert-box alert-purple"><span>🎁</span><div><strong>${redeemable.length} 位客戶可兌換</strong><br><span style="font-size:11px;">累計達 ${s.pointsGoal} 點</span></div></div>`;
+  if(!html) html='<div style="font-size:12px;color:#94a3b8;text-align:center;padding:8px;">✨ 目前無待處理事項</div>';
+  document.getElementById('alertsBody').innerHTML = html;
+}
+
+function renderLogisticsChart(orders) {
+  const counts = {711:0,family:0,delivery:0,other:0};
+  orders.forEach(o=>counts[getCustomerType(o).id]++);
+  const total = orders.length||1;
+  const items=[{label:'7-11',count:counts['711'],color:'var(--success)'},{label:'全家',count:counts['family'],color:'var(--primary)'},{label:'宅配',count:counts['delivery'],color:'var(--purple)'},{label:'其他',count:counts['other'],color:'#94a3b8'}];
+  let html='';
+  items.forEach(item=>{
+    const pct=Math.round(item.count/total*100);
+    html+=`<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>${item.label}</span><span style="font-weight:700;">${item.count}筆 (${pct}%)</span></div><div class="progress-bg"><div class="progress-fill" style="width:${pct}%;background:${item.color};"></div></div></div>`;
+  });
+  document.getElementById('logisticsChart').innerHTML = html||'<div style="color:#94a3b8;font-size:12px;text-align:center;">尚無資料</div>';
+}
+
+// =====================================================================
+// ORDER RENDERING
+// =====================================================================
+function renderOrderRows(orders, tbodyId, mobileId) {
+  const tbody = document.getElementById(tbodyId);
+  if(tbody) {
+    if(!orders.length){tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:40px;color:#94a3b8;">尚無訂單資料</td></tr>`;return;}
+    tbody.innerHTML = orders.map(o=>{
+      const ct=getCustomerType(o);
+      const pts=o.qrPoints||calcPoints(o.price||0);
+      let payBadge=o.payStatus==='paid'?`<span class="ps-paid">✅ 已收款</span>`:o.payStatus==='overdue'?`<span class="ps-overdue">🔴 逾期</span>`:`<span class="ps-pending">⏳ 待收款</span>`;
+      let qrHtml='';
+      if(o.qrStatus==='scanned') qrHtml=`<div style="font-size:10px;font-weight:700;color:var(--success);">+${pts}點 已掃</div>`;
+      else if(o.qrStatus==='active') qrHtml=`<div class="qr-wrap qr-active" style="width:44px;height:44px;"><img src="${getQRImageURL(getRedeemURL(o.qrToken),60)}" style="width:40px;height:40px;" loading="lazy"></div><div style="font-size:9px;color:var(--success);font-weight:700;">+${pts}點</div>`;
+      else qrHtml=`<div class="qr-wrap qr-locked" style="width:44px;height:44px;"><div class="qr-lock-overlay">🔒</div></div><div style="font-size:9px;color:#94a3b8;">未啟用</div>`;
+      return `<tr>
+        <td><input type="checkbox" class="order-checkbox" data-id="${o.id}"></td>
+        <td style="font-size:11px;color:#64748b;white-space:nowrap;">${o.date}</td>
+        <td><div style="font-weight:700;font-size:12px;">${(o.recipient||'-').split(' ')[0]}</div><div style="font-size:10px;color:#94a3b8;font-family:monospace;">${((o.recipient||'').match(/09\d{8}/)||[''])[0]}</div></td>
+        <td><span class="badge ${ct.badge}">${ct.name}</span></td>
+        <td style="font-size:11px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${o.product}">${o.product||'-'}</td>
+        <td style="font-weight:800;color:var(--danger);">$${parseInt(o.price||0).toLocaleString()}</td>
+        <td>${payBadge}</td>
+        <td><div style="display:flex;flex-direction:column;align-items:center;gap:2px;">${qrHtml}</div></td>
+        <td><div style="display:flex;gap:3px;">
+          ${o.payStatus!=='paid'?`<button class="act-btn act-pay" title="收款" onclick="markPaid('${o.id}')">💰</button>`:''}
+          ${o.qrStatus==='locked'&&o.payStatus==='paid'?`<button class="act-btn" style="background:var(--success-light);color:var(--success);" title="啟用QR" onclick="activateQR('${o.id}')">⭐</button>`:''}
+          <button class="act-btn act-print" title="列印" onclick="printSingle('${o.id}')">🖨</button>
+          <button class="act-btn act-edit" title="編輯" onclick="openEdit('${o.id}')">✏️</button>
+          ${currentUser&&currentUser.role==='superadmin'?`<button class="act-btn act-del" title="刪除" onclick="deleteOrder('${o.id}')">🗑</button>`:''}
+        </div></td>
+      </tr>`;
+    }).join('');
+    document.querySelectorAll(`#${tbodyId} .order-checkbox`).forEach(cb=>cb.addEventListener('change',updateSelectedCount));
+  }
+  const mobileDiv = document.getElementById(mobileId);
+  if(mobileDiv) {
+    if(!orders.length){mobileDiv.innerHTML='<div class="empty-state"><div class="ei">📦</div><div class="et">尚無訂單</div></div>';return;}
+    mobileDiv.innerHTML = orders.map(o=>{
+      const ct=getCustomerType(o);
+      const pts=o.qrPoints||calcPoints(o.price||0);
+      let payBadge=o.payStatus==='paid'?`<span class="ps-paid">✅ 已收款</span>`:o.payStatus==='overdue'?`<span class="ps-overdue">🔴 逾期</span>`:`<span class="ps-pending">⏳ 待收款</span>`;
+      return `<div class="order-card" style="${o.payStatus==='overdue'?'border-color:#fca5a5;':''}">
+        <div class="order-card-head"><div><div style="font-size:14px;font-weight:800;">${(o.recipient||'-').split(' ')[0]}</div><div style="font-size:10px;color:#64748b;">${o.date} · <span class="badge ${ct.badge}" style="font-size:9px;">${ct.name}</span></div></div>${payBadge}</div>
+        <div class="order-card-body">
+          <div class="ocf"><label>商品</label><span>${o.product||'-'}</span></div>
+          <div class="ocf"><label>金額</label><span style="color:var(--danger);">$${parseInt(o.price||0).toLocaleString()}</span></div>
+          <div class="ocf"><label>集點</label><span>${o.qrStatus==='scanned'?`+${pts}點已掃`:o.qrStatus==='active'?`+${pts}點(待掃)`:'🔒未啟用'}</span></div>
+          <div class="ocf"><label>電話</label><span>${((o.recipient||'').match(/09\d{8}/)||['未提供'])[0]}</span></div>
+        </div>
+        <div class="order-card-foot">
+          <div style="display:flex;gap:5px;">
+            ${o.payStatus!=='paid'?`<button class="btn btn-xs btn-success" onclick="markPaid('${o.id}')">💰 收款</button>`:''}
+            ${o.qrStatus==='locked'&&o.payStatus==='paid'?`<button class="btn btn-xs btn-primary" onclick="activateQR('${o.id}')">⭐ QR</button>`:''}
+            <button class="btn btn-xs btn-outline" onclick="printSingle('${o.id}')">🖨</button>
+          </div>
+          <span style="font-size:10px;color:#94a3b8;font-family:monospace;">${o.trackingNo!=='(未提供)'?o.trackingNo.substring(0,12):''}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+async function renderOrders() {
+  await checkOverdue();
+  let orders = await idbGetAll('orders');
+  // Update month filter
+  const months=[...new Set(orders.map(o=>getMonthKey(o.date)).filter(m=>m!=='未分類'))].sort().reverse();
+  const mf=document.getElementById('ordMonthFilter');
+  const cur=mf.value;
+  mf.innerHTML='<option value="">全部月份</option>'+months.map(m=>`<option value="${m}"${m===cur?' selected':''}>${m}</option>`).join('');
+  // Apply filters
+  const mval=mf.value, tval=document.getElementById('ordTypeFilter').value;
+  const pval=document.getElementById('ordPayFilter').value, sval=(document.getElementById('ordSearch').value||'').toLowerCase();
+  orders=orders.filter(o=>{
+    const ct=getCustomerType(o);
+    return (!mval||getMonthKey(o.date)===mval)&&(!tval||ct.id===tval)&&(!pval||o.payStatus===pval)&&
+      (!sval||(o.recipient||'').toLowerCase().includes(sval)||(o.product||'').toLowerCase().includes(sval)||(o.trackingNo||'').toLowerCase().includes(sval));
+  }).sort((a,b)=>b.createdAt-a.createdAt);
+  // Summary
+  const totalAmt=orders.reduce((s,o)=>s+parseInt(o.price||0),0);
+  const paidAmt=orders.filter(o=>o.payStatus==='paid').reduce((s,o)=>s+parseInt(o.price||0),0);
+  const pendAmt=orders.filter(o=>o.payStatus!=='paid').reduce((s,o)=>s+parseInt(o.price||0),0);
+  document.getElementById('ordSummaryBar').innerHTML=`<span>共 <strong>${orders.length}</strong> 筆</span><span>合計：<strong style="color:var(--danger);">$${totalAmt.toLocaleString()}</strong></span><span>已收：<strong style="color:var(--success);">$${paidAmt.toLocaleString()}</strong></span><span>待收：<strong style="color:var(--warning);">$${pendAmt.toLocaleString()}</strong></span>`;
+  const ov=orders.filter(o=>o.payStatus==='overdue');
+  const ob=document.getElementById('ordOverdueBanner');
+  if(ov.length>0){ob.style.display='flex';ob.innerHTML=`<span>🔴</span><strong style="flex:1;">${ov.length} 筆逾期，合計 $${ov.reduce((s,o)=>s+parseInt(o.price||0),0).toLocaleString()}</strong>`;}else ob.style.display='none';
+  renderOrderRows(orders,'ordersTbody','ordersMobileCards');
+  updateBadges(orders);
+}
+
+function updateSelectedCount() {
+  document.getElementById('selectedCount').textContent=`已選：${document.querySelectorAll('.order-checkbox:checked').length}筆`;
+}
+function toggleSelectAll(cb) {
+  document.querySelectorAll('.order-checkbox').forEach(c=>c.checked=cb.checked);
+  updateSelectedCount();
+}
+function getSelectedIds() {
+  return [...document.querySelectorAll('.order-checkbox:checked')].map(c=>c.getAttribute('data-id'));
+}
+
+// =====================================================================
+// ORDER ACTIONS
+// =====================================================================
+async function markPaid(id) {
+  const orders = await idbGetAll('orders');
+  const o = orders.find(x=>x.id===id);
+  if(!o) return;
+  o.payStatus='paid'; o.paidAt=Date.now();
+  const ct=getCustomerType(o);
+  if(ct.id==='711'||ct.id==='family') { o.qrStatus='active'; o.qrActivatedAt=Date.now(); }
+  await idbPut('orders', o);
+  showToast(`✅ 已收款${(ct.id==='711'||ct.id==='family')?'，QR已啟用':'，請手動啟用QR'}`);
+  if(currentPage==='dashboard') renderDashboard(); else renderOrders();
+}
+
+async function activateQR(id) {
+  const orders = await idbGetAll('orders');
+  const o = orders.find(x=>x.id===id);
+  if(!o) return;
+  if(o.payStatus!=='paid'){showToast('請先標記收款',true);return;}
+  o.qrStatus='active'; o.qrActivatedAt=Date.now();
+  await idbPut('orders', o);
+  showToast(`⭐ QR已啟用！+${o.qrPoints||calcPoints(o.price)}點`);
+  if(currentPage==='dashboard') renderDashboard();
+  else if(currentPage==='orders') renderOrders();
+  else renderPoints();
+  const allOrders = await idbGetAll('orders');
+  updateBadges(allOrders);
+}
+
+async function deleteOrder(id) {
+  if(!confirm('確定刪除此訂單？')) return;
+  await idbDelete('orders', id);
+  showToast('已刪除');
+  if(currentPage==='dashboard') renderDashboard(); else renderOrders();
+}
+
+async function batchMarkPaid() {
+  const ids=getSelectedIds();
+  if(!ids.length){showToast('請先勾選',true);return;}
+  const orders=await idbGetAll('orders');
+  let count=0;
+  for(const o of orders){
+    if(ids.includes(o.id)&&o.payStatus!=='paid'){
+      o.payStatus='paid';o.paidAt=Date.now();
+      const ct=getCustomerType(o);
+      if(ct.id==='711'||ct.id==='family'){o.qrStatus='active';o.qrActivatedAt=Date.now();}
+      await idbPut('orders',o); count++;
+    }
+  }
+  showToast(`✅ 已標記 ${count} 筆收款`);
+  renderOrders();
+}
+
+async function batchActivateQR() {
+  const ids=getSelectedIds();
+  if(!ids.length){showToast('請先勾選',true);return;}
+  const orders=await idbGetAll('orders');
+  let count=0;
+  for(const o of orders){
+    if(ids.includes(o.id)&&o.qrStatus==='locked'&&o.payStatus==='paid'){
+      o.qrStatus='active';o.qrActivatedAt=Date.now();
+      await idbPut('orders',o); count++;
+    }
+  }
+  showToast(`⭐ 已啟用 ${count} 個QR`);
+  renderOrders();
+}
+
+async function batchActivateQRAll() {
+  const orders=await idbGetAll('orders');
+  let count=0;
+  for(const o of orders){
+    const ct=getCustomerType(o);
+    if(o.qrStatus==='locked'&&o.payStatus==='paid'&&ct.id==='delivery'){
+      o.qrStatus='active';o.qrActivatedAt=Date.now();
+      await idbPut('orders',o); count++;
+    }
+  }
+  showToast(count>0?`⭐ 批次啟用 ${count} 個宅配QR`:'無可啟用項目');
+  renderPoints();
+  const all=await idbGetAll('orders');
+  updateBadges(all);
+}
+
+function openEdit(id) {
+  idbGetAll('orders').then(orders=>{
+    const o=orders.find(x=>x.id===id);
+    if(!o) return;
+    document.getElementById('editOrderId').value=o.id;
+    document.getElementById('editDate').value=o.date||'';
+    document.getElementById('editRecipient').value=o.recipient||'';
+    document.getElementById('editTrackingNo').value=o.trackingNo||'';
+    document.getElementById('editStore').value=o.store||'';
+    document.getElementById('editProduct').value=o.product||'';
+    document.getElementById('editPrice').value=o.price||'';
+    document.getElementById('editNote').value=o.note||'';
+    document.getElementById('editPayStatus').value=o.payStatus||'pending';
+    document.getElementById('editOrderModal').classList.add('show');
+  });
+}
+
+async function saveEditOrder() {
+  const id=document.getElementById('editOrderId').value;
+  const orders=await idbGetAll('orders');
+  const o=orders.find(x=>x.id===id);
+  if(!o) return;
+  o.date=document.getElementById('editDate').value;
+  o.recipient=document.getElementById('editRecipient').value;
+  o.trackingNo=document.getElementById('editTrackingNo').value;
+  o.store=document.getElementById('editStore').value;
+  o.product=document.getElementById('editProduct').value;
+  o.price=document.getElementById('editPrice').value;
+  o.note=document.getElementById('editNote').value;
+  o.payStatus=document.getElementById('editPayStatus').value;
+  o.qrPoints=calcPoints(o.price);
+  o.qrToken=genToken(o.id,o.qrPoints);
+  await idbPut('orders',o);
+  closeModal('editOrderModal');
+  showToast('訂單已更新');
+  if(currentPage==='dashboard') renderDashboard(); else renderOrders();
+}
+
+function printSingle(id) {
+  idbGetAll('orders').then(orders=>{
+    const o=orders.find(x=>x.id===id);
+    if(!o) return;
+    printData=[o];
+    showPage('print');
+  });
+}
+
+// =====================================================================
+// POINTS
+// =====================================================================
+async function renderPoints() {
+  const orders=await idbGetAll('orders');
+  const s=getSettings();
+  const pendingPaid=orders.filter(o=>o.qrStatus==='locked'&&o.payStatus==='paid').length;
+  const customers=await idbGetAll('customers');
+  const redeemable=customers.filter(c=>!c.isHistory&&(c.totalPoints-(c.redeemedPoints||0))>=s.pointsGoal).length;
+  document.getElementById('ptsTotalIssued').textContent=orders.reduce((s,o)=>s+(o.qrStatus==='scanned'?o.qrPoints||0:0),0);
+  document.getElementById('ptsPendingQR').textContent=pendingPaid;
+  document.getElementById('ptsRedeemable').textContent=redeemable;
+  document.getElementById('pointsRuleBar').innerHTML=`
+    <div style="background:#fff;border:2px solid var(--primary);border-radius:8px;padding:8px 12px;font-size:12px;"><strong style="color:var(--primary);">每 $100 = ${s.pointsRate} 點 · ${s.pointsGoal}點換$${s.rewardValue}</strong></div>
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:12px;">超商：<strong style="color:var(--success);">收款後自動啟用</strong></div>
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:12px;">宅配：<strong style="color:var(--warning);">手動/批次啟用</strong></div>`;
+  const sorted=[...orders].sort((a,b)=>b.createdAt-a.createdAt);
+  const tbody=document.getElementById('pointsTbody');
+  if(!sorted.length){tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:40px;color:#94a3b8;">尚無資料</td></tr>`;return;}
+  tbody.innerHTML=sorted.map(o=>{
+    const pts=o.qrPoints||calcPoints(o.price||0);
+    let qrBadge=o.qrStatus==='scanned'?`<span class="badge badge-green">✅ 已掃描</span>`:o.qrStatus==='active'?`<span class="badge badge-blue">📱 待掃</span>`:`<span class="badge badge-red">🔒 ${o.payStatus==='paid'?'未啟用':'待收款'}</span>`;
+    return `<tr>
+      <td><div style="font-weight:700;">${(o.recipient||'-').split(' ')[0]}</div><div style="font-size:10px;color:#94a3b8;font-family:monospace;">${((o.recipient||'').match(/09\d{8}/)||[''])[0]}</div></td>
+      <td style="font-weight:800;color:var(--danger);">$${parseInt(o.price||0).toLocaleString()}</td>
+      <td><span style="background:${o.qrStatus==='locked'?'#f1f5f9':'var(--primary-light)'};color:${o.qrStatus==='locked'?'#94a3b8':'var(--primary)'};font-weight:800;padding:2px 8px;border-radius:5px;">+${pts}點</span></td>
+      <td>${qrBadge}</td>
+      <td style="font-size:11px;color:#64748b;">${o.qrActivatedAt?new Date(o.qrActivatedAt).toLocaleDateString('zh-TW'):'-'}</td>
+      <td style="display:flex;gap:4px;">
+        ${o.qrStatus==='locked'&&o.payStatus==='paid'?`<button class="btn btn-xs btn-success" onclick="activateQR('${o.id}')">啟用QR</button>`:''}
+        ${o.payStatus!=='paid'?`<button class="btn btn-xs btn-primary" onclick="markPaid('${o.id}')">收款</button>`:''}
+      </td>
+    </tr>`;
+  }).join('');
+  updateBadges(orders);
+}
+
+// =====================================================================
+// PRODUCT CATALOG MANAGEMENT
+// =====================================================================
+async function renderProductsCatalog() {
+  const products=await idbGetAll('products');
+  const orders=await idbGetAll('orders');
+  // Compute stats per product
+  const stats = computeProductStats(products, orders);
+  // Stat cards
+  const totalSKU=products.length;
+  const totalRevenue=orders.reduce((s,o)=>s+parseInt(o.price||0),0);
+  const topProduct=stats.length>0?stats.sort((a,b)=>b.qty-a.qty)[0]:null;
+  document.getElementById('prodStatCards').innerHTML=`
+    <div class="stat-card"><div class="stat-icon" style="background:var(--success-light);">🍃</div><div class="stat-value">${totalSKU}</div><div class="stat-label">商品種類</div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:var(--primary-light);">📦</div><div class="stat-value">${orders.length}</div><div class="stat-label">總出貨筆數</div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:var(--danger-light);">💰</div><div class="stat-value">$${totalRevenue.toLocaleString()}</div><div class="stat-label">累計總營收</div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:var(--warning-light);">🏆</div><div class="stat-value" style="font-size:14px;">${topProduct?topProduct.name.substring(0,8):'無資料'}</div><div class="stat-label">最暢銷商品</div></div>`;
+  // Catalog table
+  const tbody=document.getElementById('productsTbody');
+  if(!products.length){tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:40px;color:#94a3b8;">尚無商品，請點「自動從訂單抓取」或手動新增</td></tr>`;return;}
+  const statsMap={};
+  stats.forEach(s=>statsMap[s.id]=s);
+  tbody.innerHTML=products.sort((a,b)=>(statsMap[b.id]?.qty||0)-(statsMap[a.id]?.qty||0)).map((p,i)=>{
+    const ps=statsMap[p.id]||{qty:0,revenue:0};
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">${p.emoji||'📦'}</span><div><div style="font-weight:700;">${p.name}</div><div style="font-size:10px;color:#64748b;">${p.note||''}</div></div></div></td>
+      <td style="font-size:11px;color:#64748b;">${p.spec||'-'}</td>
+      <td style="font-weight:800;color:var(--danger);">$${parseInt(p.price||0).toLocaleString()}</td>
+      <td><span style="background:var(--primary-light);color:var(--primary);font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px;">+${calcPoints(p.price)}點</span></td>
+      <td style="font-weight:700;">${ps.qty} 筆</td>
+      <td style="font-weight:700;color:var(--success);">$${ps.revenue.toLocaleString()}</td>
+      <td><div style="display:flex;gap:4px;"><button class="btn btn-xs btn-outline" onclick="editProduct('${p.id}')">編輯</button><button class="act-btn act-del" style="border:none;border-radius:5px;" onclick="deleteProduct('${p.id}')">🗑</button></div></td>
+    </tr>`;
+  }).join('');
+  // Update trend select
+  const ts=document.getElementById('trendProductSelect');
+  ts.innerHTML='<option value="">全部商品</option>'+products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+}
+
+function computeProductStats(products, orders) {
+  const map={};
+  products.forEach(p=>{map[p.id]={id:p.id,name:p.name,qty:0,revenue:0};});
+  // Also gather unmatched products from orders
+  orders.forEach(o=>{
+    const prod=(o.product||'').toLowerCase();
+    let matched=false;
+    products.forEach(p=>{
+      if(prod.includes(p.name.toLowerCase())||p.name.toLowerCase().includes(prod.split(/[、,]/)[0].toLowerCase())){
+        map[p.id].qty++;
+        map[p.id].revenue+=parseInt(o.price||0);
+        matched=true;
+      }
+    });
+  });
+  return Object.values(map);
+}
+
+function showProdTab(name) {
+  ['catalog','rank','revenue','trend'].forEach(t=>{
+    document.getElementById('prodContent-'+t).style.display=t===name?'block':'none';
+    document.getElementById('prodTab-'+t).classList.toggle('active',t===name);
+  });
+  if(name==='rank') renderRankByQty();
+  if(name==='revenue') renderRankByRevenue();
+  if(name==='trend') renderTrend();
+}
+
+async function renderRankByQty() {
+  const products=await idbGetAll('products');
+  const orders=await idbGetAll('orders');
+  const stats=computeProductStats(products,orders).sort((a,b)=>b.qty-a.qty);
+  const div=document.getElementById('rankByQtyContent');
+  if(!stats.length){div.innerHTML='<div class="empty-state"><div class="ei">📊</div><div class="et">尚無資料</div></div>';return;}
+  const maxQty=stats[0].qty||1;
+  div.innerHTML=stats.map((s,i)=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9;">
+      <div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;${i<3?`background:${['#fef9c3','#f1f5f9','#fef3c7'][i]};color:${['#854d0e','#475569','#92400e'][i]};`:'background:#f8fafc;color:#94a3b8;'}">${i+1}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;">${s.name}</div>
+        <div class="progress-bg"><div class="progress-fill" style="width:${Math.round(s.qty/maxQty*100)}%;background:var(--primary);"></div></div>
+      </div>
+      <div style="text-align:right;"><div style="font-size:18px;font-weight:900;color:var(--primary);">${s.qty}</div><div style="font-size:10px;color:#64748b;">筆</div></div>
+    </div>`).join('');
+}
+
+async function renderRankByRevenue() {
+  const products=await idbGetAll('products');
+  const orders=await idbGetAll('orders');
+  const stats=computeProductStats(products,orders).sort((a,b)=>b.revenue-a.revenue);
+  const div=document.getElementById('rankByRevenueContent');
+  if(!stats.length){div.innerHTML='<div class="empty-state"><div class="ei">💰</div><div class="et">尚無資料</div></div>';return;}
+  const maxRev=stats[0].revenue||1;
+  div.innerHTML=stats.map((s,i)=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9;">
+      <div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;${i<3?`background:${['#fef9c3','#f1f5f9','#fef3c7'][i]};color:${['#854d0e','#475569','#92400e'][i]};`:'background:#f8fafc;color:#94a3b8;'}">${i+1}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;">${s.name}</div>
+        <div class="progress-bg"><div class="progress-fill" style="width:${Math.round(s.revenue/maxRev*100)}%;background:var(--success);"></div></div>
+      </div>
+      <div style="text-align:right;"><div style="font-size:18px;font-weight:900;color:var(--success);">$${s.revenue.toLocaleString()}</div><div style="font-size:10px;color:#64748b;">${s.qty}筆</div></div>
+    </div>`).join('');
+}
+
+async function renderTrend() {
+  const products=await idbGetAll('products');
+  const orders=await idbGetAll('orders');
+  const selectedId=document.getElementById('trendProductSelect').value;
+  const months=[...new Set(orders.map(o=>getMonthKey(o.date)).filter(m=>m!=='未分類'))].sort();
+  const div=document.getElementById('trendContent');
+  if(!months.length){div.innerHTML='<div class="empty-state"><div class="ei">📈</div><div class="et">尚無資料</div></div>';return;}
+  // Build data
+  const monthData={};
+  months.forEach(m=>{monthData[m]={qty:0,revenue:0};});
+  orders.forEach(o=>{
+    const m=getMonthKey(o.date);
+    if(!monthData[m]) return;
+    if(selectedId){
+      const p=products.find(x=>x.id===selectedId);
+      if(!p) return;
+      const prod=(o.product||'').toLowerCase();
+      if(!prod.includes(p.name.toLowerCase())) return;
+    }
+    monthData[m].qty++;
+    monthData[m].revenue+=parseInt(o.price||0);
+  });
+  const maxQty=Math.max(...Object.values(monthData).map(x=>x.qty),1);
+  const bars=months.map(m=>{
+    const d=monthData[m];
+    const h=Math.round(d.qty/maxQty*90);
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+      <div style="font-size:10px;font-weight:700;color:var(--primary);">${d.qty}</div>
+      <div style="width:100%;background:var(--primary);border-radius:4px 4px 0 0;height:${h}px;min-height:2px;transition:all .3s;"></div>
+      <div style="font-size:9px;color:#64748b;writing-mode:vertical-rl;text-orientation:mixed;">${m.replace('2026/','').replace('2025/','')}</div>
+    </div>`;
+  }).join('');
+  div.innerHTML=`<div style="display:flex;align-items:flex-end;gap:6px;height:130px;padding-bottom:4px;">${bars}</div>
+    <div style="margin-top:16px;display:flex;gap:20px;font-size:12px;flex-wrap:wrap;">
+      ${months.slice(-3).map(m=>`<div><span style="color:#64748b;">${m}：</span><strong>${monthData[m].qty}筆 / $${monthData[m].revenue.toLocaleString()}</strong></div>`).join('')}
+    </div>`;
+}
+
+async function autoExtractProducts() {
+  const orders=await idbGetAll('orders');
+  const existing=await idbGetAll('products');
+  const existingNames=new Set(existing.map(p=>p.name.toLowerCase()));
+  const newProds=[];
+  const productMap={};
+  orders.forEach(o=>{
+    const parts=(o.product||'').split(/[、,，\/]/);
+    parts.forEach(part=>{
+      const name=part.trim();
+      if(!name||name.length<2) return;
+      const key=name.toLowerCase();
+      if(!existingNames.has(key)&&!productMap[key]){
+        productMap[key]=name;
+        newProds.push({id:'p_'+Date.now()+'_'+Math.random().toString(36).substring(2,5),name,spec:'',price:parseInt(o.price||0)||0,emoji:'📦',note:'自動擷取'});
+      }
+    });
+  });
+  if(!newProds.length){showToast('沒有新商品可提取');return;}
+  await idbPutBulk('products',[...existing,...newProds]);
+  showToast(`✅ 已自動新增 ${newProds.length} 個商品`);
+  renderProductsCatalog();
+}
+
+function openAddProduct() {
+  document.getElementById('editProductId').value='';
+  document.getElementById('addProdName').value='';
+  document.getElementById('addProdSpec').value='';
+  document.getElementById('addProdPrice').value='';
+  document.getElementById('addProdEmoji').value='';
+  document.getElementById('addProdNote').value='';
+  document.getElementById('addProdPoints').textContent='0 點';
+  document.getElementById('addProductTitle').textContent='➕ 新增商品';
+  document.getElementById('addProductModal').classList.add('show');
+}
+
+async function editProduct(id) {
+  const p=(await idbGetAll('products')).find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('editProductId').value=p.id;
+  document.getElementById('addProdName').value=p.name||'';
+  document.getElementById('addProdSpec').value=p.spec||'';
+  document.getElementById('addProdPrice').value=p.price||'';
+  document.getElementById('addProdEmoji').value=p.emoji||'';
+  document.getElementById('addProdNote').value=p.note||'';
+  calcProductPoints();
+  document.getElementById('addProductTitle').textContent='✏️ 編輯商品';
+  document.getElementById('addProductModal').classList.add('show');
+}
+
+function calcProductPoints() {
+  const v=document.getElementById('addProdPrice').value;
+  document.getElementById('addProdPoints').textContent=`${v?calcPoints(v):0} 點`;
+}
+
+async function saveProduct() {
+  const name=document.getElementById('addProdName').value.trim();
+  const price=parseInt(document.getElementById('addProdPrice').value)||0;
+  if(!name){showToast('請填入商品名稱',true);return;}
+  const products=await idbGetAll('products');
+  const eid=document.getElementById('editProductId').value;
+  if(eid){
+    const p=products.find(x=>x.id===eid);
+    if(p){p.name=name;p.spec=document.getElementById('addProdSpec').value;p.price=price;p.emoji=document.getElementById('addProdEmoji').value||'📦';p.note=document.getElementById('addProdNote').value;}
+    await idbPut('products',p);
+  } else {
+    const np={id:'p_'+Date.now(),name,spec:document.getElementById('addProdSpec').value,price,emoji:document.getElementById('addProdEmoji').value||'📦',note:document.getElementById('addProdNote').value};
+    await idbPut('products',np);
+  }
+  closeModal('addProductModal');
+  showToast('商品已儲存');
+  renderProductsCatalog();
+}
+
+async function deleteProduct(id) {
+  if(!confirm('確定刪除此商品？')) return;
+  await idbDelete('products',id);
+  showToast('已刪除');
+  renderProductsCatalog();
+}
+
+// =====================================================================
+// CUSTOMER MANAGEMENT (IndexedDB, supports 50k+)
+// =====================================================================
+async function rebuildCustomers(orders) {
+  const existing=await idbGetAll('customers');
+  const existingMap={};
+  existing.forEach(c=>{existingMap[c.phone]=c;});
+  orders.forEach(o=>{
+    const phone=((o.recipient||'').match(/09\d{8}/)||[])[0];
+    if(!phone) return;
+    const name=(o.recipient||'').replace(phone,'').trim()||'未知';
+    if(!existingMap[phone]){
+      existingMap[phone]={phone,name:name.includes('*')?name:name,totalOrders:0,totalSpent:0,totalPoints:0,redeemedPoints:0,isVip:false,isBlacklist:false,note:'',lastOrderDate:'',isHistory:false};
+    }
+    const c=existingMap[phone];
+    if(name&&!name.includes('*')&&name.length>0) c.name=name;
+    c.totalOrders=0; c.totalSpent=0; c.totalPoints=0; // Will recalculate
+  });
+  // Recalculate from all orders
+  const tempMap={};
+  orders.forEach(o=>{
+    const phone=((o.recipient||'').match(/09\d{8}/)||[])[0];
+    if(!phone) return;
+    if(!tempMap[phone]) tempMap[phone]={totalOrders:0,totalSpent:0,totalPoints:0,lastOrderDate:''};
+    tempMap[phone].totalOrders++;
+    tempMap[phone].totalSpent+=parseInt(o.price||0);
+    if(o.qrStatus==='scanned') tempMap[phone].totalPoints+=o.qrPoints||0;
+    if(!tempMap[phone].lastOrderDate||o.date>tempMap[phone].lastOrderDate) tempMap[phone].lastOrderDate=o.date;
+  });
+  Object.keys(tempMap).forEach(phone=>{
+    if(existingMap[phone]&&!existingMap[phone].isHistory){
+      existingMap[phone].totalOrders=tempMap[phone].totalOrders;
+      existingMap[phone].totalSpent=tempMap[phone].totalSpent;
+      existingMap[phone].totalPoints=tempMap[phone].totalPoints;
+      existingMap[phone].lastOrderDate=tempMap[phone].lastOrderDate;
+    }
+  });
+  await idbPutBulk('customers',Object.values(existingMap));
+}
+
+async function renderCustomers() {
+  let customers=await idbGetAll('customers');
+  const s=getSettings();
+  const q=(document.getElementById('custSearch').value||'').toLowerCase();
+  const filter=document.getElementById('custFilter').value;
+  customers=customers.filter(c=>{
+    if(q&&!(c.name||'').toLowerCase().includes(q)&&!(c.phone||'').includes(q)) return false;
+    if(filter==='vip'&&!c.isVip) return false;
+    if(filter==='blacklist'&&!c.isBlacklist) return false;
+    if(filter==='redeemable'&&!(!c.isHistory&&(c.totalPoints-(c.redeemedPoints||0))>=s.pointsGoal)) return false;
+    if(filter==='history'&&!c.isHistory) return false;
+    return true;
+  }).sort((a,b)=>b.totalSpent-a.totalSpent);
+  document.getElementById('custListTitle').textContent=`客戶列表（共 ${customers.length} 人）`;
+  const start=custPage*CUST_PER_PAGE, end=start+CUST_PER_PAGE;
+  const page=customers.slice(start,end);
+  const div=document.getElementById('customersList');
+  if(!page.length){div.innerHTML='<div class="empty-state"><div class="ei">👥</div><div class="et">尚無客戶資料</div><div class="es">上傳訂單後自動建立，或從「匯入舊資料」頁面匯入</div></div>';document.getElementById('custPager').innerHTML='';return;}
+  const avail=c=>c.totalPoints-(c.redeemedPoints||0);
+  div.innerHTML=page.map(c=>{
+    const ap=avail(c);
+    const pct=Math.min(100,Math.round(ap/s.pointsGoal*100));
+    const canRedeem=!c.isHistory&&ap>=s.pointsGoal;
+    return `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f1f5f9;cursor:pointer;transition:all .15s;" onclick="showCustomerDetail('${c.phone}')" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+      <div style="width:38px;height:38px;border-radius:50%;background:${c.isVip?'#fef9c3':c.isHistory?'#f1f5f9':'var(--primary-light)'};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;flex-shrink:0;color:${c.isVip?'#854d0e':c.isHistory?'#64748b':'var(--primary)'};">${(c.name||'?').charAt(0)}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:700;">${c.name||'-'}${c.isVip?' ⭐':''}${c.isBlacklist?' ⚠️':''}${c.isHistory?' <span style="font-size:10px;background:#f1f5f9;padding:1px 5px;border-radius:4px;color:#64748b;">歷史</span>':''}</div>
+        <div style="font-size:11px;color:#64748b;">${c.phone} · ${c.isHistory?'歷史客戶':`${c.totalOrders}次 · $${c.totalSpent.toLocaleString()}`}</div>
+      </div>
+      ${!c.isHistory?`<div style="text-align:right;flex-shrink:0;">
+        <div style="font-size:18px;font-weight:900;color:${canRedeem?'var(--purple)':'var(--primary)'};">${ap}點</div>
+        <div style="width:80px;margin-top:3px;"><div class="progress-bg"><div class="progress-fill" style="width:${pct}%;background:${canRedeem?'var(--purple)':'var(--primary)'};"></div></div></div>
+        ${canRedeem?`<div style="font-size:10px;color:var(--purple);font-weight:700;">🎁 可兌換</div>`:`<div style="font-size:10px;color:#94a3b8;">差${s.pointsGoal-ap}點</div>`}
+      </div>`:`<div style="font-size:11px;color:#94a3b8;">歷史記錄</div>`}
+    </div>`;
+  }).join('');
+  // Pagination
+  const totalPages=Math.ceil(customers.length/CUST_PER_PAGE);
+  if(totalPages>1){
+    document.getElementById('custPager').innerHTML=`<div style="display:flex;gap:6px;align-items:center;">
+      ${custPage>0?`<button class="btn btn-xs btn-outline" onclick="custPage--;renderCustomers()">← 上一頁</button>`:''}
+      <span>${custPage+1} / ${totalPages} 頁（共 ${customers.length} 人）</span>
+      ${custPage<totalPages-1?`<button class="btn btn-xs btn-outline" onclick="custPage++;renderCustomers()">下一頁 →</button>`:''}
+    </div>`;
+  } else { document.getElementById('custPager').innerHTML=''; }
+}
+
+async function showCustTab(name) {
+  ['list','rank','import'].forEach(t=>{
+    document.getElementById('custContent-'+t).style.display=t===name?'block':'none';
+    document.getElementById('custTab-'+t).classList.toggle('active',t===name);
+  });
+  if(name==='rank') renderCustRank();
+}
+
+async function renderCustRank() {
+  const customers=(await idbGetAll('customers')).filter(c=>!c.isHistory).sort((a,b)=>b.totalSpent-a.totalSpent).slice(0,50);
+  const div=document.getElementById('custRankContent');
+  if(!customers.length){div.innerHTML='<div class="empty-state"><div class="ei">🏆</div><div class="et">尚無資料</div></div>';return;}
+  div.innerHTML=`<table class="dtable">
+    <thead><tr><th>名次</th><th>客戶</th><th>訂單數</th><th>累計消費</th><th>點數</th><th>VIP</th></tr></thead>
+    <tbody>${customers.map((c,i)=>`<tr>
+      <td><div style="width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;${i<3?`background:${['#fef9c3','#f1f5f9','#fef3c7'][i]};`:''}">${i+1}</div></td>
+      <td><div style="font-weight:700;">${c.name||'-'}</div><div style="font-size:10px;color:#94a3b8;">${c.phone}</div></td>
+      <td style="font-weight:700;">${c.totalOrders}</td>
+      <td style="font-weight:800;color:var(--danger);">$${c.totalSpent.toLocaleString()}</td>
+      <td style="color:var(--purple);font-weight:700;">${c.totalPoints-(c.redeemedPoints||0)}點</td>
+      <td>${c.isVip?'⭐':'-'}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+async function showCustomerDetail(phone) {
+  const customers=await idbGetAll('customers');
+  const c=customers.find(x=>x.phone===phone);
+  if(!c) return;
+  const s=getSettings();
+  const ap=c.totalPoints-(c.redeemedPoints||0);
+  const orders=(await idbGetAll('orders')).filter(o=>(o.recipient||'').includes(phone)).sort((a,b)=>b.createdAt-a.createdAt);
+  document.getElementById('custDetailTitle').textContent=`👤 ${c.name||'-'} 客戶詳情`;
+  document.getElementById('custDetailBody').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+      <div style="background:var(--primary-light);border-radius:8px;padding:12px;text-align:center;"><div style="font-size:22px;font-weight:900;color:var(--primary);">${c.totalOrders}</div><div style="font-size:11px;color:#64748b;">累計訂單</div></div>
+      <div style="background:var(--danger-light);border-radius:8px;padding:12px;text-align:center;"><div style="font-size:22px;font-weight:900;color:var(--danger);">$${c.totalSpent.toLocaleString()}</div><div style="font-size:11px;color:#64748b;">累計消費</div></div>
+      <div style="background:var(--purple-light);border-radius:8px;padding:12px;text-align:center;"><div style="font-size:22px;font-weight:900;color:var(--purple);">${ap}</div><div style="font-size:11px;color:#64748b;">可用點數</div></div>
+      <div style="background:var(--success-light);border-radius:8px;padding:12px;text-align:center;"><div style="font-size:22px;font-weight:900;color:var(--success);">${c.redeemedPoints||0}</div><div style="font-size:11px;color:#64748b;">已兌換點數</div></div>
+    </div>
+    <div style="margin-bottom:10px;"><label class="form-label">備註</label><input id="custNoteInput" class="form-input" value="${c.note||''}" placeholder="輸入備註..."></div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+      <button class="btn btn-xs ${c.isVip?'btn-primary':'btn-outline'}" onclick="toggleVip('${phone}')">⭐ ${c.isVip?'取消VIP':'設為VIP'}</button>
+      <button class="btn btn-xs ${c.isBlacklist?'btn-danger':'btn-outline'}" onclick="toggleBlacklist('${phone}')">⚠️ ${c.isBlacklist?'移除黑名單':'加入黑名單'}</button>
+      ${!c.isHistory&&ap>=s.pointsGoal?`<button class="btn btn-xs btn-purple" onclick="redeemPoints('${phone}')">🎁 兌換 ${s.pointsGoal}點</button>`:''}
+      <button class="btn btn-xs btn-success" onclick="saveCustNote('${phone}')">💾 儲存備註</button>
+    </div>
+    ${c.isHistory?`<div class="alert-box alert-info">📁 此為歷史客戶資料，不計集點。</div>`:''}
+    <div style="font-size:12px;font-weight:700;margin-bottom:8px;">訂單記錄（${orders.length}筆）</div>
+    <div style="max-height:220px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;">
+      ${orders.slice(0,20).map(o=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid #f1f5f9;font-size:11px;">
+        <div><span style="color:#64748b;">${o.date}</span> ${o.product||'-'}</div>
+        <div style="display:flex;gap:8px;align-items:center;"><span style="font-weight:700;color:var(--danger);">$${parseInt(o.price||0).toLocaleString()}</span><span class="${o.payStatus==='paid'?'ps-paid':o.payStatus==='overdue'?'ps-overdue':'ps-pending'}">${o.payStatus==='paid'?'✅':'⏳'}</span></div>
+      </div>`).join('')||'<div style="text-align:center;padding:16px;color:#94a3b8;">無訂單</div>'}
+    </div>`;
+  document.getElementById('custDetailModal').classList.add('show');
+}
+
+async function saveCustNote(phone) {
+  const customers=await idbGetAll('customers');
+  const c=customers.find(x=>x.phone===phone);
+  if(!c) return;
+  c.note=document.getElementById('custNoteInput').value;
+  await idbPut('customers',c);
+  showToast('備註已儲存');
+}
+
+async function toggleVip(phone) {
+  const customers=await idbGetAll('customers');
+  const c=customers.find(x=>x.phone===phone);
+  if(!c) return;
+  c.isVip=!c.isVip;
+  await idbPut('customers',c);
+  showToast('已更新VIP狀態');
+  closeModal('custDetailModal');
+  renderCustomers();
+}
+
+async function toggleBlacklist(phone) {
+  const customers=await idbGetAll('customers');
+  const c=customers.find(x=>x.phone===phone);
+  if(!c) return;
+  c.isBlacklist=!c.isBlacklist;
+  await idbPut('customers',c);
+  showToast('已更新黑名單狀態');
+  closeModal('custDetailModal');
+  renderCustomers();
+}
+
+async function redeemPoints(phone) {
+  const s=getSettings();
+  if(!confirm(`確定兌換 ${s.pointsGoal} 點換 $${s.rewardValue} 商品？`)) return;
+  const customers=await idbGetAll('customers');
+  const c=customers.find(x=>x.phone===phone);
+  if(!c) return;
+  c.redeemedPoints=(c.redeemedPoints||0)+s.pointsGoal;
+  await idbPut('customers',c);
+  showToast(`🎁 已兌換 ${s.pointsGoal} 點！`);
+  closeModal('custDetailModal');
+  renderCustomers();
+}
+
+// =====================================================================
+// CUSTOMER IMPORT (old data, no points)
+// =====================================================================
+let custImportRawData = [];
+async function handleCustImportFile(input) {
+  const file=input.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=async function(e){
+    try{
+      const arr=new Uint8Array(e.target.result);
+      const hx=Array.from(arr.slice(0,4)).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
+      let wb;
+      if(hx==='504B0304'||hx==='D0CF11E0') wb=XLSX.read(arr,{type:'array'});
+      else{
+        let txt=new TextDecoder('utf-8').decode(arr);
+        wb=XLSX.read(txt,{type:'string'});
+      }
+      const sheet=wb.Sheets[wb.SheetNames[0]];
+      const data=XLSX.utils.sheet_to_json(sheet,{header:1,defval:''});
+      custImportRawData=data;
+      document.getElementById('custImportText').value='';
+      previewCustImport();
+    }catch(err){showToast('檔案解析失敗',true);}
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+async function previewCustImport() {
+  let rawText=document.getElementById('custImportText').value.trim();
+  let rows=[];
+  if(custImportRawData.length>0){rows=custImportRawData;}
+  else if(rawText){
+    rows=rawText.split('\n').map(line=>line.split(/[,，\t]/));
+  }
+  if(!rows.length){showToast('請先選擇檔案或貼入文字',true);return;}
+  // Parse
+  custImportPreviewData=[];
+  const phoneReg=/^09\d{8}$/;
+  rows.forEach(row=>{
+    const cells=row.map(c=>(c||'').toString().trim());
+    let phone='',name='',note='';
+    cells.forEach(cell=>{
+      const clean=cell.replace(/[- ]/g,'');
+      if(phoneReg.test(clean)) phone=clean;
+      else if(!name&&/[\u4e00-\u9fa5]{2,}/.test(cell)) name=cell.replace(/[0-9\s-]/g,'');
+    });
+    if(phone) custImportPreviewData.push({phone,name:name||'未知',note:'歷史匯入',totalOrders:0,totalSpent:0,totalPoints:0,redeemedPoints:0,isVip:false,isBlacklist:false,isHistory:true,lastOrderDate:''});
+  });
+  const dup=new Set();
+  custImportPreviewData=custImportPreviewData.filter(c=>{if(dup.has(c.phone)) return false;dup.add(c.phone);return true;});
+  if(!custImportPreviewData.length){showToast('找不到有效的手機號碼資料',true);return;}
+  const prev=document.getElementById('custImportPreview');
+  prev.style.display='block';
+  prev.innerHTML=`<div class="alert-box alert-info">找到 <strong>${custImportPreviewData.length}</strong> 筆有效客戶資料（已去重）</div>
+    <div style="max-height:160px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;margin-top:8px;">
+      ${custImportPreviewData.slice(0,10).map(c=>`<div style="padding:6px 12px;border-bottom:1px solid #f1f5f9;font-size:11px;display:flex;gap:12px;"><span style="font-weight:700;">${c.name}</span><span style="color:#64748b;font-family:monospace;">${c.phone}</span><span class="badge badge-gray">歷史</span></div>`).join('')}
+      ${custImportPreviewData.length>10?`<div style="padding:6px 12px;font-size:11px;color:#94a3b8;">...及其他 ${custImportPreviewData.length-10} 筆</div>`:''}
+    </div>`;
+  document.getElementById('doCustImportBtn').style.display='inline-flex';
+  custImportRawData=[];
+}
+
+async function doImportCustomers() {
+  if(!custImportPreviewData.length) return;
+  const existing=await idbGetAll('customers');
+  const existingPhones=new Set(existing.map(c=>c.phone));
+  const newOnes=custImportPreviewData.filter(c=>!existingPhones.has(c.phone));
+  const skipped=custImportPreviewData.length-newOnes.length;
+  if(newOnes.length>0) await idbPutBulk('customers',newOnes);
+  document.getElementById('custImportResult').innerHTML=`<div class="alert-box alert-success">✅ 成功匯入 <strong>${newOnes.length}</strong> 筆歷史客戶資料${skipped>0?`（跳過 ${skipped} 筆已存在）`:''}。</div>`;
+  document.getElementById('doCustImportBtn').style.display='none';
+  custImportPreviewData=[];
+  showToast(`匯入 ${newOnes.length} 筆完成`);
+}
+
+// =====================================================================
+// SETTINGS
+// =====================================================================
+function renderSettings() {
+  const s=getSettings();
+  document.getElementById('setPointsRate').value=s.pointsRate;
+  document.getElementById('setPointsGoal').value=s.pointsGoal;
+  document.getElementById('setRewardValue').value=s.rewardValue;
+  document.getElementById('setOverdueDays').value=s.overdueDays;
+  document.getElementById('setShopName').value=s.shopName||'';
+  document.getElementById('setRedeemUrl').value=s.redeemUrl||'';
+  renderAdmins();
+  renderTierSettings();
+}
+
+function showSettingsTab(name) {
+  ['admins','points','shop','tier','pwa'].forEach(t=>{
+    const el=document.getElementById('settingsTab-'+t);
+    if(el) el.style.display=t===name?'block':'none';
+  });
+  document.querySelectorAll('#settingsNav .sn-item').forEach((item,i)=>{
+    const names=['admins','points','shop','tier','pwa'];
+    const active=names[i]===name;
+    const isDanger=i===5; // clear data button
+    item.style.background=active?'var(--primary-light)':'transparent';
+    item.style.color=active?'var(--primary)':isDanger?'var(--danger)':'#64748b';
+    item.style.fontWeight=active?'700':'500';
+  });
+  if(name==='pwa') updatePWAStatus();
+  if(name==='tier') renderTierSettings();
+}
+
+// BUG FIX #8: Save settings and immediately refresh dashboard stats
+function savePointsSettings() {
+  const s=getSettings();
+  s.pointsRate=parseInt(document.getElementById('setPointsRate').value)||1;
+  s.pointsGoal=parseInt(document.getElementById('setPointsGoal').value)||200;
+  s.rewardValue=parseInt(document.getElementById('setRewardValue').value)||200;
+  s.overdueDays=parseInt(document.getElementById('setOverdueDays').value)||7;
+  saveSettings(s);
+  showToast('集點規則已儲存');
+  // Refresh dashboard immediately
+  idbGetAll('orders').then(orders=>updateBadges(orders));
+}
+
+function saveShopSettings() {
+  const s=getSettings();
+  s.shopName=document.getElementById('setShopName').value.trim();
+  s.redeemUrl=document.getElementById('setRedeemUrl').value.trim();
+  saveSettings(s);
+  showToast('店家設定已儲存');
+}
+
+function renderAdmins() {
+  const admins = getAdmins();
+  const isSuperAdmin = currentUser && currentUser.role === 'superadmin';
+  document.getElementById('adminsList').innerHTML = `
+    <div class="alert-box alert-warn" style="margin-bottom:12px;">⚠️ 超管可新增/停用/重設密碼。一般管理員不可刪除訂單及修改設定。</div>
+    ${admins.map(a => `<div style="display:flex;align-items:center;gap:10px;padding:12px;border:1px solid #e2e8f0;border-radius:9px;margin-bottom:8px;flex-wrap:wrap;">
+      <div style="width:36px;height:36px;border-radius:50%;background:${a.id===currentUser?.id?'var(--success)':'var(--primary)'};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;flex-shrink:0;">${(a.name||'?').charAt(0)}</div>
+      <div style="flex:1;min-width:120px;">
+        <div style="font-size:13px;font-weight:700;">${a.name} <span class="badge ${a.role==='superadmin'?'badge-red':'badge-blue'}">${a.role==='superadmin'?'超管':'一般'}</span>${a.id===currentUser?.id?' <span style="font-size:10px;color:#64748b;">（你）</span>':''}</div>
+        <div style="font-size:11px;color:#64748b;">帳號：${a.username} ${a.active===false?'<span style="color:var(--danger);">（已停用）</span>':''}</div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+        ${a.id===currentUser?.id ? `<button class="btn btn-xs btn-outline" onclick="openChangePassword()">🔑 改密碼</button>` : ''}
+        ${isSuperAdmin && a.id!==currentUser?.id ? `<button class="btn btn-xs btn-outline" onclick="openChangePassword('${a.id}')">🔑 重設密碼</button>` : ''}
+        ${a.id!=='a1' ? `<div class="toggle ${a.active===false?'off':''}" onclick="toggleAdmin('${a.id}')"></div>` : ''}
+        ${isSuperAdmin && a.id!=='a1' ? `<button class="act-btn act-del" style="border:none;border-radius:5px;" onclick="deleteAdmin('${a.id}')">🗑</button>` : ''}
+      </div>
+    </div>`).join('')}`;
+}
+
+function toggleAdmin(id){const admins=getAdmins();const a=admins.find(x=>x.id===id);if(a){a.active=a.active===false?true:false;saveAdmins(admins);renderAdmins();showToast('已更新帳號狀態');}}
+function deleteAdmin(id){if(!confirm('確定刪除？'))return;saveAdmins(getAdmins().filter(a=>a.id!==id));renderAdmins();showToast('已刪除');}
+function openAddAdmin(){document.getElementById('addAdminName').value='';document.getElementById('addAdminUser').value='';document.getElementById('addAdminPass').value='';document.getElementById('addAdminModal').classList.add('show');}
+function saveAdmin(){
+  const name=document.getElementById('addAdminName').value.trim();
+  const user=document.getElementById('addAdminUser').value.trim();
+  const pass=document.getElementById('addAdminPass').value;
+  const role=document.getElementById('addAdminRole').value;
+  if(!name||!user||pass.length<4){showToast('請填入完整資訊（密碼至少4碼）',true);return;}
+  const admins=getAdmins();
+  if(admins.find(a=>a.username===user)){showToast('帳號已存在',true);return;}
+  admins.push({id:'a_'+Date.now(),username:user,password:pass,role,name,active:true});
+  saveAdmins(admins);closeModal('addAdminModal');showToast('管理員已新增');renderAdmins();
+}
+async function clearAllData(){
+  if(!confirm('⚠️ 確定清除所有訂單和客戶資料？此操作無法復原！'))return;
+  if(!confirm('再次確認：清除所有資料？'))return;
+  await idbClear('orders');await idbClear('customers');await idbClear('products');
+  showToast('資料已清除');renderDashboard();
+}
+
+// =====================================================================
+// EXPORT
+// =====================================================================
+async function renderExportFilters(){
+  const orders=await idbGetAll('orders');
+  const months=[...new Set(orders.map(o=>getMonthKey(o.date)).filter(m=>m!=='未分類'))].sort().reverse();
+  const el=document.getElementById('expMonthFilter');
+  if(el) el.innerHTML='<option value="">全部月份</option>'+months.map(m=>`<option value="${m}">${m}</option>`).join('');
+}
+async function getFilteredForExport(){
+  const orders=await idbGetAll('orders');
+  const mval=document.getElementById('expMonthFilter')?.value||'';
+  const tval=document.getElementById('expTypeFilter')?.value||'';
+  const pval=document.getElementById('expPayFilter')?.value||'';
+  return orders.filter(o=>{
+    const ct=getCustomerType(o);
+    return(!mval||getMonthKey(o.date)===mval)&&(!tval||ct.id===tval)&&(!pval||o.payStatus===pval);
+  }).sort((a,b)=>b.createdAt-a.createdAt);
+}
+async function exportExcel(){
+  const orders=await getFilteredForExport();
+  if(!orders.length){showToast('沒有符合條件的資料',true);return;}
+  const ws_data=[['日期','訂單編號','收件人','電話','配送單號','取件門市','商品','金額','付款狀態','QR狀態','集點','物流類型','備註']];
+  orders.forEach(o=>{
+    const phone=((o.recipient||'').match(/09\d{8}/)||[''])[0];
+    const name=(o.recipient||'').replace(phone,'').trim();
+    const ct=getCustomerType(o);
+    ws_data.push([o.date,o.orderId||'',name,phone,o.trackingNo,o.store,o.product,parseInt(o.price||0),
+      o.payStatus==='paid'?'已收款':o.payStatus==='overdue'?'逾期':'待收款',
+      o.qrStatus==='scanned'?'已掃描':o.qrStatus==='active'?'已啟用':'未啟用',
+      o.qrPoints||calcPoints(o.price),ct.name,o.note||'']);
+  });
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet(ws_data);
+  XLSX.utils.book_append_sheet(wb,ws,'訂單資料');
+  XLSX.writeFile(wb,`訂單明細_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'')}.xlsx`);
+  showToast('Excel已匯出');
+}
+async function exportPointsExcel(){
+  const customers=await idbGetAll('customers');
+  if(!customers.length){showToast('沒有客戶資料',true);return;}
+  const ws_data=[['姓名','電話','累計訂單','累計消費','累積點數','已兌換','可用點數','VIP','歷史客戶','備註']];
+  customers.sort((a,b)=>b.totalSpent-a.totalSpent).forEach(c=>{ws_data.push([c.name,c.phone,c.totalOrders,c.totalSpent,c.totalPoints,c.redeemedPoints||0,c.totalPoints-(c.redeemedPoints||0),c.isVip?'是':'否',c.isHistory?'是':'否',c.note||'']);});
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(ws_data),'客戶點數');
+  XLSX.writeFile(wb,`客戶點數_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'')}.xlsx`);
+  showToast('點數報表已匯出');
+}
+async function exportProductsExcel(){
+  const products=await idbGetAll('products');
+  const orders=await idbGetAll('orders');
+  const stats=computeProductStats(products,orders).sort((a,b)=>b.revenue-a.revenue);
+  const ws_data=[['商品名稱','規格','標準售價','集點','銷售筆數','銷售金額']];
+  stats.forEach(s=>{
+    const p=products.find(x=>x.id===s.id)||{spec:'',price:0};
+    ws_data.push([s.name,p.spec||'',p.price||0,calcPoints(p.price||0),s.qty,s.revenue]);
+  });
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(ws_data),'商品銷售');
+  XLSX.writeFile(wb,`商品銷售報表_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'')}.xlsx`);
+  showToast('商品報表已匯出');
+}
+async function previewStatement(){
+  let orders;
+  if(currentPage==='orders'){
+    const all=await idbGetAll('orders');
+    const mval=document.getElementById('ordMonthFilter')?.value||'';
+    const tval=document.getElementById('ordTypeFilter')?.value||'';
+    const pval=document.getElementById('ordPayFilter')?.value||'';
+    orders=all.filter(o=>{const ct=getCustomerType(o);return(!mval||getMonthKey(o.date)===mval)&&(!tval||ct.id===tval)&&(!pval||o.payStatus===pval);}).sort((a,b)=>b.createdAt-a.createdAt);
+  } else { orders=await getFilteredForExport(); }
+  if(!orders.length){showToast('沒有資料',true);return;}
+  const total=orders.reduce((s,o)=>s+parseInt(o.price||0),0);
+  const s=getSettings();
+  const today=new Date().toLocaleDateString('zh-TW');
+  document.getElementById('printPreviewArea').innerHTML=`<div class="statement-page mx-auto" style="font-family:sans-serif;">
+    <h2 style="font-size:24px;font-weight:bold;text-align:center;margin-bottom:20px;color:#1e3a8a;">帳款結算明細表</h2>
+    <div style="display:flex;justify-content:space-between;margin-bottom:14px;font-weight:bold;font-size:13px;border-bottom:2px solid #000;padding-bottom:8px;">
+      <div>店家：${s.shopName||'茗茶專賣店'}</div><div>列印日期：${today}</div>
+    </div>
+    <table class="stmt-table" style="width:100%;border-collapse:collapse;font-size:11px;">
+      <thead><tr><th>日期</th><th>收件人</th><th>配送單號/門市</th><th>商品</th><th style="text-align:right;">金額</th><th>付款</th></tr></thead>
+      <tbody>${orders.map(o=>`<tr><td>${o.date}</td><td style="font-weight:bold;">${o.recipient}</td><td style="font-family:monospace;font-size:10px;">${o.trackingNo}<br><span style="color:#555;">${o.store}</span></td><td>${o.product}</td><td style="text-align:right;font-weight:bold;">$${parseInt(o.price||0).toLocaleString()}</td><td>${o.payStatus==='paid'?'✅':'⏳'}</td></tr>`).join('')}</tbody>
+      <tfoot><tr><td colspan="4" style="text-align:right;font-weight:bold;padding:10px;">共 ${orders.length} 件，總計：</td><td style="text-align:right;font-weight:bold;font-size:16px;color:#b91c1c;padding:10px;">$${total.toLocaleString()}</td><td></td></tr></tfoot>
+    </table>
+    <div style="margin-top:40px;display:flex;justify-content:space-around;font-weight:bold;">
+      <div>製表人簽章：__________________</div><div>主管簽核：__________________</div>
+    </div>
+  </div>`;
+  document.getElementById('printStyleTag').innerHTML='@media print{@page{size:A4 portrait;margin:1cm;}}';
+  showPage('print');
+}
+
+// =====================================================================
+// PRINT
+// =====================================================================
+function rerenderPrint(){
+  if(!printData.length) return;
+  const layout=document.getElementById('printLayoutSelect')?.value||'thermal-100x150';
+  document.getElementById('printStyleTag').innerHTML=layout==='thermal-100x150'?'@media print{@page{size:100mm 150mm;margin:0;}}':layout==='thermal-80'?'@media print{@page{size:80mm auto;margin:0;}}':'@media print{@page{size:A4 portrait;margin:.8cm;}}';
+  renderPrintArea(printData,layout,'printPreviewArea');
+}
+function renderPrintArea(orders,layout,containerId){
+  const container=document.getElementById(containerId);
+  if(!container) return;
+  container.innerHTML='';
+  const s=getSettings();
+  if(layout.startsWith('thermal')){
+    orders.forEach((order,idx)=>{
+      const pts=order.qrPoints||calcPoints(order.price||0);
+      const qrUrl=getRedeemURL(order.qrToken||genToken(order.id||idx,pts));
+      const div=document.createElement('div');
+      div.className=layout==='thermal-100x150'?'thermal-label':'thermal-80';
+      div.innerHTML=`
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #000;padding-bottom:4px;margin-bottom:6px;">
+          <span style="font-weight:900;font-size:18px;">出貨明細</span><span style="font-weight:700;">#${String(idx+1).padStart(3,'0')}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <div style="font-size:10px;">1. 訂購日期：<strong>${order.date||'-'}</strong></div>
+          <div style="font-size:10px;">2. 訂單編號：<strong style="font-family:monospace;">${order.orderId||'-'}</strong></div>
+          <div style="border-top:1.5px dashed #000;margin:4px 0;"></div>
+          <div style="font-size:10px;">3. 收件人姓名及電話：</div>
+          <div style="font-size:16px;font-weight:900;border-bottom:2px solid #000;padding-bottom:3px;margin-bottom:3px;word-break:break-all;">${order.recipient||'-'}</div>
+          <div style="font-size:10px;">4. 配送單編號：</div>
+          <div style="font-size:13px;font-weight:800;font-family:monospace;">${order.trackingNo||'-'}</div>
+          <div style="font-size:10px;">5. 取件門市/地址：</div>
+          <div style="font-size:13px;font-weight:800;">${order.store||'-'}</div>
+          <div style="border-top:3px solid #000;margin-top:4px;padding-top:4px;">
+            <div style="background:#000;color:#fff;font-size:10px;font-weight:700;padding:2px 4px;display:inline-block;margin-bottom:3px;">6. 商品名稱/規格</div>
+            <div style="font-size:15px;font-weight:900;">${order.product||'-'}</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;border-top:2px solid #000;padding-top:4px;margin-top:4px;">
+            <span style="font-size:12px;font-weight:700;">7. 單價：</span>
+            <span style="font-size:18px;font-weight:900;">$${parseInt(order.price||0).toLocaleString()}</span>
+          </div>
+          <div style="font-size:10px;border:1px solid #000;padding:4px;background:#f5f5f5;"><strong>8. 備註：</strong>${order.note||'無'}</div>
+          <div style="border-top:1.5px dashed #000;margin-top:6px;padding-top:6px;display:flex;align-items:center;gap:6px;">
+            <img src="${getQRImageURL(qrUrl,70)}" style="width:60px;height:60px;" alt="QR" onerror="this.style.display='none'">
+            <div>
+              <div style="font-size:9px;font-weight:700;">⭐ 付款後掃碼集點</div>
+              <div style="background:#1a56db;color:#fff;border-radius:6px;padding:4px 8px;text-align:center;margin-top:3px;">
+                <div style="font-size:16px;font-weight:900;">+${pts}</div><div style="font-size:8px;">點數</div>
+              </div>
+              <div style="font-size:8px;color:#666;margin-top:2px;">${s.pointsGoal}點換$${s.rewardValue}</div>
+            </div>
+          </div>
+        </div>`;
+      container.appendChild(div);
+    });
+  } else {
+    const ipr=4;
+    for(let i=0;i<orders.length;i+=ipr){
+      const page=document.createElement('div');
+      page.className=`a4-page ${layout==='2x2'?'layout-2x2':''}`;
+      orders.slice(i,i+ipr).forEach((order,j)=>{
+        const pts=order.qrPoints||calcPoints(order.price||0);
+        const qrUrl=getRedeemURL(order.qrToken||genToken(order.id||i+j,pts));
+        const card=document.createElement('div');
+        card.className='card-container';
+        card.innerHTML=`
+          <div style="border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-weight:800;font-size:14px;">出貨明細單</span><span style="font-weight:700;font-family:monospace;">#${String(i+j+1).padStart(3,'0')}</span>
+          </div>
+          <div style="flex:1;display:flex;gap:8px;">
+            <div style="flex:1;">
+              <div class="field-row"><div class="field-label">1. 訂購日期：</div><div class="field-value">${order.date||'-'}</div></div>
+              <div class="field-row"><div class="field-label">2. 訂單編號：</div><div class="field-value" style="font-family:monospace;font-weight:700;">${order.orderId||'-'}</div></div>
+              <div class="field-row"><div class="field-label">3. 收件人及電話：</div><div class="field-value" style="font-weight:800;font-size:13px;border-bottom:1px solid #000;">${order.recipient||'-'}</div></div>
+              <div class="field-row"><div class="field-label">4. 配送單編號：</div><div class="field-value" style="font-family:monospace;font-weight:700;">${order.trackingNo||'-'}</div></div>
+              <div class="field-row"><div class="field-label">5. 取件門市：</div><div class="field-value" style="font-weight:700;">${order.store||'-'}</div></div>
+              <div class="field-row" style="margin-top:4px;padding-top:4px;border-top:1px dashed #000;"><div class="field-label" style="font-weight:900;">6. 商品名稱/規格：</div><div class="field-value" style="font-weight:800;font-size:13px;">${order.product||'-'}</div></div>
+              <div class="field-row"><div class="field-label" style="font-weight:900;">7. 單價：</div><div class="field-value" style="font-weight:900;font-size:16px;color:#dc2626;">$${parseInt(order.price||0).toLocaleString()}</div></div>
+              <div class="field-row"><div class="field-label">8. 備註：</div><div class="field-value" style="font-weight:700;">${order.note||'-'}</div></div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;flex-shrink:0;">
+              <img src="${getQRImageURL(qrUrl,80)}" style="width:70px;height:70px;" alt="QR" onerror="this.style.display='none'">
+              <div style="font-size:8px;text-align:center;font-weight:700;color:#1a56db;">+${pts}點</div>
+              <div style="font-size:7px;text-align:center;color:#666;">付款後掃碼</div>
+            </div>
+          </div>`;
+        page.appendChild(card);
+      });
+      while(page.children.length<ipr){const e=document.createElement('div');e.className='card-container';e.style.cssText='display:flex;align-items:center;justify-content:center;color:#e2e8f0;font-size:16px;';e.innerHTML='空白';page.appendChild(e);}
+      container.appendChild(page);
+    }
+  }
+}
+
+// =====================================================================
+// UPLOAD & PARSE — BUG FIX #1: Stricter merge logic
+// =====================================================================
+document.getElementById('fileUpload').addEventListener('change', async function(e){
+  const files=Array.from(e.target.files);
+  if(!files.length) return;
+  document.getElementById('loadingMsg').style.display='block';
+  document.getElementById('uploadResult').style.display='none';
+  document.getElementById('uploadPreviewArea').style.display='none';
+  let allOrders=[],errors=[];
+  for(const file of files){
+    try{allOrders.push(...await processSingleFile(file));}
+    catch(err){errors.push(file.name);console.error(err);}
+  }
+  document.getElementById('loadingMsg').style.display='none';
+  if(!allOrders.length){
+    document.getElementById('uploadResult').style.display='block';
+    document.getElementById('uploadResult').innerHTML='<div class="alert-box alert-danger">❌ 解析失敗：找不到訂單欄位，請確認檔案格式。</div>';
+    return;
+  }
+  // BUG FIX #1: Use strict merge
+  const merged=crossMatchOrders(allOrders);
+  merged.forEach(o=>{
+    o.id=genId();
+    o.payStatus='pending';
+    const pts=calcPoints(o.price||0);
+    o.qrPoints=pts;
+    o.qrToken=genToken(o.id,pts);
+    o.qrStatus='locked';
+    o.createdAt=Date.now();
+  });
+  currentParseData=merged;
+  const diff=allOrders.length-merged.length;
+  document.getElementById('uploadResult').style.display='block';
+  document.getElementById('uploadResult').innerHTML=`<div class="alert-box alert-success">✅ 解析 <strong>${allOrders.length}</strong> 筆，合併重複後共 <strong>${merged.length}</strong> 筆單據。${diff>0?`（合併了 ${diff} 筆）`:''}</div>${errors.length?`<div class="alert-box alert-danger">⚠️ ${errors.length} 個檔案解析失敗</div>`:''}`;
+  document.getElementById('uploadPreviewTitle').textContent=`預覽出單（${merged.length}筆）`;
+  document.getElementById('uploadPreviewArea').style.display='block';
+  document.getElementById('previewTableArea').innerHTML=`<div style="padding:8px 16px;background:#f8fafc;border-bottom:1px solid #e2e8f0;font-size:11px;color:#64748b;">以下為解析結果預覽，確認無誤後請點「儲存並列印」</div>
+    <table class="dtable"><thead><tr><th>日期</th><th>收件人</th><th>物流</th><th>商品</th><th>金額</th><th>集點</th></tr></thead>
+    <tbody>${merged.map(o=>{const ct=getCustomerType(o);return`<tr><td style="font-size:11px;">${o.date}</td><td style="font-weight:700;">${o.recipient}</td><td><span class="badge ${ct.badge}">${ct.name}</span></td><td style="font-size:11px;">${o.product}</td><td style="font-weight:800;color:var(--danger);">$${parseInt(o.price||0).toLocaleString()}</td><td style="color:var(--primary);font-weight:700;">+${o.qrPoints}點</td></tr>`;}).join('')}</tbody></table>`;
+  e.target.value='';
+});
+
+async function saveAndPrint(){
+  if(!currentParseData.length) return;
+  const existing=await idbGetAll('orders');
+  const existingIds=new Set(existing.map(o=>o.trackingNo).filter(t=>t&&t!=='(未提供)'));
+  const newOrders=currentParseData.filter(o=>!existingIds.has(o.trackingNo)||o.trackingNo==='(未提供)');
+  if(newOrders.length>0) await idbPutBulk('orders',newOrders);
+  const allOrders=[...existing,...newOrders];
+  await rebuildCustomers(allOrders);
+  printData=[...currentParseData];
+  currentParseData=[];
+  showToast(`已儲存 ${newOrders.length} 筆，正在列印...`);
+  showPage('print');
+}
+
+function resetUpload(){
+  currentParseData=[];
+  document.getElementById('uploadResult').style.display='none';
+  document.getElementById('uploadPreviewArea').style.display='none';
+  document.getElementById('fileUpload').value='';
+}
+
+function processSingleFile(file){
+  return new Promise((resolve,reject)=>{
+    const fileDate=extractDateFromFilename(file.name);
+    const reader=new FileReader();
+    reader.onload=function(e){
+      try{
+        const arr=new Uint8Array(e.target.result);
+        const hx=Array.from(arr.slice(0,4)).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
+        const isBin=hx==='504B0304'||hx==='D0CF11E0';
+        let wb;
+        if(isBin){wb=XLSX.read(arr,{type:'array'});}
+        else{
+          let txt='';
+          if(arr[0]===0xFF&&arr[1]===0xFE) txt=new TextDecoder('utf-16le').decode(arr);
+          else if(arr[0]===0xFE&&arr[1]===0xFF) txt=new TextDecoder('utf-16be').decode(arr);
+          else{const u=new TextDecoder('utf-8').decode(arr);const kw=["商品","姓名","金額","門市","單號","取件","收件","明細"];txt=kw.some(k=>u.includes(k))?u:new TextDecoder('big5').decode(arr);}
+          wb=XLSX.read(txt,{type:'string',raw:true});
+        }
+        const sheet=wb.Sheets[wb.SheetNames[0]];
+        resolve(extractOrdersFromData(XLSX.utils.sheet_to_json(sheet,{header:1,defval:''}),fileDate));
+      }catch(err){reject(err);}
+    };
+    reader.onerror=reject;
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function extractDateFromFilename(fn){
+  const def=new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'});
+  const m=fn.match(/11[0-9]{5}/);
+  if(m){const n=m[0];return`${parseInt(n.substring(0,3))+1911}/${n.substring(3,5).padStart(2,'0')}/${n.substring(5,7).padStart(2,'0')}`;}
+  return def;
+}
+
+function extractOrdersFromData(raw,fileDate){
+  let parsed=[],headerIdx=-1,headers=[];
+  for(let i=0;i<Math.min(raw.length,60);i++){
+    const row=raw[i];if(!row||!row.length) continue;
+    const rs=row.join('').toLowerCase();
+    const vc=row.filter(c=>c!==undefined&&c!==null&&c.toString().trim()!=='').length;
+    if(rs.includes('必填欄位')||rs.includes('匯入欄位說明')||vc<4) continue;
+    if(/商品|品名|明細|規格/.test(rs)&&/收件|姓名|單號|寄件|取件人/.test(rs)&&/金額|單價|總額/.test(rs)){
+      headerIdx=i;headers=row.map(h=>h?h.toString().trim().toLowerCase().replace(/\r?\n/g,''):'');break;
+    }
+  }
+  if(headerIdx!==-1){
+    for(let i=headerIdx+1;i<raw.length;i++){
+      const row=raw[i];if(!row||!row.length||row.join('').trim()==='') continue;
+      let o={date:fileDate,orderId:'(未提供)',recipient:'',trackingNo:'(未提供)',store:'',product:'',price:'0',note:''};
+      let phone='',name='',fbNames=[];
+      row.forEach((cv,ci)=>{
+        const h=headers[ci]||'',v=cv?cv.toString().trim():'';if(!v) return;
+        if(h.includes('其它資訊')||h.includes('備註')||h==='商品備註'){
+          o.note=o.note?o.note+' | '+v:v;
+          const pm=v.match(/09\d{8}/);if(pm&&!phone) phone=pm[0];
+          const nm=v.match(/[\u4e00-\u9fa5]{2,4}/g);if(nm) fbNames.push(...nm);
+        }else if(h==='運費'||h.includes('折扣')||h.includes('優惠')){
+        }else if(/配送|寄件|取件編號|交貨便|託運|包裹|店到店|追蹤/.test(h)&&!/訂單|買家|商品/.test(h)){if(v) o.trackingNo=v;
+        }else if(/訂單編號|訂單號|單號/.test(h)&&!/配送|寄件|交貨便/.test(h)){if(!o.orderId||o.orderId==='(未提供)') o.orderId=v;
+        }else if(h.includes('手機')||h.includes('電話')||h.includes('聯絡')){phone=v;
+        }else if(h.includes('收件')||h.includes('姓名')||h.includes('取件人')){
+          const pm=v.match(/09\d{8}/);if(pm){if(!phone) phone=pm[0];name=v.replace(pm[0],'').trim();}else name=v;
+        }else if(h.includes('日期')&&!h.includes('取件')&&!h.includes('備貨')){if(o.date===fileDate||!o.date) o.date=v.split(' ')[0];
+        }else if(h.includes('門市')||h.includes('地址')||h.includes('店舖')||h.includes('店名')||h.includes('取件店')){o.store=v;
+        }else if(h.includes('總額')||h.includes('應收')||h.includes('代收')||h.includes('實收')||h.includes('商品金額')||h.includes('小計')||h==='金額'){
+          const nv=parseInt(v.replace(/[^\d]/g,''))||0,cp=parseInt(o.price.replace(/[^\d]/g,''))||0;
+          if(nv>cp||o.price==='0') o.price=v.replace(/[^\d]/g,'');
+        }else if(h.includes('單價')&&(!o.price||o.price==='0')){o.price=v.replace(/[^\d]/g,'');
+        }else if(h==='商品'||h.includes('商品名稱')||h.includes('品名')||h.includes('規格')||h.includes('明細')||h.includes('商品內容')){
+          if(!h.includes('總額')&&!h.includes('備註')&&!h.includes('金額')&&!h.includes('運費'))
+            o.product=o.product?o.product+'、'+v:v;
+        }
+      });
+      if(name.includes('*')&&fbNames.length>0){const rn=fbNames.find(f=>!/付款|匯入|備貨|超商|取貨|訂單|門市|貨到|金額|收件|全家|賣貨便|姓名|電話|資訊|備註/.test(f)&&f.length>=2&&f.length<=4);if(rn) name=`${rn}(${name})`;}
+      o.recipient=phone?`${name} ${phone}`.trim():name;
+      if(o.product||o.recipient) parsed.push(o);
+    }
+  } else {
+    raw.forEach(row=>{
+      if(!row||!row.length) return;
+      const pr=/^09\d{8}$/;
+      if(row.length>=5&&row[1]&&pr.test(row[1].toString().trim().replace(/[- ]/g,''))){
+        parsed.push({date:row[7]?row[7].toString().trim():fileDate,orderId:row[2]?row[2].toString().trim():'(未提供)',recipient:`${row[0]?row[0].toString().trim():''} ${row[1].toString().trim()}`,trackingNo:'(未提供)',store:'宅配/其他',product:row[4]?row[4].toString().trim():'',price:row[5]?row[5].toString().trim().replace(/[^\d]/g,''):'0',note:'明細轉入'});
+        return;
+      }
+      row.forEach(cell=>{
+        if(!cell) return;
+        const t=cell.toString().trim();
+        if(t.includes('\n')&&(/(09\d{8})/.test(t.replace(/[- ]/g,''))||/貨到付款|代收貨款/.test(t)||/門市|全家|新竹/.test(t))) parsed.push(parseSmartBlock(t,fileDate));
+      });
+    });
+  }
+  return parsed;
+}
+
+function parseSmartBlock(text,fallbackDate){
+  let o={date:fallbackDate,orderId:'(未提供)',recipient:'',trackingNo:'(未提供)',store:'宅配/其他',product:'',price:'0',note:''};
+  const lines=text.split('\n').map(l=>l.trim()).filter(l=>l!=='');
+  let pLines=[],nLines=[];
+  lines.forEach(line=>{
+    const cl=line.replace(/\s/g,'');
+    const isStore=/門市|店舖|全家|萊爾富|7-11|新竹物流|黑貓|宅配通|大榮|物流|貨運|郵局/.test(line)||/^(台北|新北|桃園|台中|台南|高雄|基隆|新竹|嘉義|苗栗|彰化|南投|雲林|屏東|宜蘭|花蓮|台東)[縣市]/.test(line);
+    const isNote=/貨到付款|代收貨款|應收金額|運費|\$|匯款|發票/.test(line);
+    const isProd=/茶|斤|包|盒|冬片|烏龍|金萱|翠玉|梨山|大禹嶺|杉林溪|福壽|禮盒|罐|提袋|賞|特等|頭等|組/.test(line);
+    const isTrack=(/^[A-Za-z][A-Za-z0-9]{7,19}$/i.test(cl)||/^\d{11,20}$/.test(cl))&&!isNote;
+    const hasPhone=/(09\d{8}|0[2-8][-\s]?\d{7,8})/.test(cl)&&!isTrack;
+    if(isTrack){o.trackingNo==='(未提供)'?o.trackingNo=line:o.trackingNo+=' / '+line;}
+    else if(hasPhone){!o.recipient?o.recipient=line:o.recipient+=' '+line;}
+    else if(isStore&&!isNote){o.store==='宅配/其他'?o.store=line:o.store+=' '+line;}
+    else if(isNote){nLines.push(line);const pm=cl.match(/\d{3,7}/g);if(pm){const pv=parseInt(pm[pm.length-1],10),cp=parseInt(o.price.replace(/[^\d]/g,''),10)||0;if(pv>cp) o.price=pv.toString();}}
+    else if(cl.length>=2&&cl.length<=15&&/^[\u4e00-\u9fa5A-Za-z*]+[-_]?[\d]*$/.test(cl)&&!isProd&&!o.recipient){o.recipient=line;}
+    else{pLines.push(line);}
+  });
+  o.product=pLines.join('、');o.note=nLines.join('、');
+  if(!o.product&&o.note) o.product='詳見備註';
+  return o;
+}
+
+// BUG FIX #1: Stricter merge — only merge if trackingNo is identical and valid
+function crossMatchOrders(orders){
+  let merged=[];
+  orders.forEach(inc=>{
+    let mi=merged.findIndex(ex=>{
+      const t1=inc.trackingNo.replace(/[^a-zA-Z0-9]/g,'');
+      const t2=ex.trackingNo.replace(/[^a-zA-Z0-9]/g,'');
+      // STRICT: Only merge if tracking number matches exactly (and is valid)
+      if(t1&&t2&&t1.length>8&&t1===t2&&t1.toLowerCase()!=='未提供') return true;
+      // Also merge same orderId (if valid)
+      const i1=inc.orderId.replace(/[^a-zA-Z0-9]/g,'');
+      const i2=ex.orderId.replace(/[^a-zA-Z0-9]/g,'');
+      if(i1&&i2&&i1.length>8&&i1===i2&&i1.toLowerCase()!=='未提供') return true;
+      return false;
+    });
+    if(mi!==-1){
+      const ex=merged[mi];
+      if(/\d{8,}/.test(inc.recipient)&&!/\d{8,}/.test(ex.recipient)) ex.recipient=inc.recipient;
+      if(inc.trackingNo!=='(未提供)'){if(ex.trackingNo==='(未提供)') ex.trackingNo=inc.trackingNo;else if(!ex.trackingNo.includes(inc.trackingNo)) ex.trackingNo=inc.trackingNo+' / '+ex.trackingNo;}
+      if(inc.orderId!=='(未提供)'&&ex.orderId==='(未提供)') ex.orderId=inc.orderId;
+      if(inc.product.length>ex.product.length&&inc.product!=='詳見備註') ex.product=inc.product;
+      if((!ex.price||ex.price==='0')&&inc.price) ex.price=inc.price;
+      if(inc.store!=='宅配/其他'&&ex.store==='宅配/其他') ex.store=inc.store;
+    } else { merged.push({...inc}); }
+  });
+  return merged;
+}
+
+// =====================================================================
+// QR REDEMPTION
+// =====================================================================
+async function initRedeemPage(token){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('redeemScreen').style.display='flex';
+  const payload=validateToken(token);
+  if(!payload){document.getElementById('redeemTitle').textContent='QR碼無效';document.getElementById('redeemForm').innerHTML='<div class="alert-box alert-danger">❌ 無效的QR碼</div>';return;}
+  const orders=await idbGetAll('orders');
+  const order=orders.find(o=>o.id===payload.orderId);
+  if(!order){document.getElementById('redeemTitle').textContent='訂單不存在';document.getElementById('redeemForm').innerHTML='<div class="alert-box alert-danger">❌ 找不到對應訂單</div>';return;}
+  if(order.qrStatus==='scanned'){document.getElementById('redeemTitle').textContent='點數已領取';document.getElementById('redeemEmoji').textContent='✅';document.getElementById('redeemForm').innerHTML=`<div class="alert-box alert-success">✅ 此訂單的 +${order.qrPoints} 點已領取。</div>`;return;}
+  if(order.qrStatus==='locked'){document.getElementById('redeemTitle').textContent='QR碼尚未啟用';document.getElementById('redeemForm').innerHTML='<div class="alert-box alert-warn">⚠️ 請先完成付款，店家確認後即可掃碼。</div>';return;}
+  document.getElementById('redeemInfo').innerHTML=`<div style="margin-bottom:6px;"><strong>商品：</strong>${order.product||'-'}</div><div style="margin-bottom:6px;"><strong>金額：</strong>$${parseInt(order.price||0).toLocaleString()}</div><div><strong>可獲得：</strong><span style="color:var(--primary);font-weight:900;font-size:16px;">+${order.qrPoints||payload.points} 點</span></div>`;
+  document.getElementById('redeemPhone').setAttribute('data-token',token);
+  document.getElementById('redeemPhone').setAttribute('data-orderid',payload.orderId);
+  document.getElementById('redeemPhone').setAttribute('data-points',order.qrPoints||payload.points);
+}
+async function doRedeem(){
+  const phone=document.getElementById('redeemPhone').value.trim();
+  if(!/^09\d{8}$/.test(phone)){document.getElementById('redeemError').style.display='flex';document.getElementById('redeemError').textContent='❌ 請輸入正確手機號碼';return;}
+  const orderId=document.getElementById('redeemPhone').getAttribute('data-orderid');
+  const points=parseInt(document.getElementById('redeemPhone').getAttribute('data-points'));
+  const orders=await idbGetAll('orders');
+  const order=orders.find(o=>o.id===orderId);
+  if(!order||order.qrStatus!=='active'){document.getElementById('redeemError').style.display='flex';document.getElementById('redeemError').textContent='❌ 此QR碼無法使用';return;}
+  const orderPhone=((order.recipient||'').match(/09\d{8}/)||[''])[0];
+  if(orderPhone&&orderPhone!==phone){document.getElementById('redeemError').style.display='flex';document.getElementById('redeemError').textContent='❌ 手機號碼不符';return;}
+  order.qrStatus='scanned';order.qrScannedAt=Date.now();
+  await idbPut('orders',order);
+  const customers=await idbGetAll('customers');
+  let c=customers.find(x=>x.phone===phone);
+  if(!c) c={phone,name:(order.recipient||'').replace(phone,'').trim()||'客戶',totalOrders:0,totalSpent:0,totalPoints:0,redeemedPoints:0,isVip:false,isBlacklist:false,note:'',lastOrderDate:'',isHistory:false};
+  c.totalPoints=(c.totalPoints||0)+points;
+  await idbPut('customers',c);
+  const s=getSettings();
+  const avail=c.totalPoints-(c.redeemedPoints||0);
+  const pct=Math.min(100,Math.round(avail/s.pointsGoal*100));
+  document.getElementById('redeemForm').style.display='none';
+  document.getElementById('redeemSuccess').style.display='block';
+  document.getElementById('redeemEmoji').textContent='🎉';
+  document.getElementById('redeemSuccessMsg').textContent=`成功領取 +${points} 點！`;
+  document.getElementById('redeemProgressDiv').innerHTML=`<div style="background:#f8fafc;border-radius:10px;padding:14px;">
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"><span>累積點數</span><span style="font-weight:900;color:var(--primary);">${avail} / ${s.pointsGoal}</span></div>
+    <div class="progress-bg"><div class="progress-fill" style="width:${pct}%;background:var(--primary);"></div></div>
+    ${avail>=s.pointsGoal?`<div style="margin-top:8px;font-size:12px;font-weight:700;color:var(--purple);">🎁 恭喜！可兌換 $${s.rewardValue} 商品，請聯絡店家！</div>`:`<div style="margin-top:6px;font-size:11px;color:#64748b;">還差 ${s.pointsGoal-avail} 點可兌換 $${s.rewardValue} 商品</div>`}
+  </div>`;
+}
+
+// =====================================================================
+// INIT
+// =====================================================================
+async function init(){
+  await openIDB();
+  const hash=window.location.hash;
+  if(hash.startsWith('#redeem/')){initRedeemPage(hash.replace('#redeem/',''));return;}
+  const saved=sessionStorage.getItem('currentUser');
+  if(saved){
+    currentUser=JSON.parse(saved);
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('appScreen').style.display='block';
+    document.getElementById('sidebarAvatar').textContent=currentUser.name.charAt(0);
+    document.getElementById('sidebarName').textContent=currentUser.name;
+    document.getElementById('sidebarRole').textContent=currentUser.role==='superadmin'?'🔴 超級管理員':'🔵 一般管理員';
+    if(currentUser.role!=='superadmin') document.getElementById('nav-settings').style.display='none';
+    showPage('dashboard');
+  }
+}
+window.addEventListener('hashchange',()=>{const h=window.location.hash;if(h.startsWith('#redeem/')) initRedeemPage(h.replace('#redeem/',''));});
+
+// =====================================================================
+// PWA：產生 Manifest 與圖示
+// =====================================================================
+(function setupPWA() {
+  // 產生 SVG 圖示 (藍底白色店鋪圖案)
+  const svgIcon = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'><rect width='256' height='256' rx='40' fill='%231a56db'/><text x='128' y='175' font-size='140' text-anchor='middle' font-family='Arial'>🏪</text></svg>`;
+  const iconURL = 'data:image/svg+xml;charset=utf-8,' + svgIcon;
+
+  // 設定 Apple Touch Icons
+  ['appleIcon180','appleIcon152','appleIcon120','favicon32'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.href = iconURL;
+  });
+
+  // 產生 Web App Manifest
+  const manifest = {
+    name: '出單助手 — 全物流出單系統',
+    short_name: '出單助手',
+    description: '全物流出單、帳款管理、QR碼集點一站式系統',
+    start_url: './',
+    display: 'standalone',
+    orientation: 'portrait-primary',
+    background_color: '#f8fafc',
+    theme_color: '#1a56db',
+    lang: 'zh-TW',
+    icons: [
+      { src: iconURL, sizes: '192x192', type: 'image/svg+xml', purpose: 'any maskable' },
+      { src: iconURL, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }
+    ],
+    shortcuts: [
+      { name: '上傳出單', short_name: '出單', description: '上傳 Excel 並列印', url: './#upload', icons: [{ src: iconURL, sizes: '192x192' }] },
+      { name: '帳款管理', short_name: '帳款', description: '查看帳款狀態', url: './#orders', icons: [{ src: iconURL, sizes: '192x192' }] }
+    ]
+  };
+  const manifestURL = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
+  const manifestEl = document.getElementById('pwaManifest');
+  if (manifestEl) manifestEl.href = manifestURL;
+})();
+
+// =====================================================================
+// PWA：Service Worker 註冊（離線快取）
+// =====================================================================
+const SW_CODE = `
+const CACHE_NAME = 'order-app-v4';
+const ASSETS = [
+  self.location.pathname,
+  'https://cdn.tailwindcss.com',
+  'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
+  
+];
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS).catch(()=>{})));
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
+  e.respondWith(
+    caches.match(e.request).then(cached => {
+      const network = fetch(e.request).then(res => {
+        if (res && res.status === 200 && e.request.url.startsWith('http')) {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+        }
+        return res;
+      }).catch(() => cached);
+      return cached || network;
+    })
+  );
+});
+`;
+
+if ('serviceWorker' in navigator) {
+  const blob = new Blob([SW_CODE], { type: 'application/javascript' });
+  const swURL = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swURL).then(reg => {
+    console.log('SW registered:', reg.scope);
+  }).catch(err => {
+    // 若 blob SW 失敗（iOS），嘗試外部 sw.js
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+
+// =====================================================================
+// PWA：安裝提示（Android Chrome）
+// =====================================================================
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const banner = document.getElementById('installBanner');
+  if (banner) banner.style.display = 'flex';
+});
+window.addEventListener('appinstalled', () => {
+  const banner = document.getElementById('installBanner');
+  if (banner) banner.style.display = 'none';
+  showToast('✅ 已成功安裝到主畫面！');
+  deferredInstallPrompt = null;
+});
+function doInstallPWA() {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then(r => {
+      if (r.outcome === 'accepted') showToast('正在安裝...');
+      deferredInstallPrompt = null;
+    });
+  }
+}
+
+// =====================================================================
+// PWA：離線偵測
+// =====================================================================
+function updateOnlineStatus() {
+  const indicator = document.getElementById('offlineIndicator');
+  if (!indicator) return;
+  if (navigator.onLine) {
+    indicator.style.display = 'none';
+  } else {
+    indicator.style.display = 'flex';
+  }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
+// iOS 安裝提示
+function checkIOSInstall() {
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.navigator.standalone === true;
+  const dismissed = localStorage.getItem('iosInstallDismissed');
+  if (isIOS && !isStandalone && !dismissed) {
+    const banner = document.getElementById('iosInstallBanner');
+    if (banner) setTimeout(() => banner.style.display = 'flex', 2000);
+  }
+}
+
+// =====================================================================
+// V5：密碼管理
+// =====================================================================
+function openChangePassword(targetId = null) {
+  const isSuper = currentUser && currentUser.role === 'superadmin';
+  const admins = getAdmins();
+  document.getElementById('changePwdErr').style.display = 'none';
+  document.getElementById('newPassword').value = '';
+  document.getElementById('confirmPassword').value = '';
+  document.getElementById('oldPassword').value = '';
+
+  if (targetId) {
+    // 超管重設他人密碼
+    const target = admins.find(a => a.id === targetId);
+    if (!target) return;
+    document.getElementById('changePwdUserId').value = targetId;
+    document.getElementById('changePwdTarget').innerHTML = `<strong>重設帳號：</strong>${target.name}（${target.username}）`;
+    document.getElementById('oldPwdRow').style.display = 'none';
+  } else {
+    // 自己改自己密碼
+    document.getElementById('changePwdUserId').value = currentUser.id;
+    document.getElementById('changePwdTarget').innerHTML = `<strong>修改帳號：</strong>${currentUser.name}（${currentUser.username}）`;
+    document.getElementById('oldPwdRow').style.display = 'block';
+  }
+  document.getElementById('changePasswordModal').classList.add('show');
+}
+
+function doChangePassword() {
+  const userId = document.getElementById('changePwdUserId').value;
+  const oldPwd = document.getElementById('oldPassword').value;
+  const newPwd = document.getElementById('newPassword').value;
+  const confirmPwd = document.getElementById('confirmPassword').value;
+  const errEl = document.getElementById('changePwdErr');
+
+  errEl.style.display = 'none';
+
+  if (newPwd.length < 4) { errEl.textContent = '新密碼至少需要 4 個字元'; errEl.style.display = 'flex'; return; }
+  if (newPwd !== confirmPwd) { errEl.textContent = '兩次輸入的新密碼不一致'; errEl.style.display = 'flex'; return; }
+
+  const admins = getAdmins();
+  const target = admins.find(a => a.id === userId);
+  if (!target) return;
+
+  // 自己改密碼需驗證舊密碼
+  const isSelf = userId === currentUser.id;
+  if (isSelf && document.getElementById('oldPwdRow').style.display !== 'none') {
+    if (oldPwd !== target.password) { errEl.textContent = '目前密碼輸入錯誤'; errEl.style.display = 'flex'; return; }
+  }
+
+  target.password = newPwd;
+  saveAdmins(admins);
+
+  // 如果是改自己的密碼，同步更新 session
+  if (isSelf) {
+    currentUser.password = newPwd;
+    sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+  }
+
+  closeModal('changePasswordModal');
+  showToast(`✅ ${isSelf ? '密碼已修改' : target.name + ' 的密碼已重設'}！`);
+}
+
+// =====================================================================
+// V5：活動管理
+// =====================================================================
+function getActivities() {
+  return JSON.parse(localStorage.getItem('activities') || '[]');
+}
+function saveActivities(a) { localStorage.setItem('activities', JSON.stringify(a)); }
+
+function getTierSettings() {
+  return JSON.parse(localStorage.getItem('tierSettings') || JSON.stringify({
+    enabled: false,
+    tiers: [
+      { name: '一般會員', icon: '🥉', minSpend: 0,     multiplier: 1,   color: '#64748b' },
+      { name: '銀卡會員', icon: '🥈', minSpend: 10000,  multiplier: 1.5, color: '#94a3b8' },
+      { name: '金卡會員', icon: '🥇', minSpend: 30000,  multiplier: 2,   color: '#f59e0b' },
+      { name: 'VIP 白金', icon: '💎', minSpend: 50000,  multiplier: 3,   color: '#7c3aed' }
+    ]
+  }));
+}
+function saveTierSettings(ts) { localStorage.setItem('tierSettings', JSON.stringify(ts)); }
+
+// 取得客戶的會員等級
+function getCustomerTier(totalSpend) {
+  const ts = getTierSettings();
+  if (!ts.enabled) return ts.tiers[0];
+  const sorted = [...ts.tiers].sort((a, b) => b.minSpend - a.minSpend);
+  return sorted.find(t => totalSpend >= t.minSpend) || ts.tiers[0];
+}
+
+// 計算訂單實際點數（含所有活動加成）
+function calcPointsWithActivities(price, productName, orderDate, customerTotalSpend = 0) {
+  const s = getSettings();
+  const basePoints = Math.max(1, Math.round(parseInt(price || 0) / 100) * s.pointsRate);
+  const activities = getActivities().filter(a => a.enabled);
+  const ts = getTierSettings();
+  const dateStr = orderDate || new Date().toISOString().slice(0, 10);
+
+  let finalPoints = basePoints;
+  let bonusPoints = 0;
+  let multiplier = 1;
+  const appliedRules = [];
+
+  // 1. 會員等級倍率
+  if (ts.enabled) {
+    const tier = getCustomerTier(customerTotalSpend);
+    if (tier.multiplier > 1) {
+      multiplier = Math.max(multiplier, tier.multiplier);
+      appliedRules.push(`${tier.icon}${tier.name} ×${tier.multiplier}`);
+    }
+  }
+
+  activities.forEach(act => {
+    // 檢查日期是否在活動期間內
+    const inPeriod = (!act.startDate || dateStr >= act.startDate) &&
+                     (!act.endDate || dateStr <= act.endDate);
+    if (!inPeriod) return;
+
+    if (act.type === 'multiplier') {
+      const m = parseFloat(act.multiplier) || 2;
+      if (m > multiplier) { multiplier = m; appliedRules.push(`⏰${act.name} ×${m}`); }
+
+    } else if (act.type === 'threshold') {
+      const amt = parseInt(act.thresholdAmt) || 0;
+      const bonus = parseInt(act.bonusPoints) || 0;
+      if (parseInt(price) >= amt && bonus > 0) {
+        bonusPoints += bonus;
+        appliedRules.push(`💰${act.name} +${bonus}點`);
+      }
+
+    } else if (act.type === 'product') {
+      const pName = (productName || '').toLowerCase();
+      const matched = (act.targetProducts || []).some(tp => pName.includes(tp.toLowerCase()));
+      if (matched) {
+        const m = parseFloat(act.productMultiplier) || 2;
+        if (m > multiplier) { multiplier = m; appliedRules.push(`🍃${act.name} ×${m}`); }
+      }
+    }
+  });
+
+  finalPoints = Math.round(basePoints * multiplier) + bonusPoints;
+  return { points: finalPoints, basePoints, multiplier, bonusPoints, appliedRules };
+}
+
+async function renderActivities() {
+  const activities = getActivities();
+  const ts = getTierSettings();
+  const today = new Date().toISOString().slice(0, 10);
+
+  // 更新 tier toggle
+  const toggle = document.getElementById('tierToggle');
+  if (toggle) toggle.className = `toggle ${ts.enabled ? '' : 'off'}`;
+
+  // 顯示/隱藏會員等級橫幅
+  const tierBanner = document.getElementById('tierBanner');
+  if (tierBanner) {
+    tierBanner.style.display = ts.enabled ? 'block' : 'none';
+    if (ts.enabled) {
+      document.getElementById('tierBannerContent').innerHTML = ts.tiers.map(t =>
+        `<div style="background:rgba(255,255,255,.15);border-radius:8px;padding:8px 12px;text-align:center;min-width:110px;">
+          <div style="font-size:18px;">${t.icon}</div>
+          <div style="font-size:11px;font-weight:700;">${t.name}</div>
+          <div style="font-size:10px;opacity:.8;">滿 $${t.minSpend.toLocaleString()}</div>
+          <div style="font-size:13px;font-weight:900;">×${t.multiplier}</div>
+        </div>`
+      ).join('');
+    }
+  }
+
+  // 統計卡片
+  const active = activities.filter(a => a.enabled && (!a.endDate || a.endDate >= today));
+  const expired = activities.filter(a => a.endDate && a.endDate < today);
+  const upcoming = activities.filter(a => a.enabled && a.startDate && a.startDate > today);
+  document.getElementById('activityStatCards').innerHTML = `
+    <div class="stat-card"><div class="stat-icon" style="background:var(--success-light);">🟢</div><div class="stat-value">${active.length}</div><div class="stat-label">進行中活動</div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:var(--primary-light);">📅</div><div class="stat-value">${upcoming.length}</div><div class="stat-label">即將開始</div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:var(--gray-100,#f1f5f9);">🏁</div><div class="stat-value">${expired.length}</div><div class="stat-label">已結束</div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:var(--purple-light);">👑</div><div class="stat-value" style="font-size:16px;">${ts.enabled ? '啟用中' : '未啟用'}</div><div class="stat-label">會員等級制度</div></div>`;
+
+  // Badge
+  const badge = document.getElementById('activeActivityCount');
+  if (badge) { badge.textContent = active.length; badge.style.display = active.length > 0 ? 'inline' : 'none'; }
+
+  // Table
+  const tbody = document.getElementById('activitiesTbody');
+  if (!activities.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:#94a3b8;">尚無活動，點「新增活動」建立第一個集點活動</td></tr>`;
+    return;
+  }
+
+  const typeLabel = { multiplier: '⏰ 限時倍數', threshold: '💰 滿額加點', product: '🍃 指定商品' };
+  tbody.innerHTML = activities.map(act => {
+    const isActive = act.enabled && (!act.startDate || act.startDate <= today) && (!act.endDate || act.endDate >= today);
+    const isExpired = act.endDate && act.endDate < today;
+    const isUpcoming = act.enabled && act.startDate && act.startDate > today;
+    let statusBadge = isExpired ? `<span class="badge badge-gray">已結束</span>` :
+                      isUpcoming ? `<span class="badge badge-blue">即將開始</span>` :
+                      isActive ? `<span class="badge badge-green">進行中</span>` :
+                      `<span class="badge badge-gray">已停用</span>`;
+    let ruleDesc = '';
+    if (act.type === 'multiplier') ruleDesc = `點數 ×${act.multiplier} 倍`;
+    else if (act.type === 'threshold') ruleDesc = `滿 $${parseInt(act.thresholdAmt||0).toLocaleString()} 加贈 ${act.bonusPoints} 點`;
+    else if (act.type === 'product') ruleDesc = `指定商品 ×${act.productMultiplier} 倍（${(act.targetProducts||[]).slice(0,2).join('、')}）`;
+
+    return `<tr>
+      <td><div style="font-weight:700;">${act.name}</div><div style="font-size:10px;color:#94a3b8;">${act.note||''}</div></td>
+      <td><span class="badge badge-gray">${typeLabel[act.type]||act.type}</span></td>
+      <td style="font-size:11px;color:#64748b;">${act.startDate||'即日起'} ~ ${act.endDate||'無限期'}</td>
+      <td style="font-size:12px;">${ruleDesc}</td>
+      <td>${statusBadge}</td>
+      <td>
+        <div style="display:flex;gap:4px;">
+          <button class="act-btn act-edit" title="編輯" onclick="editActivity('${act.id}')">✏️</button>
+          <button class="act-btn ${act.enabled?'act-print':'act-pay'}" title="${act.enabled?'停用':'啟用'}" onclick="toggleActivity('${act.id}')">${act.enabled?'⏸':'▶'}</button>
+          <button class="act-btn act-del" title="刪除" onclick="deleteActivity('${act.id}')">🗑</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function updateActivityForm() {
+  const type = document.getElementById('actType').value;
+  ['multiplier','threshold','product'].forEach(t => {
+    const el = document.getElementById('actForm-' + t);
+    if (el) el.style.display = t === type ? 'block' : 'none';
+  });
+  if (type === 'product') loadProductCheckboxes();
+}
+
+async function loadProductCheckboxes() {
+  const products = await idbGetAll('products');
+  const act = getActivities().find(a => a.id === document.getElementById('editActivityId').value);
+  const selected = act?.targetProducts || [];
+  const div = document.getElementById('actProductList');
+  if (!products.length) { div.innerHTML = '<div style="color:#94a3b8;font-size:12px;padding:8px;">請先到「商品目錄管理」建立商品</div>'; return; }
+  div.innerHTML = products.map(p => `
+    <label style="display:flex;align-items:center;gap:8px;padding:6px;cursor:pointer;border-radius:6px;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">
+      <input type="checkbox" value="${p.name}" ${selected.includes(p.name)?'checked':''} style="width:16px;height:16px;">
+      <span style="font-size:12px;">${p.emoji||'📦'} ${p.name} <span style="color:#94a3b8;">$${p.price}</span></span>
+    </label>`).join('');
+}
+
+function openAddActivity() {
+  document.getElementById('editActivityId').value = '';
+  document.getElementById('activityModalTitle').textContent = '🎯 新增集點活動';
+  document.getElementById('actName').value = '';
+  document.getElementById('actType').value = 'multiplier';
+  document.getElementById('actNote').value = '';
+  document.getElementById('actMultiplier').value = '2';
+  const today = new Date().toISOString().slice(0, 10);
+  const nextMonth = new Date(Date.now() + 30*24*60*60*1000).toISOString().slice(0, 10);
+  ['actStartDate','actStartDate2','actStartDate3'].forEach(id => { const el=document.getElementById(id); if(el) el.value=today; });
+  ['actEndDate','actEndDate2','actEndDate3'].forEach(id => { const el=document.getElementById(id); if(el) el.value=nextMonth; });
+  updateActivityForm();
+  document.getElementById('addActivityModal').classList.add('show');
+}
+
+async function editActivity(id) {
+  const act = getActivities().find(a => a.id === id);
+  if (!act) return;
+  document.getElementById('editActivityId').value = id;
+  document.getElementById('activityModalTitle').textContent = '✏️ 編輯活動';
+  document.getElementById('actName').value = act.name || '';
+  document.getElementById('actType').value = act.type || 'multiplier';
+  document.getElementById('actNote').value = act.note || '';
+  document.getElementById('actMultiplier').value = act.multiplier || 2;
+  document.getElementById('actThresholdAmt').value = act.thresholdAmt || 1000;
+  document.getElementById('actBonusPoints').value = act.bonusPoints || 20;
+  document.getElementById('actProductMultiplier').value = act.productMultiplier || 2;
+  const sd = act.startDate || ''; const ed = act.endDate || '';
+  ['actStartDate','actStartDate2','actStartDate3'].forEach(id => { const el=document.getElementById(id); if(el) el.value=sd; });
+  ['actEndDate','actEndDate2','actEndDate3'].forEach(id => { const el=document.getElementById(id); if(el) el.value=ed; });
+  updateActivityForm();
+  document.getElementById('addActivityModal').classList.add('show');
+}
+
+function saveActivity() {
+  const name = document.getElementById('actName').value.trim();
+  if (!name) { showToast('請填入活動名稱', true); return; }
+  const type = document.getElementById('actType').value;
+  const id = document.getElementById('editActivityId').value || 'act_' + Date.now();
+  const activities = getActivities();
+  const idx = activities.findIndex(a => a.id === id);
+
+  let startDate = '', endDate = '';
+  if (type === 'multiplier') { startDate = document.getElementById('actStartDate').value; endDate = document.getElementById('actEndDate').value; }
+  else if (type === 'threshold') { startDate = document.getElementById('actStartDate2').value; endDate = document.getElementById('actEndDate2').value; }
+  else if (type === 'product') { startDate = document.getElementById('actStartDate3').value; endDate = document.getElementById('actEndDate3').value; }
+
+  const selectedProducts = [...document.querySelectorAll('#actProductList input[type=checkbox]:checked')].map(cb => cb.value);
+
+  const act = {
+    id, name, type, startDate, endDate, enabled: true,
+    note: document.getElementById('actNote').value,
+    multiplier: parseFloat(document.getElementById('actMultiplier').value) || 2,
+    thresholdAmt: parseInt(document.getElementById('actThresholdAmt').value) || 1000,
+    bonusPoints: parseInt(document.getElementById('actBonusPoints').value) || 20,
+    productMultiplier: parseFloat(document.getElementById('actProductMultiplier').value) || 2,
+    targetProducts: selectedProducts,
+    createdAt: Date.now()
+  };
+
+  if (idx >= 0) activities[idx] = act; else activities.push(act);
+  saveActivities(activities);
+  closeModal('addActivityModal');
+  showToast('✅ 活動已儲存！');
+  renderActivities();
+}
+
+function toggleActivity(id) {
+  const activities = getActivities();
+  const act = activities.find(a => a.id === id);
+  if (!act) return;
+  act.enabled = !act.enabled;
+  saveActivities(activities);
+  showToast(act.enabled ? '▶ 活動已啟用' : '⏸ 活動已停用');
+  renderActivities();
+}
+
+function deleteActivity(id) {
+  if (!confirm('確定刪除此活動？')) return;
+  saveActivities(getActivities().filter(a => a.id !== id));
+  showToast('已刪除');
+  renderActivities();
+}
+
+// =====================================================================
+// V5：會員等級設定
+// =====================================================================
+function renderTierSettings() {
+  const ts = getTierSettings();
+  const toggle = document.getElementById('tierToggle');
+  if (toggle) toggle.className = `toggle ${ts.enabled ? '' : 'off'}`;
+
+  const list = document.getElementById('tierSettingsList');
+  if (!list) return;
+  list.innerHTML = ts.tiers.map((t, i) => `
+    <div style="background:#f8fafc;border-radius:10px;padding:14px;border:1px solid #e2e8f0;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="font-size:24px;">${t.icon}</div>
+        <div style="flex:1;">
+          <input value="${t.name}" class="form-input" style="font-weight:700;" id="tierName_${i}" placeholder="等級名稱">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div>
+          <label class="form-label">累計消費門檻（元）</label>
+          <input id="tierMin_${i}" class="form-input" type="number" value="${t.minSpend}" ${i===0?'disabled':''} min="0">
+        </div>
+        <div>
+          <label class="form-label">點數倍率</label>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <input id="tierMul_${i}" class="form-input" type="number" value="${t.multiplier}" min="1" max="10" step="0.5" style="width:80px;">
+            <span style="font-size:12px;color:#64748b;">倍</span>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  // 計算範例
+  const s = getSettings();
+  const eg = document.getElementById('tierCalcExample');
+  if (eg) {
+    eg.innerHTML = ts.tiers.map(t => {
+      const pts = Math.round(799 / 100 * s.pointsRate * t.multiplier);
+      return `<div style="margin-bottom:4px;">${t.icon} ${t.name}（滿 $${t.minSpend.toLocaleString()}）：$799 → <strong style="color:var(--primary);">${pts} 點</strong></div>`;
+    }).join('');
+  }
+}
+
+function saveTierSettings() {
+  const ts = getTierSettings();
+  ts.tiers = ts.tiers.map((t, i) => ({
+    ...t,
+    name: document.getElementById(`tierName_${i}`)?.value || t.name,
+    minSpend: i === 0 ? 0 : parseInt(document.getElementById(`tierMin_${i}`)?.value) || t.minSpend,
+    multiplier: parseFloat(document.getElementById(`tierMul_${i}`)?.value) || t.multiplier,
+  }));
+  saveTierSettings(ts);
+  showToast('✅ 會員等級設定已儲存');
+  renderTierSettings();
+  renderActivities();
+}
+
+function toggleTierSystem() {
+  const ts = getTierSettings();
+  ts.enabled = !ts.enabled;
+  saveTierSettings(ts);
+  const toggle = document.getElementById('tierToggle');
+  if (toggle) toggle.className = `toggle ${ts.enabled ? '' : 'off'}`;
+  showToast(ts.enabled ? '👑 會員等級制度已啟用' : '會員等級制度已停用');
+  renderActivities();
+}
+
+function updatePWAStatus() {
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isAndroid = /android/i.test(navigator.userAgent);
+  const isStandalone = window.navigator.standalone === true ||
+    window.matchMedia('(display-mode: standalone)').matches;
+  const statusText = document.getElementById('pwaStatusText');
+  const androidSection = document.getElementById('androidInstallSection');
+  const statusCard = document.getElementById('pwaStatusCard');
+
+  if (isStandalone) {
+    if(statusText) statusText.textContent = '✅ 已安裝為 APP 模式';
+    if(statusCard) statusCard.style.background = 'var(--success-light)';
+    if(androidSection) androidSection.style.display = 'none';
+  } else if (isAndroid && deferredInstallPrompt) {
+    if(statusText) statusText.textContent = '📲 點下方按鈕立即安裝';
+    if(androidSection) androidSection.style.display = 'block';
+  } else if (isIOS) {
+    if(statusText) statusText.textContent = '請依下方步驟安裝（iOS Safari）';
+    if(androidSection) androidSection.style.display = 'none';
+  } else {
+    if(statusText) statusText.textContent = '請依下方對應步驟安裝';
+    if(androidSection && deferredInstallPrompt) androidSection.style.display = 'block';
+  }
+}
+
+// =====================================================================
+// sw.js 內容輸出（給部署用）
+// =====================================================================
+function downloadSW() {
+  const swContent = `const CACHE_NAME = 'order-app-v4';
+const ASSETS = ['./', './index.html'];
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS).catch(()=>{})));
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  if(e.request.method !== 'GET') return;
+  e.respondWith(caches.match(e.request).then(cached => {
+    const net = fetch(e.request).then(res => {
+      if(res && res.status===200) {
+        caches.open(CACHE_NAME).then(c => c.put(e.request, res.clone()));
+      }
+      return res;
+    }).catch(() => cached);
+    return cached || net;
+  }));
+});`;
+  const blob = new Blob([swContent], {type:'application/javascript'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'sw.js';
+  a.click();
+  showToast('sw.js 已下載，請放在與 HTML 同一個資料夾');
+}
+
+init();
+// 初始化後執行 PWA 相關檢查
+setTimeout(() => {
+  updateOnlineStatus();
+  checkIOSInstall();
+}, 500);
+</script>
+</body>
+</html>
