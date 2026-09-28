@@ -14,22 +14,32 @@ function renderRegular() {
   const avgWait = waits.length ? waits.reduce((a, b) => a + b, 0) / waits.length : 0;
   const est = Q.estimateWait(making.length, S.cfg.avgMakeSec, S.cfg.stations);
   const qs = Q.pickupStats(S.pickups.filter(p => p.date === d && p.site === curSite).map(p => p.sec), S.cfg.targetSec);
+  const closed = S.cfg.marketMode === 'closed';
+  const qcard = (t, ready) => {
+    const dup = sameCallNo(t, d);
+    const e = t.empId && empById(t.empId);
+    return `<div class="qitem" ${ready ? 'style="border-color:var(--accent)"' : ''}><div class="qnum" ${ready ? 'style="color:var(--accent)"' : ''}>${esc(callNo(t))}</div>
+      <div class="small muted">${callNo(t) !== t.no ? `單號 ${t.no}・` : ''}${e ? esc(e.name) : '訪客'}</div>
+      ${dup.length ? `<div class="small"><span class="tag bad">同號 ${dup.length + 1} 人，螢幕加註姓名</span></div>` : ''}
+      <div class="small">${esc(t.itemName)}</div>${t.note ? `<div class="small muted">📝 ${esc(t.note)}</div>` : ''}
+      ${ready ? `<button class="btn sm" data-done="${t.id}" style="margin-top:6px">已取餐</button>`
+        : `<div class="small muted">${fmtTime(t.createdAt)} 點餐</div><button class="btn sm pri" data-ready="${t.id}" style="margin-top:6px">完成・叫號</button>`}</div>`;
+  };
   el.innerHTML = `
+  <div class="note">叫號模式：<b>${closed ? `封閉市場・工號末 ${S.cfg.callDigits} 碼` : '開放市場・品牌流水號（A001）'}</b>（系統設定可切換）｜<a href="board.html?site=${curSite}" target="_blank">開啟叫號大螢幕 ↗</a></div>
   <div class="note acc">雙隊伍分流：<b>一般隊伍</b>現點現做（可客製），<b>快取GO 隊伍</b>預訂/現貨刷卡即取。現在排一般隊伍預估等候 <b>${Math.ceil(est / 60)} 分鐘</b>；快取GO 今日平均 <b>${qs.count ? qs.avg.toFixed(1) + ' 秒' : '—'}</b>。</div>
   <div class="grid side">
     <div class="grid">
       <div class="card"><h3>🔥 製作中 <span class="tag">${making.length}</span></h3><div class="pad"><div class="qgrid">
-        ${making.map(t => `<div class="qitem"><div class="qnum">${t.no}</div><div class="small">${esc(t.itemName)}</div>${t.note ? `<div class="small muted">📝 ${esc(t.note)}</div>` : ''}<div class="small muted">${fmtTime(t.createdAt)} 點餐</div>
-          <button class="btn sm pri" data-ready="${t.id}" style="margin-top:6px">完成・叫號</button></div>`).join('') || '<span class="muted small">無</span>'}
+        ${making.map(t => qcard(t, false)).join('') || '<span class="muted small">無</span>'}
       </div></div></div>
       <div class="card"><h3>📣 叫號待取 <span class="tag acc">${ready.length}</span></h3><div class="pad"><div class="qgrid">
-        ${ready.map(t => `<div class="qitem" style="border-color:var(--accent)"><div class="qnum" style="color:var(--accent)">${t.no}</div><div class="small">${esc(t.itemName)}</div>
-          <button class="btn sm" data-done="${t.id}" style="margin-top:6px">已取餐</button></div>`).join('') || '<span class="muted small">無</span>'}
+        ${ready.map(t => qcard(t, true)).join('') || '<span class="muted small">無</span>'}
       </div></div></div>
     </div>
     <div class="grid" style="align-self:start">
       <div class="card"><h3>🧑‍🍳 一般點餐</h3><div class="pad">
-        <label class="f">工號（選填，會員累點）</label><input class="in" id="rEmp" placeholder="刷卡或輸入工號">
+        <label class="f">${closed ? `工號（叫號用末 ${S.cfg.callDigits} 碼，並累點）` : '工號（選填，會員累點）'}</label><input class="in" id="rEmp" placeholder="刷卡或輸入工號">
         <label class="f">餐點</label>
         <select class="in" id="rItem">${menu.map(m => `<option value="${m.id}">${m.emoji} ${esc(m.name)}　${money(m.price)}</option>`).join('')}</select>
         <label class="f">客製需求</label><input class="in" id="rNote" placeholder="例：飯少、不要辣">
@@ -47,9 +57,13 @@ function renderRegular() {
     if (code && !e) return toast('查無此工號');
     const t = tpl($('#rItem').value);
     const price = Q.computePrice({ price: t.price, channel: 'regular', serviceDate: d, now: new Date(), cfg: S.cfg, tierPct: e ? tierOf(e).tier.discountPct : 0 });
-    const no = 'N' + String(mine.length + 1).padStart(3, '0');
-    S.tickets.push({ id: uid('t'), no, date: d, site: curSite, empId: e ? e.id : null, setId: t.id, itemName: t.name, note: $('#rNote').value.trim(), total: price.total, status: 'making', createdAt: Date.now() });
-    save(); toast(`號碼 ${no}｜${money(price.total)}`); renderRegular();
+    const no = ticketNo(d, curSite);
+    const tk = { id: uid('t'), no, date: d, site: curSite, empId: e ? e.id : null, setId: t.id, itemName: t.name, note: $('#rNote').value.trim(), total: price.total, status: 'making', createdAt: Date.now() };
+    S.tickets.push(tk);
+    const dup = sameCallNo(tk, d);
+    save();
+    toast(`取餐號 ${callNo(tk)}｜${money(price.total)}${dup.length ? `｜與 ${dup.length} 人同號，大螢幕將加註姓名` : ''}${closed && !e ? '｜未輸入工號，改用單號' : ''}`);
+    renderRegular();
   };
   el.querySelectorAll('[data-ready]').forEach(b => b.onclick = () => { const t = S.tickets.find(x => x.id === b.dataset.ready); t.status = 'ready'; t.readyAt = Date.now(); save(); renderRegular(); });
   el.querySelectorAll('[data-done]').forEach(b => b.onclick = () => {

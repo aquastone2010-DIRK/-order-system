@@ -154,6 +154,33 @@ test('集點與連續天數', () => {
   assert.equal(C.workdayStreak(new Set(), '2026-09-28'), 0);
 });
 
+test('叫號：工號末碼', () => {
+  assert.equal(C.idSuffix('E10023', 3), '023');
+  assert.equal(C.idSuffix('E10023', 4), '0023');
+  assert.equal(C.idSuffix('7', 4), '0007');
+  assert.deepEqual(C.suffixGroups(['E11023', 'E12023', 'E10500'], 3).sort(), [1, 2]);
+  assert.equal(C.maskName('王小明'), '王○明');
+  assert.equal(C.maskName('陳一'), '陳○');
+  assert.equal(C.maskName('歐陽小華'), '歐○○華');
+});
+
+test('叫號：撞號機率', () => {
+  // 全部不同組 → 0；兩人同組且都被叫 → 1
+  assert.equal(C.suffixCollisionProb([1, 1, 1, 1], 3), 0);
+  assert.equal(C.suffixCollisionProb([2], 2), 1);
+  // 4 人分 2 組各 2 人，叫 2 人：C(4,2)=6 種，同組 2 種 → 1/3
+  assert.ok(Math.abs(C.suffixCollisionProb([2, 2], 2) - 1 / 3) < 1e-12);
+  // 與等組公式 Π (N - i·g)/(N - i) 比對：8000 人、末 3 碼（每組 8 人）、同時 20 人
+  const N = 8000, g = 8, k = 20;
+  let p = 1; for (let i = 0; i < k; i++) p *= (N - i * g) / (N - i);
+  assert.ok(Math.abs(C.suffixCollisionProb(C.evenGroups(N, 3), k) - (1 - p)) < 1e-12);
+  // 8000 人連續編號、末 4 碼：每個末碼只有 1 人 → 不可能撞號
+  assert.equal(C.suffixCollisionProb(C.evenGroups(8000, 4), 20), 0);
+  // 不整除：1001 人末 3 碼 → 1 組 2 人、999 組 1 人
+  const eg = C.evenGroups(1001, 3);
+  assert.equal(eg.length, 1000); assert.equal(eg.reduce((a, b) => a + b, 0), 1001); assert.equal(Math.max(...eg), 2);
+});
+
 test('餐券包與品牌拆帳', () => {
   const v = C.passValue({ meals: 10, price: 900 }, 100);
   assert.equal(v.perMeal, 90); assert.equal(v.savingTotal, 100);

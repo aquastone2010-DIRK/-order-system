@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快取GO 叫號螢幕</title>
+<meta name="theme-color" content="#020617">
+<meta name="description" content="快取GO 前台：取餐叫號大螢幕（封閉市場工號末碼／開放市場取餐號）">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* 叫號大螢幕：固定深色，電視 16:9 為主，字級依畫面寬度縮放 */
+body.board-page{background:#020617;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+.b-head{display:flex;align-items:center;gap:16px;padding:12px 24px;background:#0f172a;border-bottom:2px solid #0f766e;flex-wrap:wrap}
+.b-head .logo{color:#fff;font-size:clamp(18px,2vw,32px)}
+.b-head .site{font-size:clamp(14px,1.4vw,24px);font-weight:800}
+.b-head .mode{font-size:clamp(11px,1vw,16px);background:#134e4a;color:#5eead4;border-radius:8px;padding:3px 10px;font-weight:800}
+.b-head .clock{font-size:clamp(16px,1.8vw,30px);color:#5eead4;font-weight:800;font-variant-numeric:tabular-nums}
+.b-head select{width:auto;color:#0f172a}
+#bVoice{border:1px solid #334155;background:#1e293b;color:#fbbf24;border-radius:999px;padding:6px 14px;font-weight:800;cursor:pointer}
+#bVoice.on{color:#5eead4;border-color:#0f766e}
+#board{flex:1;display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr) minmax(0,.9fr);gap:16px;padding:16px 24px}
+#board h2{font-size:clamp(20px,2.4vw,44px);font-weight:900;margin-bottom:12px;display:flex;align-items:baseline;gap:10px}
+#board h2 small{font-size:.4em;letter-spacing:.15em;color:#64748b}
+.b-ready{background:#0b1220;border:2px solid #f59e0b;border-radius:18px;padding:18px}
+.b-ready h2{color:#fbbf24}
+.b-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(120px,14vw,260px),1fr));gap:12px}
+.b-num{background:#1e293b;border-radius:14px;padding:10px 8px;text-align:center}
+.b-num b{display:block;font-size:clamp(40px,6vw,120px);line-height:1.05;font-weight:900;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.b-num.l4 b{font-size:clamp(32px,4.4vw,92px);letter-spacing:0}
+.b-num b{white-space:nowrap;overflow:hidden}
+.b-num span{display:block;font-size:clamp(12px,1.2vw,22px);color:#fbbf24;font-weight:800;margin-top:2px}
+.b-num.fresh{background:#f59e0b;animation:bflash 1s ease-in-out 6}
+.b-num.fresh b,.b-num.fresh span{color:#1f1300}
+@keyframes bflash{50%{transform:scale(1.06);box-shadow:0 0 40px #f59e0b}}
+.b-making{background:#0b1220;border:1px solid #1e293b;border-radius:18px;padding:18px;display:flex;flex-direction:column}
+.b-list{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;flex:1}
+.b-list span{background:#1e293b;border-radius:10px;padding:6px 12px;font-size:clamp(18px,2vw,38px);font-weight:900;color:#cbd5e1;font-variant-numeric:tabular-nums}
+.b-list i{font-style:normal;font-size:.5em;color:#94a3b8;margin-left:6px}
+.b-wait{margin-top:12px;font-size:clamp(13px,1.2vw,22px);color:#94a3b8}.b-wait b{color:#fff;font-size:1.4em}
+.b-side{background:linear-gradient(160deg,#042f2e,#0f766e);border-radius:18px;padding:18px;color:#fff;display:flex;flex-direction:column;gap:10px}
+.b-side h2{color:#fff}
+.b-side p{font-size:clamp(13px,1.1vw,20px);line-height:1.5;opacity:.9}
+.b-kpi{background:rgba(255,255,255,.1);border-radius:12px;padding:10px 14px}
+.b-kpi b{display:block;font-size:clamp(24px,2.8vw,52px);font-weight:900;font-variant-numeric:tabular-nums}
+.b-kpi span{font-size:clamp(11px,1vw,17px);opacity:.8}
+.b-brand{display:flex;align-items:center;gap:10px;font-size:clamp(14px,1.3vw,24px);font-weight:800}
+.b-brand b{background:#fff;color:#0f766e;border-radius:8px;width:1.8em;text-align:center}
+.b-empty{color:#475569;font-size:clamp(16px,1.6vw,30px);padding:24px 0}
+.b-more{margin-top:10px;color:#fbbf24;font-weight:800}
+.b-ticker{background:#f59e0b;color:#1f1300;font-weight:900;font-size:clamp(14px,1.5vw,28px);overflow:hidden;white-space:nowrap;padding:8px 0}
+.b-ticker>div{display:inline-flex;animation:bticker 40s linear infinite}
+.b-ticker span{padding-right:80px}
+@keyframes bticker{to{transform:translateX(-50%)}}
+.b-foot{font-size:clamp(11px,.9vw,15px);color:#64748b;padding:6px 24px;background:#0f172a}
+@media(max-width:860px){#board{grid-template-columns:1fr;padding:12px}.b-head{padding:10px 12px}}
+@media(prefers-reduced-motion:reduce){.b-num.fresh,.b-ticker>div{animation:none}}
+</style>
+</head>
+<body class="board-page">
+<div class="demo" id="demoBanner"></div>
+<div class="b-head">
+  <div class="logo"><i>⚡</i>快取GO</div>
+  <span class="site" id="bSite"></span>
+  <span class="mode" id="bMode"></span>
+  <div class="grow"></div>
+  <select id="siteSel" class="in"></select>
+  <button id="bVoice"></button>
+  <span class="clock" id="clock"></span>
+</div>
+<main id="board" style="max-width:none;margin:0"></main>
+<div class="b-ticker" id="bTicker"></div>
+<div class="b-foot" id="bFoot"></div>
+<div class="toast" id="toast"></div>
+
+<script src="core.js"></script>
+<script src="app-data.js"></script>
+<script src="app-board.js"></script>
+<script>
+'use strict';
+// 前台啟動：叫號大螢幕
+curView = 'board';
+function renderAll() { renderBanner(); renderBoard(); }
+
+load();
+curSite = new URLSearchParams(location.search).get('site') || S.sites[0].id;
+if (!siteById(curSite)) curSite = S.sites[0].id;
+$('#siteSel').innerHTML = siteOptions();
+$('#siteSel').onchange = ev => { curSite = ev.target.value; BD.seen = null; renderAll(); };
+// 瀏覽器規定語音需使用者操作後才能播放
+$('#bVoice').onclick = () => {
+  BD.voice = !BD.voice;
+  if (BD.voice && 'speechSynthesis' in window) speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance('語音叫號已開啟'), { lang: 'zh-TW' }));
+  renderAll();
+};
+startClock();
+renderAll();
+setInterval(renderAll, 5000); // 更新「剛叫號」閃爍狀態
+</script>
+</body>
+</html>

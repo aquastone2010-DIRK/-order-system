@@ -233,7 +233,48 @@
     return { gross, commission, payout: gross - commission };
   }
 
+  // ── 叫號：工號末碼（封閉市場）────────────────────────────
+  // 取工號中的數字部分末 digits 碼，不足補 0
+  function idSuffix(id, digits) {
+    const d = String(id).replace(/\D/g, '');
+    return d.slice(-digits).padStart(digits, '0');
+  }
+  // 名冊依末碼分組，回傳各組人數（只含有人的組）
+  function suffixGroups(ids, digits) {
+    const m = new Map();
+    for (const id of ids) { const s = idSuffix(id, digits); m.set(s, (m.get(s) || 0) + 1); }
+    return [...m.values()];
+  }
+  // 工號平均分布（如連續編號）時，N 人落在 10^digits 個末碼的分組人數
+  function evenGroups(n, digits) {
+    const m = Math.pow(10, digits);
+    if (n <= m) return new Array(n).fill(1);
+    const base = Math.floor(n / m), extra = n % m;
+    return Array.from({ length: m }, (_, i) => base + (i < extra ? 1 : 0));
+  }
+  // 從名冊隨機同時叫 k 位（不重複）時，至少兩人末碼相同的精確機率。
+  // 無撞號組合數 = 各組人數的 k 次基本對稱多項式 e_k(g)；總組合數 = C(N, k)
+  function suffixCollisionProb(groupSizes, k) {
+    const n = groupSizes.reduce((a, b) => a + b, 0);
+    if (k <= 1) return 0;
+    if (k > n) return 1;
+    if (groupSizes.every(g => g <= 1)) return 0; // 末碼全部唯一：數學上必為 0，避免浮點殘差
+    const e = new Array(k + 1).fill(0); e[0] = 1;
+    for (const g of groupSizes) for (let j = k; j >= 1; j--) e[j] += e[j - 1] * g;
+    let c = 1;
+    for (let i = 0; i < k; i++) c = c * (n - i) / (i + 1);
+    return Math.min(1, Math.max(0, 1 - e[k] / c));
+  }
+  // 撞號時大螢幕加註遮罩姓名：王小明 → 王○明、陳一 → 陳○
+  function maskName(name) {
+    const s = [...String(name)];
+    if (s.length <= 1) return s.join('');
+    if (s.length === 2) return s[0] + '○';
+    return s[0] + '○'.repeat(s.length - 2) + s[s.length - 1];
+  }
+
   return {
+    idSuffix, suffixGroups, evenGroups, suffixCollisionProb, maskName,
     MIN_SETS, MAX_SETS, ymd, parseYmd, addDays, weekday, isWorkday, hmToMin, minToHm, atTime, ceilSafe,
     validateMenu, orderCutoff, earlyBirdDeadline, canPreorder, tierFor, computePrice,
     walkinBaseline, forecastPrep, ingredientPlan, allocateLocker, buildSlots, slotLoads, recommendSlot,

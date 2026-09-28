@@ -31,6 +31,7 @@ function defaultCfg() {
     pointPerDollars: 10, stampGoal: 10, streakBonusDays: 5, streakBonus: 50,
     passCap: 120, redeemPoints: 100, redeemValue: 10,
     demoIgnoreCutoff: true,
+    marketMode: 'closed', callDigits: 4, concurrentCalls: 20,
   };
 }
 
@@ -82,11 +83,15 @@ function seed() {
   const giv = ['家豪', '怡君', '志明', '雅婷', '俊傑', '淑芬', '建宏', '佩珊', '冠宇', '詩涵', '宗翰', '欣怡', '承恩', '思妤', '柏翰'];
   const depts = ['製程整合', '設備工程', '良率工程', '研發', '廠務', '品保', '資訊', '人資'];
   const employees = [];
+  // 工號：從 10001–18000（約 8000 人規模的編號空間）隨機抽 150 個，模擬真實名冊的末碼分布
+  const nums = new Set();
+  while (nums.size < 150) nums.add(10001 + Math.floor(r() * 8000));
+  const numList = [...nums].sort((a, b) => a - b);
   for (let i = 0; i < 150; i++) {
-    const id = 'E' + (10001 + i);
+    const id = 'E' + numList[i];
     const lifetime = Math.floor(r() * 4200);
     employees.push({
-      id, name: pick(sur) + pick(giv), dept: pick(depts), site: sites[i % 3].id, card: '8800' + (10001 + i),
+      id, name: pick(sur) + pick(giv), dept: pick(depts), site: sites[i % 3].id, card: '8800' + numList[i],
       points: Math.floor(lifetime * 0.4), lifetime, stamps: Math.floor(r() * 10), passes: [],
       coupons: [{ id: 'c' + id, type: 'amount', value: 20, label: '新會員 NT$20 券', exp: Q.addDays(today, 30) }],
       lastStreakBonus: null,
@@ -110,7 +115,7 @@ function seed() {
       history.push({ date: d, site: s.id, pre: Math.round(s.base * 1.6 * f * (0.85 + r() * 0.3)), walkin: Math.round(s.base * f * (0.8 + r() * 0.4)), demo: true });
     }
   }
-  const st = { v: 1, cfg: defaultCfg(), sites, brands, ingredients, catalog, tiers, passes, employees, menus, history,
+  const st = { v: 2, cfg: defaultCfg(), sites, brands, ingredients, catalog, tiers, passes, employees, menus, history,
     orders: [], walkins: [], tickets: [], pickups: [], prep: {}, passSales: [], seededAt: Date.now() };
   // 今天與明天的示範預訂（以前一日中午下單＝享早鳥）
   S = st;
@@ -132,6 +137,18 @@ function seed() {
       st.orders.push({ id: uid('o'), date: d, empId: e.id, setId: t.id, site: site.id, slot, locker, total: price.total, lines: price.lines, passCost: 0, pay: 'badge', status: 'paid', createdAt: orderNow.getTime(), demo: true });
     }
   });
+  // 今天各場域一般點餐的示範單（供叫號大螢幕展示）：3 張待取、5 張製作中
+  const nowTs = Date.now();
+  for (const site of sites) {
+    const menu = menuFor(today);
+    const who = [...employees].sort(() => r() - 0.5).slice(0, 8);
+    who.forEach((e, i) => {
+      const t = menu[i % menu.length];
+      const created = nowTs - (16 - i) * 60000;
+      st.tickets.push({ id: uid('t'), no: ticketNo(today, site.id), date: today, site: site.id, empId: e.id, setId: t.id, itemName: t.name, note: '', total: t.price,
+        status: i < 3 ? 'ready' : 'making', createdAt: created, readyAt: i < 3 ? created + 240000 : undefined, demo: true });
+    });
+  }
   return st;
 }
 
@@ -145,7 +162,7 @@ function load() {
   let raw = null;
   try { raw = localStorage.getItem(KEY); } catch (e) {}
   if (raw) { try { S = JSON.parse(raw); } catch (e) { S = null; } }
-  if (!S || S.v !== 1) { S = seed(); save(); }
+  if (!S || S.v !== 2) { S = seed(); save(); }
   S.cfg = { ...defaultCfg(), ...S.cfg };
   closePastDays();
 }
@@ -195,6 +212,22 @@ function walkinStock(d, siteId, setId, fc) {
   const pre = activeOrders(d, siteId).filter(o => o.setId === setId).length;
   return Math.max(0, prepQty(d, siteId, setId, fc) - pre - walkinSold(d, siteId, setId));
 }
+// ── 叫號 ──
+// 內部單號：場域當日流水號 N001（不隨叫號模式改變）
+function brandCode(brandId) { const i = S.brands.findIndex(b => b.id === brandId); return String.fromCharCode(65 + Math.max(0, i)); }
+function ticketNo(d, siteId) { return 'N' + String(S.tickets.filter(t => t.date === d && t.site === siteId).length + 1).padStart(3, '0'); }
+// 大螢幕叫號號碼（即時計算，切換模式後所有單一致）：
+//   封閉市場：有工號 → 工號末 N 碼；訪客 → 內部單號
+//   開放市場：品牌代碼字母 + 該品牌當日流水號（A001）
+function callNo(t) {
+  if (S.cfg.marketMode === 'closed') return t.empId ? Q.idSuffix(t.empId, S.cfg.callDigits) : t.no;
+  const brand = tpl(t.setId).brandId;
+  const same = S.tickets.filter(x => x.date === t.date && x.site === t.site && tpl(x.setId).brandId === brand).sort((a, b) => a.createdAt - b.createdAt);
+  return brandCode(brand) + String(same.indexOf(t) + 1).padStart(3, '0');
+}
+// 目前在大螢幕上（製作中／待取）與此單同號的其他單
+function sameCallNo(t, d) { const n = callNo(t); return S.tickets.filter(x => x !== t && x.date === d && x.site === t.site && (x.status === 'making' || x.status === 'ready') && callNo(x) === n); }
+
 function tierOf(e) { return Q.tierFor(e.lifetime, S.tiers); }
 function passMeals(e) { return e.passes.reduce((a, p) => a + p.meals, 0); }
 function consumePass(e) { const p = e.passes.find(x => x.meals > 0); if (!p) return null; p.meals--; const c = p.perMeal; e.passes = e.passes.filter(x => x.meals > 0); return c; }

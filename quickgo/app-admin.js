@@ -175,17 +175,35 @@ function renderData() {
 // 設定
 // ════════════════════════════════════════════════════════════
 const CFG_FIELDS = [
+  ['叫號大螢幕', [['marketMode', '市場類型', 'select', [['closed', '封閉市場（科技廠・工號末碼）'], ['open', '開放市場（美食街・取餐號）']]], ['callDigits', '工號末幾碼叫號', 'select', [['3', '末 3 碼'], ['4', '末 4 碼']]], ['concurrentCalls', '尖峰同時叫號人數（試算用）', 'int']]],
   ['營運規則', [['cutoffTime', '當日預訂截止', 'time'], ['slotStart', '取餐開始', 'time'], ['slotEnd', '取餐結束', 'time'], ['slotMinutes', '時段長度（分）', 'int'], ['targetSec', '取餐目標秒數', 'int'], ['avgMakeSec', '一般餐平均製作秒數', 'int'], ['stations', '一般出餐站數', 'int'], ['demoIgnoreCutoff', '展示模式：忽略截止時間', 'bool']]],
   ['備餐預估', [['forecastWeeks', '參考週數', 'int'], ['safetyPct', '安全庫存 %', 'int'], ['fallbackWalkinPct', '無歷史時現場量 = 預訂 × %', 'int']]],
   ['行銷優惠', [['earlyBirdTime', '早鳥期限（前一日）', 'time'], ['earlyBirdDiscount', '早鳥折抵（元）', 'int'], ['flashEnabled', '啟用剩食快閃', 'bool'], ['flashTime', '快閃開始時間', 'time'], ['flashPct', '快閃售價 %（70 = 7折）', 'int'], ['passCap', '餐券/免費券折抵上限（元）', 'int']]],
   ['會員黏著', [['pointPerDollars', '每幾元得 1 點', 'int'], ['stampGoal', '集滿幾章換券', 'int'], ['streakBonusDays', '連續幾個工作日獎勵', 'int'], ['streakBonus', '連續獎勵點數', 'int'], ['redeemPoints', '兌換所需點數', 'int'], ['redeemValue', '兌換券面額（元）', 'int']]],
 ];
+// 工號末碼撞號試算：平均分布（連續編號）情境 + 目前名冊實際分布
+function callAnalysis() {
+  const k = S.cfg.concurrentCalls;
+  const fmtP = p => (p * 100).toFixed(1) + '%';
+  const rows = [3000, 5000, 8000].map(n => {
+    const p3 = Q.suffixCollisionProb(Q.evenGroups(n, 3), k), p4 = Q.suffixCollisionProb(Q.evenGroups(n, 4), k);
+    return `<tr><td>${n.toLocaleString()} 人（連續編號）</td><td class="num">${(n / 1000).toFixed(0)} 人</td><td class="num">${fmtP(p3)}</td><td class="num">${n <= 10000 ? '1 人以下' : ''}</td><td class="num"><b>${fmtP(p4)}</b></td></tr>`;
+  });
+  const ids = S.employees.map(e => e.id);
+  const g3 = Q.suffixGroups(ids, 3), g4 = Q.suffixGroups(ids, 4);
+  rows.push(`<tr><td>目前名冊 ${ids.length} 人（實際工號）</td><td class="num">最多 ${Math.max(...g3)} 人</td><td class="num">${fmtP(Q.suffixCollisionProb(g3, k))}</td><td class="num">最多 ${Math.max(...g4)} 人</td><td class="num"><b>${fmtP(Q.suffixCollisionProb(g4, k))}</b></td></tr>`);
+  return `<div class="card" style="margin-top:14px"><h3>🔢 工號末碼撞號試算 <span class="muted small">尖峰同時叫號 ${k} 人時，至少兩人末碼相同的機率（精確計算）</span></h3>
+    <div class="scroll"><table><thead><tr><th>員工規模</th><th class="num">末 3 碼・每碼人數</th><th class="num">末 3 碼撞號</th><th class="num">末 4 碼・每碼人數</th><th class="num">末 4 碼撞號</th></tr></thead>
+    <tbody>${rows.join('')}</tbody></table></div>
+    <div class="pad small muted">建議科技廠（3,000–8,000 人）使用末 4 碼：工號連續編號時每個末碼最多 1 人，不會撞號；末 3 碼每碼約 3–8 人，尖峰撞號機率明顯偏高。若工號非連續（跨廠區、跳號），仍可能撞號，系統會在大螢幕自動加註遮罩姓名（王○明）區分。計算方式：無撞號組合數 e<sub>k</sub>(各末碼人數) ÷ C(總人數, k)。</div></div>`;
+}
 function renderSettings() {
   const el = $('#v-settings');
   el.innerHTML = `
-  <div class="grid g2">${CFG_FIELDS.map(([g, fs]) => `<div class="card"><h3>${g}</h3><div class="pad grid g2">${fs.map(([k, n, t]) => `<div>
-    <label class="f">${n}</label>${t === 'bool' ? `<label class="row"><input type="checkbox" data-cfg="${k}" data-t="bool" ${S.cfg[k] ? 'checked' : ''}> 啟用</label>`
+  <div class="grid g2">${CFG_FIELDS.map(([g, fs]) => `<div class="card"><h3>${g}</h3><div class="pad grid g2">${fs.map(([k, n, t, opts]) => `<div>
+    <label class="f">${n}</label>${t === 'select' ? `<select class="in" data-cfg="${k}" data-t="select">${opts.map(([v, l]) => `<option value="${v}" ${String(S.cfg[k]) === v ? 'selected' : ''}>${l}</option>`).join('')}</select>` : t === 'bool' ? `<label class="row"><input type="checkbox" data-cfg="${k}" data-t="bool" ${S.cfg[k] ? 'checked' : ''}> 啟用</label>`
       : `<input class="in" data-cfg="${k}" data-t="${t}" type="${t === 'time' ? 'time' : 'number'}" ${t === 'int' ? 'min="0" step="1"' : ''} value="${esc(S.cfg[k])}">`}</div>`).join('')}</div></div>`).join('')}</div>
+  ${callAnalysis()}
   <div class="row" style="margin-top:14px"><button class="btn pri" id="cfgSave">儲存設定</button><button class="btn" id="cfgExport">匯出全部資料 JSON</button><button class="btn danger" id="cfgReset">重置示範資料</button></div>
   <div class="note acc" style="margin-top:14px">資料目前儲存在此瀏覽器（localStorage），同一台裝置多個分頁會即時同步。正式導入時請將 save()/load() 改接公司後端或 Firebase，並串接門禁卡讀卡機（USB 鍵盤模式可直接使用）、薪資扣款與 SSO。</div>`;
   $('#cfgSave').onclick = () => {
@@ -193,12 +211,14 @@ function renderSettings() {
     for (const i of el.querySelectorAll('[data-cfg]')) {
       const k = i.dataset.cfg, t = i.dataset.t;
       if (t === 'bool') next[k] = i.checked;
+      else if (t === 'select') next[k] = /^\d+$/.test(i.value) ? Number(i.value) : i.value;
       else if (t === 'int') { const v = Number(i.value); if (!Number.isInteger(v) || v < 0) return toast(`「${i.closest('div').querySelector('.f').textContent}」需為 0 以上整數`); next[k] = v; }
       else { if (!/^\d{2}:\d{2}$/.test(i.value)) return toast('時間格式錯誤'); next[k] = i.value; }
     }
     if (Q.hmToMin(next.slotEnd) <= Q.hmToMin(next.slotStart)) return toast('取餐結束需晚於開始');
     if (next.slotMinutes < 5) return toast('時段長度至少 5 分鐘');
     if (next.flashPct < 1 || next.flashPct > 100) return toast('快閃售價 % 需介於 1–100');
+    if (next.concurrentCalls < 2 || next.concurrentCalls > 200) return toast('尖峰同時叫號人數需介於 2–200');
     if (next.stampGoal < 1 || next.streakBonusDays < 1 || next.pointPerDollars < 1 || next.stations < 1 || next.forecastWeeks < 1) return toast('集章數、連續天數、每點金額、出餐站數、參考週數需至少為 1');
     S.cfg = next; save(); toast('設定已儲存'); renderAll();
   };
