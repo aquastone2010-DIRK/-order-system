@@ -95,9 +95,12 @@ body.front main{max-width:1180px}
 <div id="mkSheet"></div>
 <div class="toast" id="toast"></div>
 
+<script src="config.js"></script>
+<script type="module" src="cloud.js" onerror="qgCloudFailed()"></script>
 <script src="core.js"></script>
 <script src="menu-data.js"></script>
 <script src="app-data.js"></script>
+<script src="market-store.js"></script>
 <script src="app-market.js"></script>
 <script>
 'use strict';
@@ -112,7 +115,15 @@ const b0 = new URLSearchParams(location.search).get('brand');
 if (b0 && MK.venue.brands.includes(b0)) MK.brand = b0;
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
 $('#mkSheet').addEventListener('click', e => { if (e.target.id === 'mkSheet') closeSheet(); });
-renderAll();
+$('#mkItems').innerHTML = '<p class="muted">連線中…</p>';
+MS.init().then(() => {
+  MS.watch(MK.venue.id, TODAY(), () => renderMine());
+  MK.venue.brands.forEach(b => MS.watchMenu(b, so => { MK.soldOut[b] = so; renderMarket(); }));
+  renderAll();
+});
+// 跨日自動重新載入（取餐號每日從 001 重新開始）
+const bootDay = TODAY();
+setInterval(() => { if (TODAY() !== bootDay) location.reload(); }, 60000);
 </script>
 </body>
 </html>

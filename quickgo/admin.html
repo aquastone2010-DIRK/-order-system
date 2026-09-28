@@ -28,6 +28,8 @@
     <a class="portal" href="market.html">← 前台：美食街點餐</a>
     <a class="portal" href="kiosk.html">← 前台：取餐站</a>
     <a class="portal" href="board.html">← 前台：叫號大螢幕</a>
+    <a class="portal" href="stall.html">攤位接單 →</a>
+    <a class="portal" href="qr.html">列印 QR 桌卡 →</a>
   </div>
 </aside>
 
@@ -54,9 +56,12 @@
 </div>
 <div class="toast" id="toast"></div>
 
+<script src="config.js"></script>
+<script type="module" src="cloud.js" onerror="qgCloudFailed()"></script>
 <script src="core.js"></script>
 <script src="menu-data.js"></script>
 <script src="app-data.js"></script>
+<script src="market-store.js"></script>
 <script src="app-ops.js"></script>
 <script src="app-admin.js"></script>
 <script>
@@ -86,7 +91,7 @@ $('#siteSel').onchange = ev => { curSite = ev.target.value; RENDER[curView](); }
 load();
 curSite = S.sites[0].id;
 startClock();
-renderAll();
+MS.init().then(renderAll);
 </script>
 </body>
 </html>

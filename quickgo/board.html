@@ -72,9 +72,12 @@ body.board-page{background:#020617;color:#e2e8f0;min-height:100vh;display:flex;f
 <div class="b-foot" id="bFoot"></div>
 <div class="toast" id="toast"></div>
 
+<script src="config.js"></script>
+<script type="module" src="cloud.js" onerror="qgCloudFailed()"></script>
 <script src="core.js"></script>
 <script src="menu-data.js"></script>
 <script src="app-data.js"></script>
+<script src="market-store.js"></script>
 <script src="app-board.js"></script>
 <script>
 'use strict';
@@ -86,7 +89,13 @@ load();
 curSite = new URLSearchParams(location.search).get('site') || S.sites[0].id;
 if (!siteById(curSite)) curSite = S.sites[0].id;
 $('#siteSel').innerHTML = siteOptions(true);
-$('#siteSel').onchange = ev => { curSite = ev.target.value; BD.seen = null; renderAll(); };
+let unwatch = null;
+function watchVenue() {
+  if (unwatch) { unwatch(); unwatch = null; }
+  MS.orders = [];
+  if (venueById(curSite)) unwatch = MS.watch(curSite, TODAY(), renderAll); // 美食街：雲端即時同步
+}
+$('#siteSel').onchange = ev => { curSite = ev.target.value; BD.seen = null; watchVenue(); renderAll(); };
 // 瀏覽器規定語音需使用者操作後才能播放
 $('#bVoice').onclick = () => {
   BD.voice = !BD.voice;
@@ -94,8 +103,10 @@ $('#bVoice').onclick = () => {
   renderAll();
 };
 startClock();
-renderAll();
-setInterval(renderAll, 5000); // 更新「剛叫號」閃爍狀態
+MS.init().then(() => { watchVenue(); renderAll(); });
+setInterval(() => { if (MS.mode) renderAll(); }, 5000);
+const bootDay = TODAY();
+setInterval(() => { if (TODAY() !== bootDay) location.reload(); }, 60000); // 跨日重新載入 // 更新「剛叫號」閃爍狀態
 </script>
 </body>
 </html>

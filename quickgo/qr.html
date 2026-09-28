@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快取GO QR 桌卡</title>
+<meta name="description" content="快取GO：列印美食街點餐 QR 桌卡">
+<link rel="stylesheet" href="styles.css">
+<style>
+.qr-tools{max-width:900px;margin:0 auto 16px}
+.qr-sheet{display:grid;grid-template-columns:1fr 1fr;gap:10mm;max-width:900px;margin:0 auto}
+.qr-card{background:#fff;color:#1f1300;border:2px solid #8b3a1e;border-radius:14px;padding:18px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;break-inside:avoid}
+.qr-card h2{font-size:22px;color:#0f766e}
+.qr-card .venue{font-size:13px;color:#555}
+.qr-card .big{font-size:26px;font-weight:900;letter-spacing:.1em}
+.qr-card .steps{font-size:13px;line-height:1.7;color:#333}
+.qr-card .brands{display:flex;gap:10px;justify-content:center;align-items:center}
+.qr-card .brands img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:1px solid #ddd}
+.qr-box{background:#fff;padding:10px;border-radius:10px;border:1px solid #ddd}
+.qr-url{font-size:10px;color:#777;word-break:break-all}
+@media print{
+  @page{size:A4;margin:10mm}
+  body{background:#fff}
+  header,.qr-tools,.demo,.toast{display:none!important}
+  main{padding:0;max-width:none}
+  .qr-sheet{max-width:none}
+}
+@media(max-width:640px){.qr-sheet{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="bar"><div class="logo"><i>⚡</i>快取GO</div><span class="role">後台・QR 桌卡</span><div class="grow"></div><a class="portal" href="admin.html">營運後台 →</a></div></header>
+<main>
+  <div class="card pad qr-tools">
+    <div class="grid g2">
+      <div><label class="f">場域</label><select class="in" id="qVenue"></select></div>
+      <div><label class="f">桌卡用途</label><select class="in" id="qKind">
+        <option value="market">顧客點餐（貼在餐桌、排隊處）</option>
+        <option value="board">叫號大螢幕（給電視／平板開啟用）</option>
+        <option value="stall">攤位接單（給攤位平板開啟用）</option>
+      </select></div>
+    </div>
+    <label class="f">正式網址（例：https://帳號.github.io/-order-system/quickgo/）</label>
+    <input class="in" id="qBase" placeholder="留空＝使用目前網址">
+    <div id="qWarn" class="note bad hide" style="margin-top:10px"></div>
+    <div class="row" style="margin-top:12px"><button class="btn pri" onclick="window.print()">🖨️ 列印（A4 一頁 2 張）</button></div>
+  </div>
+  <div class="qr-sheet" id="qSheet"></div>
+</main>
+
+<script src="vendor/qrcode.min.js"></script><!-- qrcodejs 1.0.0（MIT，davidshimjs） -->
+<script src="menu-data.js"></script>
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const PAGES = {
+  market: { file: 'market.html', title: '掃碼點餐', sub: '免排隊・叫號取餐', steps: ['① 手機掃描 QR code', '② 選餐點、送出取得取餐號', '③ 看到「請取餐」到攤位取餐、付款'] },
+  board: { file: 'board.html', param: 'site', title: '叫號大螢幕', sub: '電視／平板瀏覽器開啟', steps: ['開啟後按「語音叫號」可播報號碼'] },
+  stall: { file: 'stall.html', title: '攤位接單', sub: '攤位平板開啟並登入', steps: ['以攤位帳號登入後開啟提示音'] },
+};
+const saved = (() => { try { return localStorage.getItem('quickgo_qr_base') || ''; } catch (e) { return ''; } })();
+$('#qBase').value = saved;
+$('#qVenue').innerHTML = QGMarket.venues.map(v => `<option value="${v.id}">${esc(v.name)}</option>`).join('');
+
+function render() {
+  const v = QGMarket.venues.find(x => x.id === $('#qVenue').value);
+  const kind = PAGES[$('#qKind').value];
+  let base = $('#qBase').value.trim();
+  try { localStorage.setItem('quickgo_qr_base', base); } catch (e) {}
+  let url;
+  try { url = new URL(`${kind.file}?${kind.param || 'venue'}=${v.id}`, base || location.href).href; }
+  catch (e) { $('#qWarn').textContent = '網址格式不正確'; $('#qWarn').classList.remove('hide'); return; }
+  const local = /^file:|\/\/(localhost|127\.0\.0\.1)/.test(url) || /claude\.ai|claudeusercontent/.test(url);
+  $('#qWarn').classList.toggle('hide', !local);
+  $('#qWarn').textContent = local ? '⚠️ 目前網址不是正式網站，顧客手機掃了會打不開。請填入 GitHub Pages 正式網址後再列印。' : '';
+  const logos = v.brands.map(b => QGMarket.brands[b]).map(b => `<img src="${b.logo || b.hero}" alt="${esc(b.name)}">`).join('');
+  const card = i => `<div class="qr-card">
+    <div class="brands">${logos}</div>
+    <h2>⚡ 快取GO</h2>
+    <div class="venue">${esc(v.name)}｜${esc(v.sub)}</div>
+    <div class="big">${kind.title}</div><div>${kind.sub}</div>
+    <div class="qr-box" id="qr${i}"></div>
+    <div class="steps">${kind.steps.join('<br>')}</div>
+    <div class="small">${v.brands.map(b => esc(QGMarket.brands[b].name)).join('・')}</div>
+    <div class="qr-url">${esc(url)}</div></div>`;
+  $('#qSheet').innerHTML = card(1) + card(2);
+  [1, 2].forEach(i => new QRCode(document.getElementById('qr' + i), { text: url, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.M }));
+}
+['qVenue', 'qKind', 'qBase'].forEach(id => $('#' + id).addEventListener('input', render));
+const qv = new URLSearchParams(location.search).get('venue'); if (qv) $('#qVenue').value = qv;
+render();
+</script>
+</body>
+</html>

@@ -30,14 +30,15 @@ function renderBoard() {
   const site = siteById(curSite);
   const closed = modeOf(curSite) === 'closed';
   const venue = venueById(curSite);
-  const mine = S.tickets.filter(t => t.date === d && t.site === curSite);
+  // 美食街訂單來自 MS（雲端或單機）；員工餐廳一般點餐來自本機資料
+  const mine = venueById(curSite) ? MS.orders.filter(o => o.date === d) : S.tickets.filter(t => t.date === d && t.site === curSite);
   const ready = mine.filter(t => t.status === 'ready').sort((a, b) => (b.readyAt || 0) - (a.readyAt || 0));
-  const making = mine.filter(t => t.status === 'making').sort((a, b) => a.createdAt - b.createdAt);
+  const making = mine.filter(t => t.status === 'making' || t.status === 'new').sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
 
   // 新叫號偵測（第一次渲染只記錄不播報）
-  const ids = new Set(ready.map(t => t.id));
-  if (BD.seen) ready.filter(t => !BD.seen.has(t.id)).reverse().forEach(speakCall);
-  BD.seen = ids;
+  const seen = new Map(ready.map(t => [t.id, t.readyAt || 0]));
+  if (BD.seen) ready.filter(t => !BD.seen.has(t.id) || BD.seen.get(t.id) !== (t.readyAt || 0)).reverse().forEach(speakCall);
+  BD.seen = seen;
 
   const now = Date.now();
   const label = t => {

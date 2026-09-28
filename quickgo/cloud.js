@@ -47,6 +47,26 @@ function normOrder(snap) {
   };
 }
 
+async function placeOnce({ venue, date, dine, note, groups }) {
+  const uid = auth.currentUser.uid;
+  const refs = groups.map(() => doc(collection(db, 'quickgo_orders')));
+  const out = await runTransaction(db, async tx => {
+    const cRefs = groups.map(g => doc(db, 'quickgo_counters', `${venue}_${g.brandId}_${date}`));
+    const snaps = [];
+    for (const r of cRefs) snaps.push(await tx.get(r)); // 交易內必須先讀後寫
+    return groups.map((g, i) => {
+      const n = (snaps[i].exists() ? snaps[i].data().n : 0) + 1;
+      if (snaps[i].exists()) tx.update(cRefs[i], { n }); else tx.set(cRefs[i], { n });
+      const o = { venue, brandId: g.brandId, date, seq: n, callNo: g.code + pad3(n), lines: g.lines, total: g.total,
+        dine, pay: 'counter', paid: false, status: 'new', createdAt: serverTimestamp(), uid };
+      if (note) o.note = note;
+      tx.set(refs[i], o);
+      return { id: refs[i].id, brandId: g.brandId, callNo: o.callNo, seq: n, total: g.total };
+    });
+  });
+  return out;
+}
+
 window.QGCloud = {
   mode: 'cloud',
   NOW,
@@ -58,24 +78,17 @@ window.QGCloud = {
   staffSignOut: () => signOut(auth), // 登出後自動回到匿名
 
   // 一次交易建立多個品牌的訂單：每個品牌的計數器 +1，取餐號 = 品牌代碼 + 三位流水號
-  async placeOrders({ venue, date, dine, note, groups }) {
-    const uid = auth.currentUser.uid;
-    const refs = groups.map(() => doc(collection(db, 'quickgo_orders')));
-    const out = await runTransaction(db, async tx => {
-      const cRefs = groups.map(g => doc(db, 'quickgo_counters', `${venue}_${g.brandId}_${date}`));
-      const snaps = [];
-      for (const r of cRefs) snaps.push(await tx.get(r)); // 交易內必須先讀後寫
-      return groups.map((g, i) => {
-        const n = (snaps[i].exists() ? snaps[i].data().n : 0) + 1;
-        if (snaps[i].exists()) tx.update(cRefs[i], { n }); else tx.set(cRefs[i], { n });
-        const o = { venue, brandId: g.brandId, date, seq: n, callNo: g.code + pad3(n), lines: g.lines, total: g.total,
-          dine, pay: 'counter', paid: false, status: 'new', createdAt: serverTimestamp(), uid };
-        if (note) o.note = note;
-        tx.set(refs[i], o);
-        return { id: refs[i].id, brandId: g.brandId, callNo: o.callNo, seq: n, total: g.total };
-      });
-    });
-    return out;
+  // 尖峰時多人同時下單會搶同一個計數器：先讀到舊值的那筆，+1 後違反「只能 +1」規則而被拒（permission-denied，
+  // Firestore 不會自動重試）→ 這裡以隨機退避重試，最多 10 次
+  async placeOrders(args) {
+    for (let attempt = 1; ; attempt++) {
+      try { return await placeOnce(args); }
+      catch (e) {
+        const retryable = ['permission-denied', 'aborted', 'failed-precondition', 'unavailable'].includes(e.code);
+        if (!retryable || attempt >= 10) throw e;
+        await new Promise(r => setTimeout(r, 60 + Math.random() * 120 * attempt));
+      }
+    }
   },
 
   watchOrders(venue, date, cb, onErr) {

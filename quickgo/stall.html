@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快取GO 攤位接單</title>
+<meta name="theme-color" content="#0f172a">
+<meta name="description" content="快取GO 後台：美食街攤位接單、叫號、收款、售完管理與營業報表">
+<link rel="stylesheet" href="styles.css">
+<style>
+body.stall main{max-width:1400px}
+.st-board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
+.st-col{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:10px;min-height:200px}
+.st-col h3{font-size:15px;margin-bottom:8px}
+.st-card{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--muted);border-radius:10px;padding:10px;margin-bottom:10px;display:flex;flex-direction:column;gap:6px}
+.st-card.new{border-left-color:var(--bad);animation:stpulse 1.6s ease-in-out 3}
+.st-card.making{border-left-color:var(--info)}
+.st-card.ready{border-left-color:var(--accent)}
+@keyframes stpulse{50%{box-shadow:0 0 0 4px var(--bad-soft)}}
+.st-no{font-size:28px;font-variant-numeric:tabular-nums}
+.st-lines div{display:flex;justify-content:space-between;gap:8px;font-size:15px;padding:2px 0;border-bottom:1px dashed var(--border)}
+.st-lines i{font-style:normal;color:var(--muted);font-size:12px;margin-left:6px}
+.st-card .btn{padding:9px 14px}
+.st-so{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.st-sobtn{display:flex;justify-content:space-between;align-items:center;gap:8px;border:2px solid var(--border);background:var(--surface);border-radius:10px;padding:10px 12px;cursor:pointer;text-align:left}
+.st-sobtn b{color:var(--ok);white-space:nowrap}
+.st-sobtn.sold{border-color:var(--bad);background:var(--bad-soft)}.st-sobtn.sold b{color:var(--bad)}
+.st-sobtn:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:900px){.st-board{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.st-card.new{animation:none}}
+</style>
+</head>
+<body class="stall">
+<header>
+  <div class="demo" id="demoBanner"></div>
+  <div class="bar">
+    <div class="logo"><i>⚡</i>快取GO</div>
+    <span class="role">後台・攤位接單</span>
+    <span class="small muted" id="stVenue"></span>
+    <div class="grow"></div>
+    <button class="btn sm" id="stSound"></button>
+    <span id="stUser"></span>
+    <span class="clock" id="clock"></span>
+  </div>
+  <div class="bar" style="padding-top:0"><div class="chips" id="stBrands"></div><div class="grow"></div><div class="chips" id="stTabs"></div></div>
+</header>
+<main><div id="stBody"><p class="muted">連線中…</p></div></main>
+<div class="toast" id="toast"></div>
+
+<script src="config.js"></script>
+<script type="module" src="cloud.js" onerror="qgCloudFailed()"></script>
+<script src="core.js"></script>
+<script src="menu-data.js"></script>
+<script src="app-data.js"></script>
+<script src="market-store.js"></script>
+<script src="app-stall.js"></script>
+<script>
+'use strict';
+// 後台啟動：攤位接單
+curView = 'stall';
+function renderAll() { renderBanner(); renderStall(); }
+
+load();
+const qs = new URLSearchParams(location.search);
+ST.venue = venueById(qs.get('venue')) || QGMarket.venues[0];
+curSite = ST.venue.id;
+const pb = qs.get('brand') || stallPref('brand');
+if (pb && ST.venue.brands.includes(pb)) ST.brand = pb;
+$('#stSound').onclick = () => { ST.sound = !ST.sound; beep(); renderStall(); };
+startClock();
+MS.init().then(() => {
+  MS.watch(ST.venue.id, TODAY(), onOrders);
+  watchMenu();
+  MS.onAuth(() => renderStall());
+  renderAll();
+});
+setInterval(() => { if (MS.mode && ST.tab === 'orders' && MS.isStaff()) renderStall(); }, 30000); // 更新「幾分鐘前」
+const bootDay = TODAY();
+setInterval(() => { if (TODAY() !== bootDay) location.reload(); }, 60000); // 跨日重新載入
+</script>
+</body>
+</html>

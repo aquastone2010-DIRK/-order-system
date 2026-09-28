@@ -9,6 +9,14 @@ function renderRegular() {
   const d = TODAY();
   const menu = menuFor(d);
   const venue = venueById(curSite);
+  if (venue) {
+    el.innerHTML = `<div class="card"><h3>🛒 ${esc(venue.name)}</h3><div class="pad">
+      <p>美食街訂單由各攤位在「攤位接單」頁處理（接單、叫號、收款、售完、報表），資料${MS.mode === 'cloud' ? '已透過雲端即時同步' : '目前為單機展示'}。</p>
+      <div class="row" style="margin-top:12px">${venue.brands.map(b => `<a class="btn pri" href="stall.html?venue=${venue.id}&brand=${b}" target="_blank">${esc(brandById(b).name)} 攤位接單 ↗</a>`).join('')}
+        <a class="btn" href="board.html?site=${venue.id}" target="_blank">叫號大螢幕 ↗</a><a class="btn" href="market.html?venue=${venue.id}" target="_blank">顧客點餐頁 ↗</a><a class="btn" href="qr.html?venue=${venue.id}" target="_blank">列印 QR 桌卡 ↗</a></div>
+    </div></div>`;
+    return;
+  }
   if (!venue) RG.brand = 'ALL';
   const mine = S.tickets.filter(t => t.date === d && t.site === curSite && (RG.brand === 'ALL' || ticketBrand(t) === RG.brand));
   const making = mine.filter(t => t.status === 'making');

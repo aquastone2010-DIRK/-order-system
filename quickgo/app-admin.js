@@ -41,12 +41,14 @@ function brandSales(month) {
     r.qty += qty; r.base += base; r.collected += collected;
   };
   const afterFlash = lines => lines.filter(l => l.label === '套餐原價' || l.label.startsWith('剩食快閃')).reduce((a, l) => a + l.amount, 0);
+  // 美食街：依菜單價計（無平台折扣），份數＝品項數量合計；取消單不計
+  ((B.mk && B.mk.key === month && B.mk.list) || []).forEach(o => { if (o.status !== 'cancelled') add(o.brandId, o.total, o.total, o.lines.reduce((a, l) => a + l.qty, 0)); });
   S.orders.forEach(o => { if (o.status !== 'cancelled' && o.date.startsWith(month)) add(tpl(o.setId).brandId, tpl(o.setId).price, o.total + (o.passCost || 0)); });
   S.walkins.forEach(w => { if (w.date.startsWith(month)) add(tpl(w.setId).brandId, afterFlash(w.lines), w.total); });
   S.tickets.forEach(t => {
     if (!t.date.startsWith(month)) return;
     // 美食街單：依菜單價計（無平台折扣），份數＝品項數量合計
-    if (t.channel === 'market') add(t.brandId, t.total, t.total, t.lines.reduce((a, l) => a + l.qty, 0));
+    if (t.channel === 'market') return; // 美食街單改由 MS.range 讀取（雲端或單機），避免重複計算
     else add(tpl(t.setId).brandId, tpl(t.setId).price, t.total);
   });
   return out;
@@ -54,6 +56,14 @@ function brandSales(month) {
 function renderBrand() {
   const el = $('#v-brand');
   if (!B.month) B.month = TODAY().slice(0, 7);
+  // 讀取當月美食街訂單（雲端同步時需非同步載入）
+  if (!B.mk || B.mk.key !== B.month) {
+    const key = B.month;
+    B.mk = { key, list: null };
+    Promise.all(QGMarket.venues.map(v => MS.range(v.id, key + '-01', key + '-31')))
+      .then(ls => { if (B.mk.key === key) { B.mk.list = ls.flat(); if (curView === 'brand') renderBrand(); } },
+            e => { if (B.mk.key === key) { B.mk.list = []; toast('美食街資料讀取失敗：' + (e.code || e.message)); } });
+  }
   const sales = brandSales(B.month);
   const stLabel = { active: ['合作中', 'ok'], trial: ['試營運', 'info'], negotiating: ['洽談中', 'acc'], paused: ['暫停', 'bad'] };
   let tot = { qty: 0, base: 0, commission: 0, payout: 0, collected: 0 };

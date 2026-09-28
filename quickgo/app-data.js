@@ -229,6 +229,7 @@ function ticketNo(d, siteId) { return 'N' + String(S.tickets.filter(t => t.date 
 //   封閉市場：有工號 → 工號末 N 碼；訪客 → 內部單號
 //   開放市場：品牌代碼字母 + 該品牌當日流水號（A001）
 function callNo(t) {
+  if (t.callNo) return t.callNo; // 美食街單：下單時已由交易配號，固定不變
   if (modeOf(t.site) === 'closed') return t.empId ? Q.idSuffix(t.empId, S.cfg.callDigits) : t.no;
   const brand = ticketBrand(t);
   const same = S.tickets.filter(x => x.date === t.date && x.site === t.site && ticketBrand(x) === brand).sort((a, b) => a.createdAt - b.createdAt);
@@ -270,6 +271,8 @@ function rewardOnConsume(e, paid, d) {
 
 function renderBanner() {
   const b = $('#demoBanner'); if (!b) return;
+  // 展示模式只影響員工餐廳（忽略預訂截止）；美食街點餐與攤位頁不顯示，改看同步狀態標籤
+  if (curView === 'market' || curView === 'stall') { b.classList.add('hide'); return; }
   b.textContent = S.cfg.demoIgnoreCutoff ? '展示模式：已忽略預訂截止時間，含示範資料（後台 → 系統設定可關閉／重置）' : '';
   b.classList.toggle('hide', !S.cfg.demoIgnoreCutoff);
 }
