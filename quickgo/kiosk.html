@@ -2,7 +2,15 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="manifest" href="manifest-kiosk.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="快取GO">
+<meta name="format-detection" content="telephone=no">
 <title>快取GO 取餐站</title>
 <meta name="theme-color" content="#042f2e">
 <meta name="description" content="快取GO 前台：美食櫃旁取餐站，刷員工證 30 秒取餐">
@@ -12,7 +20,7 @@
 <header>
   <div class="demo" id="demoBanner"></div>
   <div class="bar">
-    <div class="logo" style="color:#fff"><i>⚡</i>快取GO</div>
+    <div class="logo" style="color:#fff"><i>⚡</i>快取GO</div><img class="brandlogo" src="img/brand-logo.png" alt="品富食品 PIN FU FOODS" onerror="this.outerHTML='<span class=&quot;brandtext&quot;>品富食品 <small>PIN FU FOODS</small></span>'">
     <span class="role">前台・取餐站</span>
     <div class="grow"></div>
     <label class="small muted">場域</label>
@@ -47,8 +55,10 @@ curSite = new URLSearchParams(location.search).get('site') || S.sites[0].id;
 if (!siteById(curSite)) curSite = S.sites[0].id;
 $('#siteSel').innerHTML = siteOptions();
 $('#siteSel').onchange = ev => { curSite = ev.target.value; kioskReset(); };
+window.addEventListener('load', () => window.QGPWA && QGPWA.keepAwake()); // 平板／電視螢幕常亮
 startClock();
 renderAll();
 </script>
+<script src="pwa.js"></script>
 </body>
 </html>

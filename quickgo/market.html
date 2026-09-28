@@ -2,7 +2,15 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="manifest" href="manifest-market.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="快取GO">
+<meta name="format-detection" content="telephone=no">
 <title>快取GO 美食街點餐</title>
 <meta name="theme-color" content="#0f766e">
 <meta name="description" content="快取GO 前台：美食街線上點餐（楊家一鍋滷、一杯紅），免排隊取號">
@@ -67,11 +75,11 @@ body.front main{max-width:1180px}
 <header>
   <div class="demo" id="demoBanner"></div>
   <div class="bar">
-    <div class="logo"><i>⚡</i>快取GO</div>
+    <div class="logo"><i>⚡</i>快取GO</div><img class="brandlogo" src="img/brand-logo.png" alt="品富食品 PIN FU FOODS" onerror="this.outerHTML='<span class=&quot;brandtext&quot;>品富食品 <small>PIN FU FOODS</small></span>'">
     <span class="role">前台・美食街點餐</span>
     <span class="mk-venue" id="mkVenue"></span>
     <div class="grow"></div>
-    <a class="portal" href="board.html?site=TCH">叫號大螢幕</a>
+    <a class="portal keep" href="board.html?site=TCH">叫號大螢幕</a>
     <a class="portal" href="index.html">員工訂餐</a>
     <a class="portal" href="admin.html">營運後台 →</a>
   </div>
@@ -125,5 +133,6 @@ MS.init().then(() => {
 const bootDay = TODAY();
 setInterval(() => { if (TODAY() !== bootDay) location.reload(); }, 60000);
 </script>
+<script src="pwa.js"></script>
 </body>
 </html>

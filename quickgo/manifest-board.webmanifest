@@ -1,0 +1,33 @@
+{
+  "id": "./?app=board",
+  "name": "快取GO 叫號螢幕",
+  "short_name": "快取GO叫號",
+  "description": "取餐叫號大螢幕",
+  "lang": "zh-TW",
+  "start_url": "./board.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#f4f6f8",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

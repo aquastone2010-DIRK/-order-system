@@ -1,0 +1,33 @@
+{
+  "id": "./?app=stall",
+  "name": "快取GO 攤位接單",
+  "short_name": "快取GO攤位",
+  "description": "攤位接單、叫號、收款、售完與報表",
+  "lang": "zh-TW",
+  "start_url": "./stall.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f6f8",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

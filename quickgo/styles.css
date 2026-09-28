@@ -155,3 +155,31 @@ body.admin main{max-width:none;margin:0}
 .sync{font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;white-space:nowrap}
 .sync.on{background:var(--ok-soft);color:var(--ok)}
 .sync.off{background:var(--accent-soft);color:var(--accent)}
+/* ── 品牌（品富食品）── */
+.brandlogo{height:28px;width:auto;display:block}
+.brandtext{font-size:12px;font-weight:900;color:#a07a3a;letter-spacing:.05em;white-space:nowrap}
+.brandtext small{font-size:9px;letter-spacing:.12em;color:var(--muted)}
+.aside .brandtext{color:#d6b77a}
+.aside .brandlogo{height:34px;background:#faf7f0;border-radius:6px;padding:3px 6px}
+body.kiosk-page .brandtext,body.board-page .brandtext{color:#e7c98b}
+body.kiosk-page .brandlogo,body.board-page .brandlogo{background:#faf7f0;border-radius:6px;padding:2px 6px}
+/* ── 行動 App：安裝提示、離線、瀏海／底部橫條安全區 ── */
+.pwa-bar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:90;display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px 12px;box-shadow:0 10px 30px rgba(15,23,42,.25);max-width:520px;margin:0 auto}
+.pwa-bar img{width:40px;height:40px;border-radius:10px}
+.pwa-offline{position:sticky;top:0;z-index:95;background:var(--bad);color:#fff;font-size:12px;font-weight:800;text-align:center;padding:6px 12px}
+header,body.admin .top,.b-head{padding-top:env(safe-area-inset-top)}
+body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+main{padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+.mk-cartbar{bottom:calc(12px + env(safe-area-inset-bottom))!important}
+/* 手機觸控：按鈕至少 40px 高，避免 iOS 輸入框自動放大（字級 16px） */
+@media (pointer:coarse){
+  .btn,.chip{min-height:40px}
+  input.in,select.in,textarea.in{font-size:16px}
+}
+/* 手機：顧客頁首精簡（只留品牌、場域、同步狀態與叫號螢幕連結） */
+@media (max-width:600px){
+  body.front .role{display:none}
+  body.front .portal:not(.keep){display:none}
+  body.front header .bar{gap:6px 10px;padding:8px 12px}
+  .brandtext small{display:none}
+}

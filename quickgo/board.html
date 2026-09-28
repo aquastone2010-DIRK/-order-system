@@ -2,7 +2,15 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="manifest" href="manifest-board.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="快取GO">
+<meta name="format-detection" content="telephone=no">
 <title>快取GO 叫號螢幕</title>
 <meta name="theme-color" content="#020617">
 <meta name="description" content="快取GO 前台：取餐叫號大螢幕（封閉市場工號末碼／開放市場取餐號）">
@@ -59,7 +67,7 @@ body.board-page{background:#020617;color:#e2e8f0;min-height:100vh;display:flex;f
 <body class="board-page">
 <div class="demo" id="demoBanner"></div>
 <div class="b-head">
-  <div class="logo"><i>⚡</i>快取GO</div>
+  <div class="logo"><i>⚡</i>快取GO</div><img class="brandlogo" src="img/brand-logo.png" alt="品富食品 PIN FU FOODS" onerror="this.outerHTML='<span class=&quot;brandtext&quot;>品富食品 <small>PIN FU FOODS</small></span>'">
   <span class="site" id="bSite"></span>
   <span class="mode" id="bMode"></span>
   <div class="grow"></div>
@@ -102,11 +110,13 @@ $('#bVoice').onclick = () => {
   if (BD.voice && 'speechSynthesis' in window) speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance('語音叫號已開啟'), { lang: 'zh-TW' }));
   renderAll();
 };
+window.addEventListener('load', () => window.QGPWA && QGPWA.keepAwake()); // 平板／電視螢幕常亮
 startClock();
 MS.init().then(() => { watchVenue(); renderAll(); });
 setInterval(() => { if (MS.mode) renderAll(); }, 5000);
 const bootDay = TODAY();
 setInterval(() => { if (TODAY() !== bootDay) location.reload(); }, 60000); // 跨日重新載入 // 更新「剛叫號」閃爍狀態
 </script>
+<script src="pwa.js"></script>
 </body>
 </html>
