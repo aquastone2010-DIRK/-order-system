@@ -93,8 +93,12 @@ test('備餐預估：無歷史時使用預訂量比例', () => {
 });
 
 test('ceilSafe 消除浮點誤差', () => {
-  assert.equal(Math.ceil(10 * 1.1), 12); // 原生錯誤示範
-  assert.equal(C.ceilSafe(10 * 1.1), 11);
+  // 與 forecastPrep 相同算式：現場預估 50/11 份 × (100+10)/100，數學上剛好 = 5 份
+  const v = (50 / 11) * 110 / 100;
+  assert.equal(v, 5.000000000000001); // 浮點誤差
+  assert.equal(Math.ceil(v), 6);      // 原生進位會多備 1 份
+  assert.equal(C.ceilSafe(v), 5);     // 正確
+  assert.equal(C.ceilSafe(5.2), 6);   // 真正有小數時仍正常進位
 });
 
 test('共同食材：合併採購節省', () => {
