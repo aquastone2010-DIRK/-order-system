@@ -16,7 +16,7 @@ function speakCall(t) {
   if (!BD.voice || !('speechSynthesis' in window)) return;
   const n = callNo(t);
   const spaced = n.split('').join(' ');
-  const text = S.cfg.marketMode === 'closed' && t.empId
+  const text = modeOf(t.site) === 'closed' && t.empId
     ? `工號末${S.cfg.callDigits}碼，${spaced}，請取餐`
     : `${spaced} 號，請取餐`;
   const u = new SpeechSynthesisUtterance(text);
@@ -28,7 +28,8 @@ function speakCall(t) {
 function renderBoard() {
   const d = TODAY();
   const site = siteById(curSite);
-  const closed = S.cfg.marketMode === 'closed';
+  const closed = modeOf(curSite) === 'closed';
+  const venue = venueById(curSite);
   const mine = S.tickets.filter(t => t.date === d && t.site === curSite);
   const ready = mine.filter(t => t.status === 'ready').sort((a, b) => (b.readyAt || 0) - (a.readyAt || 0));
   const making = mine.filter(t => t.status === 'making').sort((a, b) => a.createdAt - b.createdAt);
@@ -43,7 +44,7 @@ function renderBoard() {
     const dup = sameCallNo(t, d);
     const e = t.empId && empById(t.empId);
     if (closed) return dup.length && e ? Q.maskName(e.name) : '';
-    const b = brandById(tpl(t.setId).brandId);
+    const b = brandById(ticketBrand(t));
     return b ? b.name : '';
   };
   const est = Q.estimateWait(making.length, S.cfg.avgMakeSec, S.cfg.stations);
@@ -56,7 +57,10 @@ function renderBoard() {
   const groups = Q.suffixGroups(S.employees.map(e => e.id), S.cfg.callDigits);
   const pColl = Q.suffixCollisionProb(groups, Math.max(ready.length + making.length, 2));
 
-  const brandsUsed = [...new Set(S.menus[d] ? menuFor(d).map(m => m.brandId) : [])].map(brandById).filter(Boolean);
+  const brandsUsed = (venue ? venue.brands : [...new Set(S.menus[d] ? menuFor(d).map(m => m.brandId) : [])]).map(brandById).filter(Boolean);
+  // 開放市場：今日平均出餐時間（開單 → 叫號），來自實際單據
+  const done = mine.filter(t => t.readyAt);
+  const avgPrep = done.length ? done.reduce((a, t) => a + (t.readyAt - t.createdAt), 0) / done.length / 60000 : null;
   const tick = [
     `⚡ 預訂快取GO免排隊，刷員工證 ${S.cfg.targetSec} 秒取餐`,
     `⏰ 前一日 ${S.cfg.earlyBirdTime} 前預訂享早鳥 -${S.cfg.earlyBirdDiscount} 元`,
@@ -65,7 +69,7 @@ function renderBoard() {
     `🟢 每取餐 1 次集 1 章，集滿 ${S.cfg.stampGoal} 章送免費套餐`,
   ].filter(Boolean).join('　　｜　　');
 
-  $('#bSite').textContent = closed ? site.name : `${site.name}・美食街`;
+  $('#bSite').textContent = venue ? `${venue.name}・${venue.sub}` : closed ? site.name : `${site.name}・美食街`;
   $('#bMode').textContent = closed ? `工號末 ${S.cfg.callDigits} 碼叫號` : '取餐號叫號';
   $('#bVoice').textContent = BD.voice ? '🔊 語音叫號：開' : '🔇 點此開啟語音叫號';
   $('#bVoice').classList.toggle('on', BD.voice);
@@ -97,7 +101,8 @@ function renderBoard() {
       <h2>品牌代碼</h2>
       ${brandsUsed.map(b => `<div class="b-brand"><b>${brandCode(b.id)}</b>${esc(b.name)}</div>`).join('')}
       <p>取餐號第一個字母代表品牌，請至對應櫃位取餐。</p>
-      <div class="b-kpi"><b>${qs.count ? qs.avg.toFixed(1) + 's' : '≤' + S.cfg.targetSec + 's'}</b><span>快取GO 預訂取餐平均時間</span></div>`}
+      <div class="b-kpi"><b>${avgPrep == null ? '—' : avgPrep.toFixed(1) + ' 分'}</b><span>今日平均出餐時間（${done.length} 單）</span></div>
+      ${venue ? `<div class="b-kpi" style="text-align:center"><span>手機點餐免排隊</span><div style="margin-top:6px;font-weight:900;font-size:clamp(14px,1.3vw,24px)">前台 → 美食街點餐</div></div>` : ''}`}
   </section>`;
   $('#bTicker').innerHTML = `<div><span>${esc(tick)}</span><span>${esc(tick)}</span></div>`;
   $('#bFoot').textContent = closed

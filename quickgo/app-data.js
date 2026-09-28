@@ -49,6 +49,9 @@ function seed() {
     { id: 'BX', name: '禾豐便當', status: 'active', commissionPct: 15, contact: '合作品牌 A', sites: ['F12A', 'F15'] },
     { id: 'GR', name: '綠拾輕食', status: 'active', commissionPct: 18, contact: '合作品牌 B', sites: ['F12A', 'F12B'] },
     { id: 'NP', name: '麵食品牌（洽談中）', status: 'negotiating', commissionPct: 15, contact: '待簽約', sites: [] },
+    // 開放市場（美食街）品牌：菜單見 menu-data.js
+    { id: 'YJ', code: 'Y', name: '楊家一鍋滷', status: 'active', commissionPct: 15, contact: '童綜合美食街 B2', sites: ['TCH'] },
+    { id: 'RC', code: 'R', name: '一杯紅', status: 'active', commissionPct: 15, contact: '童綜合美食街 B2', sites: ['TCH'] },
   ];
   const ingredients = {
     rice: { name: '白米', packGrams: 10000, packPrice: 650 },
@@ -115,7 +118,7 @@ function seed() {
       history.push({ date: d, site: s.id, pre: Math.round(s.base * 1.6 * f * (0.85 + r() * 0.3)), walkin: Math.round(s.base * f * (0.8 + r() * 0.4)), demo: true });
     }
   }
-  const st = { v: 2, cfg: defaultCfg(), sites, brands, ingredients, catalog, tiers, passes, employees, menus, history,
+  const st = { v: 3, cfg: defaultCfg(), sites, brands, ingredients, catalog, tiers, passes, employees, menus, history,
     orders: [], walkins: [], tickets: [], pickups: [], prep: {}, passSales: [], seededAt: Date.now() };
   // 今天與明天的示範預訂（以前一日中午下單＝享早鳥）
   S = st;
@@ -162,7 +165,7 @@ function load() {
   let raw = null;
   try { raw = localStorage.getItem(KEY); } catch (e) {}
   if (raw) { try { S = JSON.parse(raw); } catch (e) { S = null; } }
-  if (!S || S.v !== 2) { S = seed(); save(); }
+  if (!S || S.v !== 3) { S = seed(); save(); }
   S.cfg = { ...defaultCfg(), ...S.cfg };
   closePastDays();
 }
@@ -191,7 +194,13 @@ function closePastDays() {
 // ════════════════════════════════════════════════════════════
 const tpl = id => S.catalog.find(t => t.id === id);
 const brandById = id => S.brands.find(b => b.id === id);
-const siteById = id => S.sites.find(s => s.id === id);
+// 場域：科技廠員工餐廳（S.sites）＋ 開放市場美食街（QGMarket.venues）
+const venueById = id => QGMarket.venues.find(v => v.id === id);
+const siteById = id => S.sites.find(s => s.id === id) || venueById(id);
+// 美食街一律開放市場叫號；員工餐廳依系統設定
+const modeOf = siteId => venueById(siteId) ? 'open' : S.cfg.marketMode;
+// 單的品牌：美食街單直接記 brandId；員工餐廳單由套餐推得
+const ticketBrand = t => t.brandId || (tpl(t.setId) || {}).brandId;
 const empById = id => S.employees.find(e => e.id === id);
 function findEmp(code) { code = String(code).trim().toUpperCase(); return S.employees.find(e => e.id === code || e.card === code); }
 function menuFor(d) { return (S.menus[d] || []).map(m => ({ ...tpl(m.id), capacity: m.capacity })).filter(m => m.id); }
@@ -214,15 +223,15 @@ function walkinStock(d, siteId, setId, fc) {
 }
 // ── 叫號 ──
 // 內部單號：場域當日流水號 N001（不隨叫號模式改變）
-function brandCode(brandId) { const i = S.brands.findIndex(b => b.id === brandId); return String.fromCharCode(65 + Math.max(0, i)); }
+function brandCode(brandId) { const i = S.brands.findIndex(b => b.id === brandId); const b = S.brands[i]; return b && b.code ? b.code : String.fromCharCode(65 + Math.max(0, i)); }
 function ticketNo(d, siteId) { return 'N' + String(S.tickets.filter(t => t.date === d && t.site === siteId).length + 1).padStart(3, '0'); }
 // 大螢幕叫號號碼（即時計算，切換模式後所有單一致）：
 //   封閉市場：有工號 → 工號末 N 碼；訪客 → 內部單號
 //   開放市場：品牌代碼字母 + 該品牌當日流水號（A001）
 function callNo(t) {
-  if (S.cfg.marketMode === 'closed') return t.empId ? Q.idSuffix(t.empId, S.cfg.callDigits) : t.no;
-  const brand = tpl(t.setId).brandId;
-  const same = S.tickets.filter(x => x.date === t.date && x.site === t.site && tpl(x.setId).brandId === brand).sort((a, b) => a.createdAt - b.createdAt);
+  if (modeOf(t.site) === 'closed') return t.empId ? Q.idSuffix(t.empId, S.cfg.callDigits) : t.no;
+  const brand = ticketBrand(t);
+  const same = S.tickets.filter(x => x.date === t.date && x.site === t.site && ticketBrand(x) === brand).sort((a, b) => a.createdAt - b.createdAt);
   return brandCode(brand) + String(same.indexOf(t) + 1).padStart(3, '0');
 }
 // 目前在大螢幕上（製作中／待取）與此單同號的其他單
@@ -268,7 +277,11 @@ function startClock() {
   const tick = () => { const c = $('#clock'); if (c) { const n = new Date(); c.textContent = `${Q.ymd(n)} ${n.toLocaleTimeString('zh-TW', { hour12: false })}`; } };
   tick(); setInterval(tick, 1000);
 }
-function siteOptions() { return S.sites.map(s => `<option value="${s.id}" ${s.id === curSite ? 'selected' : ''}>${esc(s.name)}</option>`).join(''); }
+function siteOptions(withVenues) {
+  const opt = s => `<option value="${s.id}" ${s.id === curSite ? 'selected' : ''}>${esc(s.name)}</option>`;
+  if (!withVenues) return S.sites.map(opt).join('');
+  return `<optgroup label="員工餐廳（封閉市場）">${S.sites.map(opt).join('')}</optgroup><optgroup label="美食街（開放市場）">${QGMarket.venues.map(opt).join('')}</optgroup>`;
+}
 
 let toastT;
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600); }

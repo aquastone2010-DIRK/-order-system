@@ -73,6 +73,7 @@ body.board-page{background:#020617;color:#e2e8f0;min-height:100vh;display:flex;f
 <div class="toast" id="toast"></div>
 
 <script src="core.js"></script>
+<script src="menu-data.js"></script>
 <script src="app-data.js"></script>
 <script src="app-board.js"></script>
 <script>
@@ -84,7 +85,7 @@ function renderAll() { renderBanner(); renderBoard(); }
 load();
 curSite = new URLSearchParams(location.search).get('site') || S.sites[0].id;
 if (!siteById(curSite)) curSite = S.sites[0].id;
-$('#siteSel').innerHTML = siteOptions();
+$('#siteSel').innerHTML = siteOptions(true);
 $('#siteSel').onchange = ev => { curSite = ev.target.value; BD.seen = null; renderAll(); };
 // 瀏覽器規定語音需使用者操作後才能播放
 $('#bVoice').onclick = () => {

@@ -35,15 +35,20 @@ function renderLocker() {
 const B = { month: null, edit: null };
 function brandSales(month) {
   const out = {};
-  const add = (setId, base, collected) => {
-    const t = tpl(setId); if (!t) return;
-    const r = out[t.brandId] || (out[t.brandId] = { qty: 0, base: 0, collected: 0 });
-    r.qty++; r.base += base; r.collected += collected;
+  const add = (brandId, base, collected, qty = 1) => {
+    if (!brandId) return;
+    const r = out[brandId] || (out[brandId] = { qty: 0, base: 0, collected: 0 });
+    r.qty += qty; r.base += base; r.collected += collected;
   };
   const afterFlash = lines => lines.filter(l => l.label === '套餐原價' || l.label.startsWith('剩食快閃')).reduce((a, l) => a + l.amount, 0);
-  S.orders.forEach(o => { if (o.status !== 'cancelled' && o.date.startsWith(month)) add(o.setId, tpl(o.setId).price, o.total + (o.passCost || 0)); });
-  S.walkins.forEach(w => { if (w.date.startsWith(month)) add(w.setId, afterFlash(w.lines), w.total); });
-  S.tickets.forEach(t => { if (t.date.startsWith(month)) add(t.setId, tpl(t.setId).price, t.total); });
+  S.orders.forEach(o => { if (o.status !== 'cancelled' && o.date.startsWith(month)) add(tpl(o.setId).brandId, tpl(o.setId).price, o.total + (o.passCost || 0)); });
+  S.walkins.forEach(w => { if (w.date.startsWith(month)) add(tpl(w.setId).brandId, afterFlash(w.lines), w.total); });
+  S.tickets.forEach(t => {
+    if (!t.date.startsWith(month)) return;
+    // 美食街單：依菜單價計（無平台折扣），份數＝品項數量合計
+    if (t.channel === 'market') add(t.brandId, t.total, t.total, t.lines.reduce((a, l) => a + l.qty, 0));
+    else add(tpl(t.setId).brandId, tpl(t.setId).price, t.total);
+  });
   return out;
 }
 function renderBrand() {

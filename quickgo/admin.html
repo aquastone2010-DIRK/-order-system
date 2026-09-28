@@ -25,6 +25,7 @@
   </nav>
   <div class="foot">
     <a class="portal" href="index.html">← 前台：員工訂餐</a>
+    <a class="portal" href="market.html">← 前台：美食街點餐</a>
     <a class="portal" href="kiosk.html">← 前台：取餐站</a>
     <a class="portal" href="board.html">← 前台：叫號大螢幕</a>
   </div>
@@ -54,6 +55,7 @@
 <div class="toast" id="toast"></div>
 
 <script src="core.js"></script>
+<script src="menu-data.js"></script>
 <script src="app-data.js"></script>
 <script src="app-ops.js"></script>
 <script src="app-admin.js"></script>
@@ -73,7 +75,7 @@ function show(v) {
 }
 function renderAll() {
   renderBanner();
-  $('#siteSel').innerHTML = siteOptions();
+  $('#siteSel').innerHTML = siteOptions(true);
   RENDER[curView]();
 }
 
