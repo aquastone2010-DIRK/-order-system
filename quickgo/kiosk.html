@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快取GO 取餐站</title>
+<meta name="theme-color" content="#042f2e">
+<meta name="description" content="快取GO 前台：美食櫃旁取餐站，刷員工證 30 秒取餐">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="kiosk-page">
+<header>
+  <div class="demo" id="demoBanner"></div>
+  <div class="bar">
+    <div class="logo" style="color:#fff"><i>⚡</i>快取GO</div>
+    <span class="role">前台・取餐站</span>
+    <div class="grow"></div>
+    <label class="small muted">場域</label>
+    <select id="siteSel" class="in" style="width:auto"></select>
+    <span class="clock" id="clock"></span>
+    <a class="portal" href="admin.html" style="color:#99f6e4;border-color:#0f766e">營運後台 →</a>
+  </div>
+</header>
+
+<main>
+  <section class="view on" id="v-kiosk"></section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script src="core.js"></script>
+<script src="app-data.js"></script>
+<script src="app-kiosk.js"></script>
+<script>
+'use strict';
+// 前台啟動：取餐站
+curView = 'kiosk';
+function renderAll() {
+  renderBanner();
+  if (K.phase !== 'idle') return; // 取餐進行中不重繪，避免中斷計時
+  renderKiosk();
+}
+
+load();
+curSite = new URLSearchParams(location.search).get('site') || S.sites[0].id;
+if (!siteById(curSite)) curSite = S.sites[0].id;
+$('#siteSel').innerHTML = siteOptions();
+$('#siteSel').onchange = ev => { curSite = ev.target.value; kioskReset(); };
+startClock();
+renderAll();
+</script>
+</body>
+</html>

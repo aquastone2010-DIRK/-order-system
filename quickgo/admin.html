@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快取GO 營運後台</title>
+<meta name="theme-color" content="#0f172a">
+<meta name="description" content="快取GO 後台：營運總覽、一般點餐櫃台、供應商備餐、跨場域美食櫃、合作品牌管理、系統設定">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin">
+<aside class="aside">
+  <div class="logo"><i>⚡</i>快取GO <span class="small" style="color:#64748b;font-weight:700">後台</span></div>
+  <nav id="nav">
+    <div class="sec">營運</div>
+    <button data-v="data" class="on">📊 營運總覽</button>
+    <button data-v="regular">🧑‍🍳 一般點餐櫃台</button>
+    <div class="sec">供餐</div>
+    <button data-v="vendor">📦 供應商備餐</button>
+    <button data-v="locker">🗄️ 跨場域美食櫃</button>
+    <div class="sec">拓展</div>
+    <button data-v="brand">🤝 合作品牌管理</button>
+    <div class="sec">系統</div>
+    <button data-v="settings">⚙️ 系統設定</button>
+  </nav>
+  <div class="foot">
+    <a class="portal" href="index.html">← 前台：員工訂餐</a>
+    <a class="portal" href="kiosk.html">← 前台：取餐站</a>
+  </div>
+</aside>
+
+<div>
+  <div class="top">
+    <div class="demo" id="demoBanner"></div>
+    <div class="bar">
+      <h1 id="pageTitle">📊 營運總覽</h1>
+      <div class="grow"></div>
+      <label class="small muted">場域</label>
+      <select id="siteSel" class="in" style="width:auto"></select>
+      <span class="clock" id="clock"></span>
+    </div>
+    <div class="mnav" id="mnav"></div>
+  </div>
+  <main>
+    <section class="view on" id="v-data"></section>
+    <section class="view" id="v-regular"></section>
+    <section class="view" id="v-vendor"></section>
+    <section class="view" id="v-locker"></section>
+    <section class="view" id="v-brand"></section>
+    <section class="view" id="v-settings"></section>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="core.js"></script>
+<script src="app-data.js"></script>
+<script src="app-ops.js"></script>
+<script src="app-admin.js"></script>
+<script>
+'use strict';
+// 後台啟動：營運管理系統
+const RENDER = { data: renderData, regular: renderRegular, vendor: renderVendor, locker: renderLocker, brand: renderBrand, settings: renderSettings };
+const TITLES = Object.fromEntries([...document.querySelectorAll('#nav button')].map(b => [b.dataset.v, b.textContent.trim()]));
+curView = 'data';
+
+function show(v) {
+  curView = v;
+  document.querySelectorAll('#nav button, #mnav button').forEach(x => x.classList.toggle('on', x.dataset.v === v));
+  document.querySelectorAll('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + v));
+  $('#pageTitle').textContent = TITLES[v];
+  RENDER[v]();
+}
+function renderAll() {
+  renderBanner();
+  $('#siteSel').innerHTML = siteOptions();
+  RENDER[curView]();
+}
+
+$('#mnav').innerHTML = Object.entries(TITLES).map(([k, n]) => `<button data-v="${k}" class="${k === curView ? 'on' : ''}">${n}</button>`).join('');
+document.querySelectorAll('#nav button, #mnav button').forEach(b => b.onclick = () => show(b.dataset.v));
+$('#siteSel').onchange = ev => { curSite = ev.target.value; RENDER[curView](); };
+
+load();
+curSite = S.sites[0].id;
+startClock();
+renderAll();
+</script>
+</body>
+</html>

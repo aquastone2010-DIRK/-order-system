@@ -226,6 +226,17 @@ function rewardOnConsume(e, paid, d) {
   return msgs;
 }
 
+function renderBanner() {
+  const b = $('#demoBanner'); if (!b) return;
+  b.textContent = S.cfg.demoIgnoreCutoff ? '展示模式：已忽略預訂截止時間，含示範資料（後台 → 系統設定可關閉／重置）' : '';
+  b.classList.toggle('hide', !S.cfg.demoIgnoreCutoff);
+}
+function startClock() {
+  const tick = () => { const c = $('#clock'); if (c) { const n = new Date(); c.textContent = `${Q.ymd(n)} ${n.toLocaleTimeString('zh-TW', { hour12: false })}`; } };
+  tick(); setInterval(tick, 1000);
+}
+function siteOptions() { return S.sites.map(s => `<option value="${s.id}" ${s.id === curSite ? 'selected' : ''}>${esc(s.name)}</option>`).join(''); }
+
 let toastT;
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600); }
 function download(name, text, type = 'text/csv') {

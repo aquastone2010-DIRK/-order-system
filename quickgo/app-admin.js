@@ -1,4 +1,5 @@
 'use strict';
+// 後台：美食櫃、合作品牌管理、營運數據、設定（admin.html）
 // ════════════════════════════════════════════════════════════
 // 4️⃣ 跨場域美食櫃
 // ════════════════════════════════════════════════════════════
@@ -202,30 +203,5 @@ function renderSettings() {
     S.cfg = next; save(); toast('設定已儲存'); renderAll();
   };
   $('#cfgExport').onclick = () => download(`quickgo_${TODAY()}.json`, JSON.stringify(S, null, 2), 'application/json');
-  $('#cfgReset').onclick = () => { if (!confirm('確定清除所有資料並重建示範資料？')) return; S = seed(); save(); A.empId = null; toast('已重置'); renderAll(); };
+  $('#cfgReset').onclick = () => { if (!confirm('確定清除所有資料並重建示範資料？')) return; S = seed(); save(); toast('已重置'); renderAll(); };
 }
-
-// ════════════════════════════════════════════════════════════
-// 框架與啟動
-// ════════════════════════════════════════════════════════════
-const RENDER = { app: renderApp, kiosk: renderKiosk, regular: renderRegular, vendor: renderVendor, locker: renderLocker, brand: renderBrand, data: renderData, settings: renderSettings };
-function renderAll() {
-  $('#siteSel').innerHTML = S.sites.map(s => `<option value="${s.id}" ${s.id === curSite ? 'selected' : ''}>${esc(s.name)}</option>`).join('');
-  $('#demoBanner').textContent = S.cfg.demoIgnoreCutoff ? '展示模式：已忽略預訂截止時間，含示範資料（設定頁可關閉／重置）' : '';
-  $('#demoBanner').classList.toggle('hide', !S.cfg.demoIgnoreCutoff);
-  if (curView === 'kiosk' && K.phase !== 'idle') return; // 取餐進行中不重繪，避免中斷計時
-  RENDER[curView]();
-}
-$('#nav').onclick = ev => {
-  const b = ev.target.closest('button'); if (!b) return;
-  curView = b.dataset.v;
-  document.querySelectorAll('#nav button').forEach(x => x.classList.toggle('on', x === b));
-  document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === 'v-' + curView));
-  RENDER[curView]();
-};
-$('#siteSel').onchange = ev => { curSite = ev.target.value; kioskReset(); RENDER[curView](); };
-setInterval(() => { const n = new Date(); $('#clock').textContent = `${Q.ymd(n)} ${n.toLocaleTimeString('zh-TW', { hour12: false })}`; }, 1000);
-
-load();
-curSite = S.sites[0].id;
-renderAll();

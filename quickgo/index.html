@@ -3,174 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>快取GO 智慧取餐</title>
+<title>快取GO 員工訂餐</title>
 <meta name="theme-color" content="#0f766e">
-<meta name="description" content="科技廠員工餐廳 雙隊伍分流・預估備餐・30秒刷卡取餐・跨場域美食櫃・會員優惠・合作品牌管理台">
-<style>
-:root{
-  --bg:#f4f6f8;--surface:#fff;--surface-2:#f8fafc;--border:#e2e8f0;--text:#0f172a;--muted:#64748b;
-  --brand:#0f766e;--brand-2:#14b8a6;--brand-soft:#ccfbf1;
-  --accent:#f59e0b;--accent-soft:#fef3c7;
-  --ok:#059669;--ok-soft:#d1fae5;--bad:#dc2626;--bad-soft:#fee2e2;--info:#2563eb;--info-soft:#dbeafe;
-  --shadow:0 1px 3px rgba(15,23,42,.08);
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0b1220;--surface:#111a2b;--surface-2:#0f1726;--border:#1f2a3d;--text:#e5e7eb;--muted:#94a3b8;
-  --brand:#2dd4bf;--brand-2:#14b8a6;--brand-soft:#134e4a;--accent:#fbbf24;--accent-soft:#422006;
-  --ok:#34d399;--ok-soft:#064e3b;--bad:#f87171;--bad-soft:#450a0a;--info:#60a5fa;--info-soft:#172554;--shadow:none;
-}}
-:root[data-theme="dark"]{
-  --bg:#0b1220;--surface:#111a2b;--surface-2:#0f1726;--border:#1f2a3d;--text:#e5e7eb;--muted:#94a3b8;
-  --brand:#2dd4bf;--brand-2:#14b8a6;--brand-soft:#134e4a;--accent:#fbbf24;--accent-soft:#422006;
-  --ok:#34d399;--ok-soft:#064e3b;--bad:#f87171;--bad-soft:#450a0a;--info:#60a5fa;--info-soft:#172554;--shadow:none;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
-button,input,select,textarea{font:inherit;color:inherit}
-header{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border)}
-.bar{display:flex;align-items:center;gap:12px;padding:10px 16px;flex-wrap:wrap}
-.logo{display:flex;align-items:center;gap:8px;font-weight:900;font-size:18px;color:var(--brand)}
-.logo i{font-style:normal;background:var(--brand);color:#fff;border-radius:8px;padding:2px 8px;font-size:14px}
-.grow{flex:1}
-.clock{font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px}
-nav{display:flex;gap:4px;padding:0 12px;overflow-x:auto;scrollbar-width:none}
-nav button{border:none;background:none;padding:10px 12px;font-weight:700;color:var(--muted);border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
-nav button.on{color:var(--brand);border-bottom-color:var(--brand)}
-main{max-width:1180px;margin:0 auto;padding:16px}
-.view{display:none}.view.on{display:block}
-.grid{display:grid;gap:14px}
-.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
-.side{grid-template-columns:minmax(0,1fr) 340px}
-@media(max-width:860px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.side,.g2{grid-template-columns:1fr}}
-@media(max-width:480px){.g3{grid-template-columns:1fr}}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
-.card>h3{font-size:14px;padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.card>h3 .grow{min-width:8px}
-.pad{padding:14px 16px}
-.kpi{padding:14px 16px}.kpi b{display:block;font-size:24px;font-variant-numeric:tabular-nums}.kpi span{font-size:12px;color:var(--muted)}
-.muted{color:var(--muted)}.small{font-size:12px}.num{font-variant-numeric:tabular-nums;text-align:right}
-.btn{border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:7px 12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.btn:hover{border-color:var(--brand)}
-.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
-.btn.warn{background:var(--accent);border-color:var(--accent);color:#1f1300}
-.btn.danger{color:var(--bad)}
-.btn.sm{padding:4px 8px;font-size:12px}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-input.in,select.in,textarea.in{width:100%;border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:8px 10px}
-input.in:focus,select.in:focus{outline:2px solid var(--brand-2);outline-offset:0}
-label.f{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:10px 0 4px}
-table{width:100%;border-collapse:collapse}
-th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left;font-size:13px;vertical-align:middle}
-th{font-size:11px;color:var(--muted);background:var(--surface-2);white-space:nowrap}
-.scroll{overflow-x:auto}
-.tag{display:inline-block;padding:1px 7px;border-radius:6px;font-size:11px;font-weight:700;background:var(--surface-2);border:1px solid var(--border)}
-.tag.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
-.tag.bad{background:var(--bad-soft);color:var(--bad);border-color:transparent}
-.tag.acc{background:var(--accent-soft);color:var(--accent);border-color:transparent}
-.tag.info{background:var(--info-soft);color:var(--info);border-color:transparent}
-.tag.brand{background:var(--brand-soft);color:var(--brand);border-color:transparent}
-.note{padding:10px 12px;border-radius:8px;font-size:12px;background:var(--info-soft);color:var(--info);margin-bottom:12px}
-.note.acc{background:var(--accent-soft);color:var(--accent)}
-.note.bad{background:var(--bad-soft);color:var(--bad)}
-.note.ok{background:var(--ok-soft);color:var(--ok)}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{border:1px solid var(--border);border-radius:999px;padding:6px 12px;cursor:pointer;background:var(--surface);font-weight:700;font-size:13px}
-.chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
-.chip:disabled{opacity:.4;cursor:not-allowed}
-.meals{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
-.meal{border:2px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;background:var(--surface)}
-.meal.on{border-color:var(--brand);background:var(--brand-soft)}
-.meal.off{opacity:.45;cursor:not-allowed}
-.meal .e{font-size:30px}.meal .n{font-weight:800}.meal .p{font-weight:900;color:var(--brand);font-size:18px}
-.meter{height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden;border:1px solid var(--border)}
-.meter>i{display:block;height:100%;background:var(--brand-2)}
-.meter.hot>i{background:var(--accent)}.meter.full>i{background:var(--bad)}
-.lines div{display:flex;justify-content:space-between;font-size:13px;padding:2px 0}
-.lines .tot{border-top:1px dashed var(--border);margin-top:4px;padding-top:6px;font-weight:900;font-size:16px}
-/* Kiosk */
-.kiosk{background:linear-gradient(135deg,#042f2e,#0f766e);color:#fff;border-radius:16px;padding:24px;min-height:420px;display:flex;flex-direction:column;gap:14px}
-.kiosk .big{font-size:40px;font-weight:900;line-height:1.15}
-.kiosk input{font-size:24px;padding:14px 16px;border-radius:12px;border:none;width:100%;color:#0f172a;background:#fff}
-.timer{font-size:56px;font-weight:900;font-variant-numeric:tabular-nums}
-.timer.late{color:#fca5a5}
-.kopts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-.kopt{background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.25);border-radius:12px;padding:12px;color:#fff;cursor:pointer;text-align:left}
-.kopt:hover{background:rgba(255,255,255,.22)}
-.kopt:disabled{opacity:.35;cursor:not-allowed}
-.kopt b{display:block;font-size:16px}.kopt s{opacity:.6}
-.kbtn{background:#fff;color:#0f766e;border:none;border-radius:10px;padding:10px 16px;font-weight:900;cursor:pointer}
-.kbtn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}
-.locker-big{font-size:72px;font-weight:900;letter-spacing:2px;background:#fff;color:#0f766e;border-radius:16px;padding:6px 20px;display:inline-block}
-/* Queue */
-.qnum{font-size:30px;font-weight:900;font-variant-numeric:tabular-nums}
-.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
-.qitem{border:1px solid var(--border);border-radius:10px;padding:10px;background:var(--surface-2)}
-/* Lockers */
-.lgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
-.lk{border-radius:6px;padding:6px 2px;text-align:center;font-size:11px;font-weight:700;border:1px solid var(--border);background:var(--surface-2);color:var(--muted)}
-.lk.wait{background:var(--accent-soft);color:var(--accent);border-color:transparent}
-.lk.done{background:var(--ok-soft);color:var(--ok);border-color:transparent}
-.stamps{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
-.stamp{aspect-ratio:1;border-radius:50%;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:14px}
-.stamp.on{border:2px solid var(--brand);background:var(--brand-soft)}
-.tiercard{border-radius:14px;padding:16px;color:#fff;background:linear-gradient(135deg,#0f766e,#115e59)}
-.tiercard.t1{background:linear-gradient(135deg,#475569,#94a3b8)}
-.tiercard.t2{background:linear-gradient(135deg,#a16207,#eab308)}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;z-index:99;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px)}
-.toast.on{opacity:1}
-.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.hide{display:none!important}
-.demo{background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;padding:4px 16px;text-align:center}
-</style>
+<meta name="description" content="快取GO 前台：員工預訂餐點、查看訂單、會員點數與優惠票">
+<link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="front">
 <header>
   <div class="demo" id="demoBanner"></div>
   <div class="bar">
     <div class="logo"><i>⚡</i>快取GO</div>
-    <span class="muted small">科技廠智慧取餐</span>
+    <span class="role">前台・員工訂餐</span>
     <div class="grow"></div>
-    <label class="small muted">場域</label>
-    <select id="siteSel" class="in" style="width:auto"></select>
-    <span class="clock" id="clock"></span>
+    <a class="portal" href="kiosk.html">取餐站畫面</a>
+    <a class="portal" href="admin.html">營運後台 →</a>
   </div>
-  <nav id="nav">
-    <button data-v="app" class="on">🍱 員工App</button>
-    <button data-v="kiosk">⚡ 快取GO取餐站</button>
-    <button data-v="regular">🧑‍🍳 一般點餐</button>
-    <button data-v="vendor">📦 供應商備餐</button>
-    <button data-v="locker">🗄️ 跨場域美食櫃</button>
-    <button data-v="brand">🤝 合作品牌管理台</button>
-    <button data-v="data">📊 營運數據</button>
-    <button data-v="settings">⚙️ 設定</button>
-  </nav>
 </header>
 
 <main>
-  <!-- 員工 App -->
+  <div id="promo"></div>
   <section class="view on" id="v-app"></section>
-  <!-- 快取GO 取餐站 -->
-  <section class="view" id="v-kiosk"></section>
-  <!-- 一般點餐 -->
-  <section class="view" id="v-regular"></section>
-  <!-- 供應商備餐 -->
-  <section class="view" id="v-vendor"></section>
-  <!-- 美食櫃 -->
-  <section class="view" id="v-locker"></section>
-  <!-- 品牌 -->
-  <section class="view" id="v-brand"></section>
-  <!-- 數據 -->
-  <section class="view" id="v-data"></section>
-  <!-- 設定 -->
-  <section class="view" id="v-settings"></section>
 </main>
 <div class="toast" id="toast"></div>
 
-<!-- 載入順序：計算核心 → 資料層 → 各頁面 → 啟動 -->
 <script src="core.js"></script>
 <script src="app-data.js"></script>
 <script src="app-employee.js"></script>
-<script src="app-ops.js"></script>
-<script src="app-admin.js"></script>
+<script>
+'use strict';
+// 前台啟動：員工訂餐
+curView = 'app';
+
+// 行銷橫幅：早鳥倒數、剩食快閃、餐券包
+function renderPromo() {
+  const now = new Date();
+  const tmr = Q.addDays(TODAY(), 1);
+  const left = Q.earlyBirdDeadline(tmr, S.cfg) - now;
+  const eb = left > 0
+    ? `明日早鳥 -${S.cfg.earlyBirdDiscount} 元，剩 ${Math.floor(left / 3600000)} 小時 ${Math.floor(left % 3600000 / 60000)} 分`
+    : `早鳥已截止，明日 ${S.cfg.earlyBirdTime} 前預訂後天享 -${S.cfg.earlyBirdDiscount} 元`;
+  $('#promo').innerHTML = `<div class="hero">
+    <b>⚡ 預訂免排隊，刷卡 ${S.cfg.targetSec} 秒取餐</b>
+    <span class="tag">⏰ ${eb}</span>
+    ${S.cfg.flashEnabled ? `<span class="tag">🌙 ${S.cfg.flashTime} 後現場快取 ${S.cfg.flashPct / 10} 折</span>` : ''}
+    <span class="tag">🎫 餐券包最低每餐 ${money(Math.min(...S.passes.map(p => p.price / p.meals)))}</span>
+  </div>`;
+}
+function renderAll() { renderBanner(); renderPromo(); renderApp(); }
+
+load();
+curSite = S.sites[0].id;
+renderAll();
+setInterval(renderPromo, 30000);
+</script>
 </body>
 </html>
