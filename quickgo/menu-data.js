@@ -109,6 +109,8 @@
     },
   };
 
+  const MAX_LINES = 10, MAX_QTY = 20;
+
   // ── 查詢與計算 ───────────────────────────────────────────
   function items(brandId) { return brands[brandId].categories.flatMap(c => c.items.map(i => ({ ...i, brandId, cat: c.id }))); }
   function item(id) { for (const b of Object.keys(brands)) { const f = items(b).find(i => i.id === id); if (f) return f; } return null; }
@@ -134,14 +136,17 @@
       if (!Number.isInteger(l.qty) || l.qty < 1) { errors.push(`${it.name} 數量需為正整數`); continue; }
       const sub = it.price * l.qty;
       total += sub;
-      (byBrand[it.brandId] = byBrand[it.brandId] || { total: 0, qty: 0, hasMeal: false, addons: 0 });
-      byBrand[it.brandId].total += sub; byBrand[it.brandId].qty += l.qty;
+      (byBrand[it.brandId] = byBrand[it.brandId] || { total: 0, qty: 0, hasMeal: false, addons: 0, lineCount: 0 });
+      byBrand[it.brandId].total += sub; byBrand[it.brandId].qty += l.qty; byBrand[it.brandId].lineCount++;
+      if (l.qty > MAX_QTY) errors.push(`${it.name} 單項最多 ${MAX_QTY} 份`);
       if (it.cat === 'main' || it.cat === 'set') byBrand[it.brandId].hasMeal = true;
       if (it.addon) byBrand[it.brandId].addons += l.qty;
     }
     for (const [b, v] of Object.entries(byBrand)) if (v.addons && !v.hasMeal) errors.push(`${brands[b].name} 加購需搭配主食或套餐`);
+    // 雲端規則限制：每家店每張單最多 10 種品項（見 firestore.rules）
+    for (const [b, v] of Object.entries(byBrand)) if (v.lineCount > MAX_LINES) errors.push(`${brands[b].name} 每張單最多 ${MAX_LINES} 種品項，請分兩次下單`);
     return { total, byBrand, errors, ok: errors.length === 0 };
   }
 
-  return { venues, brands, items, item, availableFrom, isAvailable, setValue, cartSummary };
+  return { MAX_LINES, MAX_QTY, venues, brands, items, item, availableFrom, isAvailable, setValue, cartSummary };
 });

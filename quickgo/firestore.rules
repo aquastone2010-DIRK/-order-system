@@ -1,0 +1,80 @@
+rules_version = '2';
+// Firestore 安全規則（專案 order-management-system-2026）
+// 1. 既有「全物流出單與集點系統」的 4 個集合維持原本權限（登入者可讀寫）
+// 2. 快取GO（quickgo_*）：顧客只能「新增」訂單；只有攤位帳號（Email／密碼登入）能改狀態
+// 部署：Firebase Console → Firestore Database → 規則 → 整份貼上 → 發布
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    // 攤位／管理人員：用 Email＋密碼登入的帳號（顧客一律匿名登入）
+    function isStaff() { return signedIn() && request.auth.token.firebase.sign_in_provider == 'password'; }
+
+    // ── 既有出單系統（行為與原本相同）────────────────────────
+    match /orders/{id}    { allow read, write: if signedIn(); }
+    match /customers/{id} { allow read, write: if signedIn(); }
+    match /products/{id}  { allow read, write: if signedIn(); }
+    match /config/{id}    { allow read, write: if signedIn(); }
+
+    // ── 快取GO：美食街訂單 ─────────────────────────────────
+    function counterPath(d) {
+      return /databases/$(database)/documents/quickgo_counters/$(d.venue + '_' + d.brandId + '_' + d.date);
+    }
+    function validLine(l) {
+      return l.keys().hasOnly(['id', 'name', 'opt', 'qty', 'unit'])
+        && l.id is string && l.name is string && l.opt is string
+        && l.qty is int && l.qty >= 1 && l.qty <= 20
+        && l.unit is int && l.unit > 0 && l.unit <= 2000;
+    }
+    function validNewOrder() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['venue', 'brandId', 'date', 'seq', 'callNo', 'lines', 'total', 'dine', 'pay', 'paid', 'status', 'createdAt', 'uid', 'note'])
+        && d.keys().hasAll(['venue', 'brandId', 'date', 'seq', 'callNo', 'lines', 'total', 'dine', 'pay', 'paid', 'status', 'createdAt', 'uid'])
+        && d.venue is string && d.brandId is string && d.date is string && d.date.size() == 10
+        && d.status == 'new' && d.paid == false && d.pay == 'counter'
+        && d.dine in ['in', 'out']
+        && d.uid == request.auth.uid
+        && d.createdAt == request.time
+        && d.total is int && d.total > 0 && d.total <= 20000
+        && d.lines is list && d.lines.size() >= 1 && d.lines.size() <= 10  // 每張單最多 10 種品項並逐一檢查（實測 12 項會超過規則 1,000 個運算式上限）
+        && validLine(d.lines[0])
+        && (d.lines.size() < 2 || validLine(d.lines[1]))
+        && (d.lines.size() < 3 || validLine(d.lines[2]))
+        && (d.lines.size() < 4 || validLine(d.lines[3]))
+        && (d.lines.size() < 5 || validLine(d.lines[4]))
+        && (d.lines.size() < 6 || validLine(d.lines[5]))
+        && (d.lines.size() < 7 || validLine(d.lines[6]))
+        && (d.lines.size() < 8 || validLine(d.lines[7]))
+        && (d.lines.size() < 9 || validLine(d.lines[8]))
+        && (d.lines.size() < 10 || validLine(d.lines[9]))
+        && d.callNo is string && d.callNo.size() <= 8
+        && (!('note' in d) || (d.note is string && d.note.size() <= 100))
+        // 取餐號序號必須等於同一筆交易中遞增後的計數器 → 多台手機同時下單也不會同號
+        && d.seq is int && d.seq == getAfter(counterPath(d)).data.n;
+    }
+    match /quickgo_orders/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && validNewOrder();
+      // 攤位只能改流程欄位，不能改金額、品項、取餐號
+      allow update: if isStaff()
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['status', 'paid', 'payMethod', 'acceptedAt', 'readyAt', 'doneAt', 'cancelledAt', 'cancelReason'])
+        && request.resource.data.status in ['new', 'making', 'ready', 'done', 'cancelled'];
+      allow delete: if false;
+    }
+
+    // 取餐號計數器：每次只能 +1
+    match /quickgo_counters/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.keys().hasOnly(['n']) && request.resource.data.n == 1;
+      allow update: if signedIn() && request.resource.data.keys().hasOnly(['n']) && request.resource.data.n == resource.data.n + 1;
+      allow delete: if false;
+    }
+
+    // 售完狀態：所有人可讀（顧客未登入前也要看得到），攤位可寫
+    match /quickgo_menu_state/{brand} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+  }
+}

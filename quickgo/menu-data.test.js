@@ -40,3 +40,14 @@ test('購物車金額與加購規則', () => {
   assert.equal(c.ok, false);                         // 只有湯＋加購，不符
   assert.equal(M.cartSummary([{ id: 'RC-01', qty: 0 }]).ok, false);
 });
+
+test('購物車上限：每家店最多 10 種品項、單項最多 20 份（與雲端規則一致）', () => {
+  const ten = M.items('RC').slice(0, 10).map(i => ({ id: i.id, qty: 1 }));
+  assert.equal(M.cartSummary(ten).ok, true);
+  const eleven = M.items('RC').slice(0, 11).map(i => ({ id: i.id, qty: 1 }));
+  assert.equal(M.cartSummary(eleven).ok, false);
+  assert.equal(M.cartSummary([{ id: 'RC-01', qty: 20 }]).ok, true);
+  assert.equal(M.cartSummary([{ id: 'RC-01', qty: 21 }]).ok, false);
+  // 兩家店各 10 種 → 各自一張單，可以
+  assert.equal(M.cartSummary([...ten, ...M.items('YJ').filter(i => i.cat !== 'addon').slice(0, 10).map(i => ({ id: i.id, qty: 1 }))]).ok, true);
+});

@@ -1,0 +1,15 @@
+{
+  "name": "quickgo",
+  "private": true,
+  "description": "快取GO 智慧取餐（前台／後台）",
+  "scripts": {
+    "test": "node --test core.test.js menu-data.test.js",
+    "test:rules": "firebase emulators:exec --only firestore,auth --project demo-quickgo \"node --test tests/rules.test.mjs\"",
+    "emulators": "firebase emulators:start --only firestore,auth --project demo-quickgo"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^3.0.4",
+    "firebase": "^10.12.0",
+    "firebase-tools": "^13.35.1"
+  }
+}
