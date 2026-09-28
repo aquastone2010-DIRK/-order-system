@@ -1,0 +1,331 @@
+'use strict';
+// ════════════════════════════════════════════════════════════
+// 3️⃣ 快取GO 取餐站（30 秒刷卡取餐）
+// ════════════════════════════════════════════════════════════
+const K = { phase: 'idle', start: 0, emp: null, msg: '', sub: '', locker: '', resetT: null, tick: null };
+
+function kioskReset() {
+  clearTimeout(K.resetT); clearInterval(K.tick);
+  Object.assign(K, { phase: 'idle', start: 0, emp: null, msg: '', sub: '', locker: '' });
+  renderKiosk();
+}
+function kioskElapsed() { return K.start ? (performance.now() - K.start) / 1000 : 0; }
+function kioskStart() {
+  if (K.start) return;
+  K.start = performance.now();
+  clearInterval(K.tick);
+  K.tick = setInterval(() => { const t = $('#kTimer'); if (t) { const s = kioskElapsed(); t.textContent = s.toFixed(1) + 's'; t.classList.toggle('late', s > S.cfg.targetSec); } }, 100);
+}
+function kioskFinish(type, msg, sub, locker) {
+  const sec = Math.round(kioskElapsed() * 10) / 10;
+  clearInterval(K.tick);
+  S.pickups.push({ date: TODAY(), site: curSite, sec, type, at: Date.now() });
+  Object.assign(K, { phase: 'done', msg, sub: sub + `｜本次 ${sec} 秒${sec <= S.cfg.targetSec ? ' ✅' : ''}`, locker });
+  save(); renderKiosk();
+  K.resetT = setTimeout(kioskReset, 5000);
+  return sec;
+}
+function kioskScan(code) {
+  if (!code.trim()) return;
+  kioskStart();
+  const e = findEmp(code);
+  if (!e) { Object.assign(K, { phase: 'error', msg: '查無此員工證', sub: '請重新刷卡或洽服務人員' }); clearInterval(K.tick); renderKiosk(); K.resetT = setTimeout(kioskReset, 3000); return; }
+  K.emp = e.id;
+  const d = TODAY();
+  const mine = S.orders.filter(o => o.date === d && o.empId === e.id && o.status !== 'cancelled');
+  const pending = mine.find(o => o.status === 'paid' && o.site === curSite);
+  if (pending) {
+    const t = tpl(pending.setId);
+    pending.status = 'picked'; pending.pickedAt = Date.now();
+    const msgs = rewardOnConsume(e, pending.total + (pending.passCost || 0), d);
+    pending.pickupSec = kioskFinish('pre', `${e.name}，請至 ${pending.locker}`, `${t.emoji} ${t.name}（已預付）${msgs.length ? '｜' + msgs.join('・') : ''}`, pending.locker);
+    save();
+    return;
+  }
+  const elsewhere = mine.find(o => o.status === 'paid');
+  const picked = mine.find(o => o.status === 'picked');
+  K.phase = 'choose';
+  K.msg = `${e.name} 您好`;
+  K.sub = elsewhere ? `⚠️ 您預訂的餐點在「${siteById(elsewhere.site).name}」${elsewhere.locker}，也可在此購買現場快取` :
+    picked ? `今日預訂已於 ${fmtTime(picked.pickedAt)} 取餐。如需加購請選擇：` : '今日無預訂，請點選現場快取套餐（員工證扣款）';
+  renderKiosk();
+}
+function kioskBuy(setId) {
+  const e = empById(K.emp); const d = TODAY(); const now = new Date();
+  const fc = forecastFor(d, curSite);
+  if (walkinStock(d, curSite, setId, fc) <= 0) return toast('已售完');
+  const t = tpl(setId);
+  const price = Q.computePrice({ price: t.price, channel: 'walkin', serviceDate: d, now, cfg: S.cfg, tierPct: tierOf(e).tier.discountPct });
+  const w = { id: uid('w'), date: d, site: curSite, empId: e.id, setId, total: price.total, lines: price.lines, at: Date.now(), pay: 'badge' };
+  S.walkins.push(w);
+  const msgs = rewardOnConsume(e, price.total, d);
+  w.sec = kioskFinish('walkin', `${e.name}，請取 ${t.name}`, `${t.emoji} 現場快取架「${t.id}」｜員工證扣款 ${money(price.total)}${msgs.length ? '｜' + msgs.join('・') : ''}`, t.id);
+  save();
+}
+
+function renderKiosk() {
+  const el = $('#v-kiosk');
+  const d = TODAY();
+  const menu = menuFor(d);
+  const fc = forecastFor(d, curSite);
+  const now = new Date();
+  const flash = S.cfg.flashEnabled && now.getHours() * 60 + now.getMinutes() >= Q.hmToMin(S.cfg.flashTime);
+  const ps = S.pickups.filter(p => p.date === d && p.site === curSite);
+  const stat = Q.pickupStats(ps.map(p => p.sec), S.cfg.targetSec);
+  const pendingHere = activeOrders(d, curSite).filter(o => o.status === 'paid').length;
+  const e = K.emp && empById(K.emp);
+  let center = '';
+  if (K.phase === 'idle') center = `
+      <div class="big">請刷員工證取餐</div>
+      <div style="opacity:.8">已預訂：刷卡即顯示櫃號　｜　未預訂：刷卡後點選現場快取套餐</div>
+      <input id="kInput" placeholder="刷卡 / 輸入工號後按 Enter" autocomplete="off">
+      <div class="row"><button class="kbtn ghost" id="kDemoPre">模擬：有預訂員工</button><button class="kbtn ghost" id="kDemoWalk">模擬：未預訂員工</button></div>`;
+  else if (K.phase === 'choose') center = `
+      <div class="row"><div class="big grow">${esc(K.msg)}</div><div class="timer" id="kTimer">0.0s</div></div>
+      <div>${esc(K.sub)}</div>
+      <div class="kopts">${menu.map(m => {
+        const stock = walkinStock(d, curSite, m.id, fc);
+        const p = Q.computePrice({ price: m.price, channel: 'walkin', serviceDate: d, now, cfg: S.cfg, tierPct: tierOf(e).tier.discountPct });
+        return `<button class="kopt" data-buy="${m.id}" ${stock <= 0 ? 'disabled' : ''}><span style="font-size:26px">${m.emoji}</span><b>${esc(m.name)}</b>
+          ${p.total !== m.price ? `<s>${money(m.price)}</s> ` : ''}<b style="display:inline">${money(p.total)}</b><div class="small">${stock <= 0 ? '已售完' : '現貨 ' + stock}</div></button>`;
+      }).join('')}</div>
+      <div><button class="kbtn ghost" id="kCancel">取消</button></div>`;
+  else if (K.phase === 'done') center = `
+      <div style="font-size:18px">✅ 完成</div>
+      <div class="big">${esc(K.msg)}</div>
+      <div><span class="locker-big">${esc(K.locker)}</span></div>
+      <div>${esc(K.sub)}</div>
+      <div><button class="kbtn" id="kNext">下一位</button></div>`;
+  else center = `<div class="big">❌ ${esc(K.msg)}</div><div>${esc(K.sub)}</div><div><button class="kbtn" id="kNext">重新刷卡</button></div>`;
+
+  el.innerHTML = `
+  <div class="grid side">
+    <div class="kiosk">${center}</div>
+    <div class="grid" style="align-self:start">
+      <div class="card"><h3>⏱️ 今日取餐速度 <span class="muted small">${esc(siteById(curSite).name)}</span></h3>
+        <div class="grid g2">
+          <div class="kpi"><b>${stat.count ? stat.avg.toFixed(1) + 's' : '—'}</b><span>平均取餐秒數</span></div>
+          <div class="kpi"><b>${stat.count ? pct(stat.underRate, 0) : '—'}</b><span>${S.cfg.targetSec} 秒內完成率</span></div>
+          <div class="kpi"><b>${stat.count ? stat.p90.toFixed(1) + 's' : '—'}</b><span>P90 秒數</span></div>
+          <div class="kpi"><b>${stat.count}</b><span>已完成筆數</span></div>
+        </div>
+        <div class="pad small muted" style="padding-top:0">計時：從刷卡（第一個輸入）到完成。尚待取餐 ${pendingHere} 份預訂。</div>
+      </div>
+      <div class="card"><h3>📦 現場快取現貨 ${flash ? `<span class="tag acc">剩食快閃 ${S.cfg.flashPct / 10}折中</span>` : `<span class="muted small">${S.cfg.flashTime} 起 ${S.cfg.flashPct / 10}折</span>`}</h3>
+        <table><tbody>${menu.map(m => `<tr><td>${m.emoji} ${esc(m.name)}</td><td class="num"><b>${walkinStock(d, curSite, m.id, fc)}</b> 份</td></tr>`).join('')}</tbody></table>
+      </div>
+      <div class="card"><h3>🧾 最近交易</h3><div class="scroll"><table><tbody>
+        ${ps.slice(-8).reverse().map(p => `<tr><td>${fmtTime(p.at)}</td><td>${p.type === 'pre' ? '<span class="tag info">預訂取餐</span>' : '<span class="tag brand">現場快取</span>'}</td><td class="num"><b style="color:${p.sec <= S.cfg.targetSec ? 'var(--ok)' : 'var(--bad)'}">${p.sec}s</b></td></tr>`).join('') || '<tr><td class="muted">尚無交易</td></tr>'}
+      </tbody></table></div></div>
+    </div>
+  </div>`;
+  const inp = $('#kInput');
+  if (inp) {
+    if (curView === 'kiosk') setTimeout(() => inp.focus(), 0);
+    inp.addEventListener('input', kioskStart, { once: true });
+    inp.onkeydown = ev => { if (ev.key === 'Enter') kioskScan(inp.value); };
+  }
+  const demo = pre => {
+    const pend = new Set(activeOrders(d, curSite).filter(o => o.status === 'paid').map(o => o.empId));
+    const hasToday = new Set(activeOrders(d).map(o => o.empId));
+    const pool = S.employees.filter(x => pre ? pend.has(x.id) : !hasToday.has(x.id));
+    if (!pool.length) return toast(pre ? '此場域已無待取預訂' : '沒有可示範的員工');
+    const x = pool[Math.floor(Math.random() * pool.length)];
+    inp.value = x.card; kioskStart();
+    setTimeout(() => kioskScan(x.card), 600); // 模擬讀卡時間
+  };
+  const b1 = $('#kDemoPre'); if (b1) b1.onclick = () => demo(true);
+  const b2 = $('#kDemoWalk'); if (b2) b2.onclick = () => demo(false);
+  el.querySelectorAll('[data-buy]').forEach(b => b.onclick = () => kioskBuy(b.dataset.buy));
+  const c = $('#kCancel'); if (c) c.onclick = kioskReset;
+  const n = $('#kNext'); if (n) n.onclick = kioskReset;
+}
+
+// ════════════════════════════════════════════════════════════
+// 1️⃣ 一般點餐隊伍（現點現做）
+// ════════════════════════════════════════════════════════════
+function renderRegular() {
+  const el = $('#v-regular');
+  const d = TODAY();
+  const menu = menuFor(d);
+  const mine = S.tickets.filter(t => t.date === d && t.site === curSite);
+  const making = mine.filter(t => t.status === 'making');
+  const ready = mine.filter(t => t.status === 'ready');
+  const waits = mine.filter(t => t.readyAt).map(t => (t.readyAt - t.createdAt) / 1000);
+  const avgWait = waits.length ? waits.reduce((a, b) => a + b, 0) / waits.length : 0;
+  const est = Q.estimateWait(making.length, S.cfg.avgMakeSec, S.cfg.stations);
+  const qs = Q.pickupStats(S.pickups.filter(p => p.date === d && p.site === curSite).map(p => p.sec), S.cfg.targetSec);
+  el.innerHTML = `
+  <div class="note acc">雙隊伍分流：<b>一般隊伍</b>現點現做（可客製），<b>快取GO 隊伍</b>預訂/現貨刷卡即取。現在排一般隊伍預估等候 <b>${Math.ceil(est / 60)} 分鐘</b>；快取GO 今日平均 <b>${qs.count ? qs.avg.toFixed(1) + ' 秒' : '—'}</b>。</div>
+  <div class="grid side">
+    <div class="grid">
+      <div class="card"><h3>🔥 製作中 <span class="tag">${making.length}</span></h3><div class="pad"><div class="qgrid">
+        ${making.map(t => `<div class="qitem"><div class="qnum">${t.no}</div><div class="small">${esc(t.itemName)}</div>${t.note ? `<div class="small muted">📝 ${esc(t.note)}</div>` : ''}<div class="small muted">${fmtTime(t.createdAt)} 點餐</div>
+          <button class="btn sm pri" data-ready="${t.id}" style="margin-top:6px">完成・叫號</button></div>`).join('') || '<span class="muted small">無</span>'}
+      </div></div></div>
+      <div class="card"><h3>📣 叫號待取 <span class="tag acc">${ready.length}</span></h3><div class="pad"><div class="qgrid">
+        ${ready.map(t => `<div class="qitem" style="border-color:var(--accent)"><div class="qnum" style="color:var(--accent)">${t.no}</div><div class="small">${esc(t.itemName)}</div>
+          <button class="btn sm" data-done="${t.id}" style="margin-top:6px">已取餐</button></div>`).join('') || '<span class="muted small">無</span>'}
+      </div></div></div>
+    </div>
+    <div class="grid" style="align-self:start">
+      <div class="card"><h3>🧑‍🍳 一般點餐</h3><div class="pad">
+        <label class="f">工號（選填，會員累點）</label><input class="in" id="rEmp" placeholder="刷卡或輸入工號">
+        <label class="f">餐點</label>
+        <select class="in" id="rItem">${menu.map(m => `<option value="${m.id}">${m.emoji} ${esc(m.name)}　${money(m.price)}</option>`).join('')}</select>
+        <label class="f">客製需求</label><input class="in" id="rNote" placeholder="例：飯少、不要辣">
+        <button class="btn pri" id="rAdd" style="width:100%;justify-content:center;margin-top:12px">開單・取號</button>
+      </div></div>
+      <div class="card"><h3>📈 一般隊伍今日</h3><div class="grid g2">
+        <div class="kpi"><b>${mine.length}</b><span>開單數</span></div>
+        <div class="kpi"><b>${waits.length ? (avgWait / 60).toFixed(1) + ' 分' : '—'}</b><span>平均等候（開單→叫號）</span></div>
+      </div></div>
+    </div>
+  </div>`;
+  $('#rAdd').onclick = () => {
+    const code = $('#rEmp').value.trim();
+    const e = code ? findEmp(code) : null;
+    if (code && !e) return toast('查無此工號');
+    const t = tpl($('#rItem').value);
+    const price = Q.computePrice({ price: t.price, channel: 'regular', serviceDate: d, now: new Date(), cfg: S.cfg, tierPct: e ? tierOf(e).tier.discountPct : 0 });
+    const no = 'N' + String(mine.length + 1).padStart(3, '0');
+    S.tickets.push({ id: uid('t'), no, date: d, site: curSite, empId: e ? e.id : null, setId: t.id, itemName: t.name, note: $('#rNote').value.trim(), total: price.total, status: 'making', createdAt: Date.now() });
+    save(); toast(`號碼 ${no}｜${money(price.total)}`); renderRegular();
+  };
+  el.querySelectorAll('[data-ready]').forEach(b => b.onclick = () => { const t = S.tickets.find(x => x.id === b.dataset.ready); t.status = 'ready'; t.readyAt = Date.now(); save(); renderRegular(); });
+  el.querySelectorAll('[data-done]').forEach(b => b.onclick = () => {
+    const t = S.tickets.find(x => x.id === b.dataset.done); t.status = 'done'; t.doneAt = Date.now();
+    if (t.empId) { const m = rewardOnConsume(empById(t.empId), t.total, t.date); if (m.length) toast(m.join('・')); }
+    save(); renderRegular();
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+// 2️⃣ 供應商備餐 + 4️⃣ 共同食材
+// ════════════════════════════════════════════════════════════
+const V = { date: null, site: 'ALL' };
+
+function renderVendor() {
+  const el = $('#v-vendor');
+  const dates = menuDates();
+  if (!V.date || !dates.includes(V.date)) V.date = dates[0];
+  const d = V.date;
+  const menu = menuFor(d);
+  const siteIds = V.site === 'ALL' ? S.sites.map(s => s.id) : [V.site];
+  const fcs = Object.fromEntries(siteIds.map(s => [s, forecastFor(d, s)]));
+  const agg = menu.map(m => {
+    const r = { id: m.id, m, pre: 0, walkinExp: 0, suggested: 0, confirmed: 0, allConfirmed: true };
+    siteIds.forEach(s => {
+      const row = fcs[s].rows.find(x => x.id === m.id);
+      r.pre += row.pre; r.walkinExp += row.walkinExp; r.suggested += row.suggested;
+      const c = S.prep[d] && S.prep[d][s] && S.prep[d][s][m.id];
+      if (Number.isInteger(c)) r.confirmed += c; else { r.allConfirmed = false; r.confirmed += row.suggested; }
+    });
+    return r;
+  });
+  const cutoff = Q.orderCutoff(d, S.cfg);
+  const mins = Math.round((cutoff - new Date()) / 60000);
+  // 共同食材
+  const prepBySite = {};
+  S.sites.forEach(s => { prepBySite[s.id] = {}; const fc = forecastFor(d, s.id); menu.forEach(m => { prepBySite[s.id][m.id] = prepQty(d, s.id, m.id, fc); }); });
+  const bom = Object.fromEntries(S.catalog.map(c => [c.id, c.bom || []]));
+  const plan = Q.ingredientPlan(prepBySite, bom, S.ingredients);
+  const oneSite = V.site !== 'ALL' ? fcs[V.site] : null;
+
+  el.innerHTML = `
+  <div class="row" style="margin-bottom:12px">
+    <div class="chips">${dates.map(x => `<button class="chip ${x === d ? 'on' : ''}" data-vd="${x}">${fmtDate(x)}</button>`).join('')}</div>
+    <div class="grow"></div>
+    <select class="in" id="vSite" style="width:auto"><option value="ALL">全部場域合計</option>${S.sites.map(s => `<option value="${s.id}" ${V.site === s.id ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</select>
+  </div>
+  <div class="note ${mins > 0 ? '' : 'acc'}">預訂截止 ${fmtDate(d)} ${S.cfg.cutoffTime}：${mins > 0 ? `尚有 ${Math.floor(mins / 60)} 小時 ${mins % 60} 分，預訂量仍會增加` : '已截止，預訂量已確定'}。建議備餐量 = 預訂量 + ⌈現場預估 × (1 + 安全庫存 ${S.cfg.safetyPct}%)⌉</div>
+  <div class="grid g4" style="margin-bottom:14px">
+    <div class="card kpi"><b>${agg.reduce((a, r) => a + r.pre, 0)}</b><span>已預訂份數</span></div>
+    <div class="card kpi"><b>${agg.reduce((a, r) => a + r.walkinExp, 0).toFixed(1)}</b><span>現場快取預估</span></div>
+    <div class="card kpi"><b>${agg.reduce((a, r) => a + r.suggested, 0)}</b><span>建議備餐總量</span></div>
+    <div class="card kpi"><b>${money(plan.totalSaved)}</b><span>跨場域合併採購節省</span></div>
+  </div>
+  <div class="card" style="margin-bottom:14px"><h3>📦 備餐建議 <span class="muted small">${V.site === 'ALL' ? '三場域合計（確認量請切換到單一場域）' : esc(siteById(V.site).name)}</span><span class="grow"></span>
+    ${oneSite ? '<button class="btn sm" id="vApply">套用建議量</button><button class="btn sm pri" id="vSave">確認備餐量</button>' : ''}<button class="btn sm" id="vCsv">匯出備料單 CSV</button></h3>
+    <div class="scroll"><table>
+      <thead><tr><th>套餐</th><th>品牌</th><th class="num">已預訂</th><th class="num">現場預估</th><th class="num">建議備餐</th><th class="num">總產能</th><th class="num">${oneSite ? '確認備餐' : '備餐（確認/建議）'}</th></tr></thead>
+      <tbody>${agg.map(r => `<tr>
+        <td>${r.m.emoji} ${esc(r.m.name)}</td><td class="small">${esc((brandById(r.m.brandId) || {}).name || '')}</td>
+        <td class="num">${r.pre}</td><td class="num">${r.walkinExp.toFixed(1)}</td><td class="num"><b>${r.suggested}</b></td>
+        <td class="num">${r.m.capacity}${r.suggested > r.m.capacity ? ' <span class="tag bad">超出</span>' : ''}</td>
+        <td class="num">${oneSite ? `<input class="in num" style="width:80px" type="number" min="0" step="1" data-prep="${r.id}" value="${prepQty(d, V.site, r.id, oneSite)}">` : `${r.confirmed}${r.allConfirmed ? ' <span class="tag ok">已確認</span>' : ''}`}</td></tr>`).join('')}</tbody>
+    </table></div>
+    <div class="pad small muted">${oneSite ? (oneSite.source === 'history'
+      ? `現場預估基準：前 ${S.cfg.forecastWeeks} 週同星期現場快取量加權平均 = ${oneSite.walkinTotal.toFixed(2)} 份（${oneSite.used.map(u => `${u.date.slice(5)}：${u.walkin}份×權重${u.weight}`).join('、')}）；各套餐依預訂占比（拉普拉斯平滑）分配。`
+      : `歷史資料不足，現場預估 = 預訂量 × ${S.cfg.fallbackWalkinPct}% = ${oneSite.walkinTotal.toFixed(2)} 份。`) : '選擇單一場域可查看預估依據並確認備餐量。'}</div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>🥬 跨場域共同食材方案 <span class="muted small">三場域合併採購，減少零頭浪費</span></h3><div class="scroll"><table>
+      <thead><tr><th>食材</th><th class="num">總需求</th>${S.sites.map(s => `<th class="num">${s.id}</th>`).join('')}<th class="num">分開採購</th><th class="num">合併採購</th><th class="num">節省</th></tr></thead>
+      <tbody>${plan.rows.map(r => `<tr><td>${esc(r.name)}<div class="small muted">每包 ${(S.ingredients[r.ing].packGrams / 1000)}kg・${money(S.ingredients[r.ing].packPrice)}</div></td>
+        <td class="num">${(r.grams / 1000).toFixed(2)}kg</td>${S.sites.map(s => `<td class="num">${((r.bySite[s.id] || 0) / 1000).toFixed(2)}</td>`).join('')}
+        <td class="num">${r.separatePacks} 包</td><td class="num"><b>${r.pooledPacks}</b> 包</td><td class="num">${r.savedPacks ? `<span class="tag ok">-${r.savedPacks} 包 ${money(r.savedCost)}</span>` : '—'}</td></tr>`).join('')}</tbody>
+      <tfoot><tr><th colspan="${S.sites.length + 3}">合計採購 ${money(plan.totalCost)}</th><th class="num" colspan="2">節省 ${plan.totalSavedPacks} 包 ${money(plan.totalSaved)}</th></tr></tfoot>
+    </table></div><div class="pad small muted">分開採購＝各場域各自無條件進位到整包；合併採購＝三場域需求加總後才進位。食材單價與規格為示範值，請於設定中依實際合約調整。</div></div>
+    <div class="card"><h3>🍱 ${fmtDate(d)} 菜單設定 <span class="muted small">每日 ${Q.MIN_SETS}–${Q.MAX_SETS} 款</span></h3><div class="pad">
+      <table><thead><tr><th></th><th>套餐</th><th>品牌</th><th class="num">售價</th><th class="num">總產能</th></tr></thead><tbody>
+      ${S.catalog.map(c => { const m = (S.menus[d] || []).find(x => x.id === c.id); const b = brandById(c.brandId); return `<tr>
+        <td><input type="checkbox" data-mc="${c.id}" ${m ? 'checked' : ''} ${b && b.status !== 'active' ? 'disabled' : ''}></td>
+        <td>${c.emoji} ${esc(c.name)}</td><td class="small">${esc(b ? b.name : '')}</td><td class="num">${money(c.price)}</td>
+        <td class="num"><input class="in num" style="width:72px" type="number" min="0" step="1" data-mcap="${c.id}" value="${m ? m.capacity : 120}"></td></tr>`; }).join('')}
+      </tbody></table>
+      <div id="menuErr" class="small" style="color:var(--bad);margin-top:6px"></div>
+      <button class="btn pri" id="vMenuSave" style="margin-top:10px">儲存菜單</button>
+      <details style="margin-top:12px"><summary class="small" style="cursor:pointer">＋ 新增套餐品項</summary>
+        <div class="grid g2" style="margin-top:8px">
+          <div><label class="f">名稱</label><input class="in" id="ncName"></div>
+          <div><label class="f">圖示</label><input class="in" id="ncEmoji" value="🍱"></div>
+          <div><label class="f">售價（整數）</label><input class="in" id="ncPrice" type="number" min="1" step="1" value="100"></div>
+          <div><label class="f">品牌</label><select class="in" id="ncBrand">${S.brands.filter(b => b.status === 'active').map(b => `<option value="${b.id}">${esc(b.name)}</option>`).join('')}</select></div>
+        </div>
+        <button class="btn" id="ncAdd" style="margin-top:8px">新增到品項庫</button>
+      </details>
+    </div></div>
+  </div>`;
+  el.querySelectorAll('[data-vd]').forEach(b => b.onclick = () => { V.date = b.dataset.vd; renderVendor(); });
+  $('#vSite').onchange = ev => { V.site = ev.target.value; renderVendor(); };
+  if (oneSite) {
+    $('#vApply').onclick = () => { el.querySelectorAll('[data-prep]').forEach(i => { i.value = oneSite.rows.find(r => r.id === i.dataset.prep).suggested; }); };
+    $('#vSave').onclick = () => {
+      const out = {};
+      for (const i of el.querySelectorAll('[data-prep]')) {
+        const v = Number(i.value);
+        if (!Number.isInteger(v) || v < 0) return toast('備餐量需為 0 以上整數');
+        const pre = oneSite.rows.find(r => r.id === i.dataset.prep).pre;
+        if (v < pre) return toast(`${tpl(i.dataset.prep).name} 備餐量不可少於已預訂 ${pre} 份`);
+        out[i.dataset.prep] = v;
+      }
+      S.prep[d] = S.prep[d] || {}; S.prep[d][V.site] = out; save(); toast('已確認備餐量'); renderAll();
+    };
+  }
+  $('#vCsv').onclick = () => {
+    const rows = [['日期', '場域', '套餐', '品牌', '已預訂', '現場預估', '建議備餐', '確認備餐']];
+    S.sites.forEach(s => { const fc = forecastFor(d, s.id); fc.rows.forEach(r => rows.push([d, s.name, r.name, (brandById(tpl(r.id).brandId) || {}).name, r.pre, r.walkinExp.toFixed(2), r.suggested, prepQty(d, s.id, r.id, fc)])); });
+    rows.push([]); rows.push(['食材', '總需求(g)', '分開採購包數', '合併採購包數', '節省包數', '節省金額']);
+    plan.rows.forEach(r => rows.push([r.name, r.grams, r.separatePacks, r.pooledPacks, r.savedPacks, r.savedCost]));
+    download(`快取GO備料單_${d}.csv`, csv(rows));
+  };
+  $('#vMenuSave').onclick = () => {
+    const sel = [...el.querySelectorAll('[data-mc]')].filter(c => c.checked).map(c => ({ id: c.dataset.mc, capacity: Number(el.querySelector(`[data-mcap="${c.dataset.mc}"]`).value) }));
+    const check = Q.validateMenu(sel.map(m => ({ ...tpl(m.id), capacity: m.capacity })));
+    if (!check.ok) { $('#menuErr').textContent = check.errors.join('；'); return; }
+    const removed = (S.menus[d] || []).filter(m => !sel.find(x => x.id === m.id)).map(m => m.id).filter(id => activeOrders(d).some(o => o.setId === id));
+    if (removed.length) { $('#menuErr').textContent = `已有預訂的套餐不可移除：${removed.map(id => tpl(id).name).join('、')}`; return; }
+    const pc = preCounts(d);
+    const under = sel.filter(m => m.capacity < (pc[m.id] || 0));
+    if (under.length) { $('#menuErr').textContent = under.map(m => `${tpl(m.id).name} 產能不可低於已預訂 ${pc[m.id]} 份`).join('；'); return; }
+    S.menus[d] = sel; save(); toast('菜單已儲存'); renderAll();
+  };
+  $('#ncAdd').onclick = () => {
+    const name = $('#ncName').value.trim(); const price = Number($('#ncPrice').value);
+    if (!name || !Number.isInteger(price) || price <= 0) return toast('請輸入名稱與正整數售價');
+    const id = 'T' + (Math.max(...S.catalog.map(c => Number(c.id.slice(1)) || 0)) + 1);
+    S.catalog.push({ id, name, emoji: $('#ncEmoji').value || '🍱', brandId: $('#ncBrand').value, price, bom: [] });
+    save(); toast('已新增品項（食材配方可於後續擴充）'); renderVendor();
+  };
+}
