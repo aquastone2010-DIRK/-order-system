@@ -1,0 +1,88 @@
+{
+ "id": "03",
+ "title": "食材的旅程",
+ "series": "從收貨到你的餐盤",
+ "voice": "zh-TW-YunJheNeural",
+ "scenes": [
+  {
+   "scene": 1,
+   "start": 0.0,
+   "end": 8.32,
+   "head": "食材的旅程",
+   "say": "一份餐點來到你手上之前，食材走過哪些路？一起來看看。",
+   "veo": "Aerial-feel shot of a refrigerated delivery truck arriving at a loading area in early morning light."
+  },
+  {
+   "scene": 2,
+   "start": 8.32,
+   "end": 16.81,
+   "head": "第 1 站：收貨驗收",
+   "say": "第一站，收貨驗收。檢查包裝、溫度，和有效日期。",
+   "veo": "Staff in uniform receiving boxes from a delivery driver and checking items against a list on a clipboard."
+  },
+  {
+   "scene": 3,
+   "start": 16.81,
+   "end": 27.1,
+   "head": "第 2 站：冷鏈入庫",
+   "say": "第二站，冷鏈入庫。冷藏保存在攝氏七度以下，冷凍保存在攝氏零下十八度以下。",
+   "veo": "Close-up of a digital thermometer display on a walk-in freezer door, then the door opens revealing frosty organized shelves."
+  },
+  {
+   "scene": 4,
+   "start": 27.1,
+   "end": 36.33,
+   "head": "第 3 站：先進先出",
+   "say": "第三站，先進先出。先到期的食材先使用，減少過期造成的浪費。",
+   "veo": "Staff rotating stock on a shelf, moving older containers to the front and placing new ones at the back."
+  },
+  {
+   "scene": 5,
+   "start": 36.33,
+   "end": 46.48,
+   "head": "第 4 站：分裝標示",
+   "say": "第四站，分裝標示。食材分成適當份量，貼上品保標籤，清楚記錄日期。",
+   "veo": "Gloved hands portioning sliced chicken into containers and applying printed labels, clean steel surface."
+  },
+  {
+   "scene": 6,
+   "start": 46.48,
+   "end": 55.97,
+   "head": "第 5 站：正確解凍",
+   "say": "第五站，解凍。食材放在冷藏庫中慢慢解凍，不在室溫下長時間放置。",
+   "veo": "Time-lapse style shot of frozen fish fillets in a tray inside a refrigerator gradually thawing, soft cool light."
+  },
+  {
+   "scene": 7,
+   "start": 55.97,
+   "end": 65.85,
+   "head": "第 6 站：生熟分開",
+   "say": "第六站，烹調。生食和熟食使用不同的砧板與器具，熟食一定確實加熱。",
+   "veo": "Color-coded cutting boards on a counter, a chef using a red board for raw meat and a green board for vegetables."
+  },
+  {
+   "scene": 8,
+   "start": 65.85,
+   "end": 74.7,
+   "head": "第 7 站：保溫出餐",
+   "say": "第七站，出餐。熱食保溫在攝氏六十度以上，冷食維持冷藏。",
+   "veo": "Steam table with hot dishes in stainless pans, a server ladling food into a bento box, steam rising."
+  },
+  {
+   "scene": 9,
+   "start": 74.7,
+   "end": 83.31,
+   "head": "終點：你的餐盤",
+   "say": "最後一站，就是你的餐盤。每一站都用心，才有這一份安心。",
+   "veo": "A customer opening a fresh bento box at a table and smiling, natural window light."
+  },
+  {
+   "scene": 10,
+   "start": 83.31,
+   "end": 90.0,
+   "head": "品富餐飲",
+   "say": "品富餐飲，從收貨到餐桌，每一步都認真把關。",
+   "veo": "Slow-motion shot of fresh ingredients arranged in a circle on a wooden board, camera rotating gently above."
+  }
+ ]
+}
