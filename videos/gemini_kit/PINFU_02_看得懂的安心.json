@@ -1,0 +1,88 @@
+{
+ "id": "02",
+ "title": "看得懂的安心",
+ "series": "智慧品保標籤",
+ "voice": "zh-TW-HsiaoChenNeural",
+ "scenes": [
+  {
+   "scene": 1,
+   "start": 0.0,
+   "end": 9.39,
+   "head": "廚房裡的小標籤",
+   "say": "廚房裡每一份分裝好的食材，都貼著一張品保標籤。今天帶你看懂它。",
+   "veo": "Macro close-up of rows of sealed food containers in a fridge, each with a small white label, camera slowly sliding along."
+  },
+  {
+   "scene": 2,
+   "start": 9.39,
+   "end": 17.0,
+   "head": "第 1 欄：品名",
+   "say": "第一欄是品名，告訴大家這是什麼食材，一眼就能看清楚。",
+   "veo": "Close-up of a container of fresh shredded cabbage on a steel counter, a gloved hand pointing at its label."
+  },
+  {
+   "scene": 3,
+   "start": 17.0,
+   "end": 25.11,
+   "head": "第 2 欄：原包裝有效日",
+   "say": "第二欄是原包裝有效日，也就是供應商在原包裝上標示的期限。",
+   "veo": "Close-up of an unopened supplier food package, a finger tracing the printed expiry date area, shallow focus."
+  },
+  {
+   "scene": 4,
+   "start": 25.11,
+   "end": 34.43,
+   "head": "第 3 欄：分裝日期",
+   "say": "第三欄是分裝日期。大包裝食材拆開分裝的那一刻，就要記錄下來。",
+   "veo": "Gloved hands opening a large food package and portioning it into smaller containers on a sanitized cutting board."
+  },
+  {
+   "scene": 5,
+   "start": 34.43,
+   "end": 42.76,
+   "head": "第 4 欄：櫃位使用期限",
+   "say": "第四欄是櫃位使用期限，代表食材在廚房裡可以使用的最後時間。",
+   "veo": "A wall clock in a clean kitchen with a soft focus pull to a labeled container below it."
+  },
+  {
+   "scene": 6,
+   "start": 42.76,
+   "end": 54.85,
+   "head": "鐵則：只能縮短，不能延長",
+   "say": "最重要的鐵則：櫃位使用期限，不能晚於原包裝有效日。分裝、解凍、補印，都不能讓期限變長。",
+   "veo": "Dramatic but clean shot of a supervisor in a kitchen reviewing a checklist on a clipboard, firm and focused expression."
+  },
+  {
+   "scene": 7,
+   "start": 54.85,
+   "end": 62.92,
+   "head": "過去：人工手寫",
+   "say": "過去，這些日期靠人工手寫、心算，尖峰時段難免出錯。",
+   "veo": "Busy kitchen at peak hour, a staff member hurriedly handwriting on a small label with a marker, slightly hectic atmosphere."
+  },
+  {
+   "scene": 8,
+   "start": 62.92,
+   "end": 73.72,
+   "head": "導入後：系統自動計算",
+   "say": "導入智慧品保標籤後，夥伴只要選擇食材，系統就依主管核准的規則計算日期，自動列印。",
+   "veo": "Calm kitchen, a staff member selects an item on a touchscreen and a thermal printer smoothly prints a label, satisfying moment."
+  },
+  {
+   "scene": 9,
+   "start": 73.72,
+   "end": 81.43,
+   "head": "每張標籤都能追溯",
+   "say": "每張標籤都有批次編號，必要時能追查到原本的供應商批次。",
+   "veo": "Close-up of a label with a small QR code being scanned by a handheld scanner, soft green light reflection."
+  },
+  {
+   "scene": 10,
+   "start": 81.43,
+   "end": 90.0,
+   "head": "看得懂的標籤",
+   "say": "看得懂的標籤，吃得到的安心。品富餐飲，守護你的每一餐。",
+   "veo": "Final hero shot: a neatly labeled food container next to a finished meal box, warm light, camera slowly pulls back."
+  }
+ ]
+}
