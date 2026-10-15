@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!--BODY-START-->
+<title>卯很多經營夥伴招募</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="卯很多：品富餐飲主導、卯食合夥的封閉市場品牌平台，招募科技廠與企業場域櫃位經營夥伴。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Zilla+Slab:wght@600;700&display=swap">
+<style>
+/* Layout: the page is a lunchbox — sections sit in thick ink-outlined cells, green row = 品富「一」系列, peach row = 卯系列 */
+:root{
+  --paper:#F1E6D3;      /* bento lid / page */
+  --paper-2:#E8D9C1;    /* recessed cell */
+  --ink:#24211C;        /* outlines & text */
+  --ink-soft:#5E574B;   /* secondary text */
+  --leaf:#DCE8C4;       /* 一系列 green cell */
+  --olive:#56663A;      /* deep green */
+  --peach:#FBDCC9;      /* 卯系列 peach cell */
+  --ember:#D9703F;      /* orange accent */
+  --card:#FBF6EC;
+  --ok:#3F7A3A; --warn:#B4541F;
+  --f-display:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --f-num:"Zilla Slab","Rockwell","Courier New",serif;
+  --line:3px;
+  --r:22px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#1D1B17; --paper-2:#26231D; --ink:#F1E6D3; --ink-soft:#BDB29F;
+    --leaf:#2F3A25; --olive:#B7CB8C; --peach:#43291D; --ember:#F0956A; --card:#2A2620;
+    --ok:#8FCB86; --warn:#F2A06F; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#1D1B17; --paper-2:#26231D; --ink:#F1E6D3; --ink-soft:#BDB29F;
+  --leaf:#2F3A25; --olive:#B7CB8C; --peach:#43291D; --ember:#F0956A; --card:#2A2620;
+  --ok:#8FCB86; --warn:#F2A06F; color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);font-weight:900;line-height:1.25;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.6rem,3.4vw,2.3rem)}
+h3{font-size:1.15rem}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--ember);outline-offset:3px;border-radius:6px}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:.8rem;font-weight:700;letter-spacing:.12em;color:var(--olive)}
+.muted{color:var(--ink-soft)}
+.small{font-size:.86rem}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--paper);border-bottom:var(--line) solid var(--ink)}
+.top .wrap{display:flex;align-items:center;gap:20px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand b{font-family:var(--f-display);font-weight:900;font-size:1.35rem;letter-spacing:.04em}
+.brand small{display:block;font-family:var(--f-num);font-size:.62rem;letter-spacing:.3em;color:var(--ember);line-height:1}
+.top nav{display:flex;gap:18px;margin-left:auto;font-size:.92rem;font-weight:500}
+.top nav a{text-decoration:none}
+.top nav a:hover{color:var(--ember)}
+.btn{display:inline-flex;align-items:center;gap:8px;font:700 .95rem var(--f-body);padding:10px 18px;border:var(--line) solid var(--ink);border-radius:999px;background:var(--ink);color:var(--paper);text-decoration:none;cursor:pointer}
+.btn:hover{background:var(--ember);border-color:var(--ember);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+@media (max-width:860px){.top nav{display:none}.top .btn{margin-left:auto}}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;padding-block:56px 40px}
+.hero h1{font-size:clamp(2.2rem,5.6vw,4rem);letter-spacing:.01em}
+.hero h1 em{font-style:normal;color:var(--ember)}
+.hero .lede{margin-top:20px;font-size:1.08rem;max-width:34em}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.tagline{margin-top:22px;font-weight:700;color:var(--olive)}
+.hero-bento{width:100%;max-width:440px;justify-self:center}
+@media (max-width:860px){.hero{grid-template-columns:1fr;padding-block:32px}.hero-bento{max-width:300px;order:-1}}
+.steam path{animation:rise 3.2s ease-in-out infinite}
+.steam path:nth-child(2){animation-delay:.4s}.steam path:nth-child(3){animation-delay:.8s}
+@keyframes rise{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-6px);opacity:.55}}
+
+/* facts strip */
+.facts{display:grid;grid-template-columns:repeat(5,1fr);border:var(--line) solid var(--ink);border-radius:var(--r);overflow:hidden;background:var(--card)}
+.facts div{padding:16px 18px;border-right:var(--line) solid var(--ink);min-width:0}
+.facts div:last-child{border-right:0}
+.facts .num{font-size:2rem;font-weight:700;line-height:1.1;display:block}
+.facts span{font-size:.85rem;color:var(--ink-soft)}
+@media (max-width:760px){.facts{grid-template-columns:repeat(2,1fr)}.facts div{border-bottom:var(--line) solid var(--ink)}.facts div:nth-child(2n){border-right:0}.facts div:last-child{grid-column:1/-1;border-bottom:0}}
+
+section.block{padding-block:72px 0}
+.head{display:grid;gap:10px;margin-bottom:28px;max-width:44em}
+
+/* why closed market */
+.why{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.why article{background:var(--leaf);border:var(--line) solid var(--ink);border-radius:var(--r);padding:20px;display:grid;gap:8px;align-content:start}
+.why .k{font-family:var(--f-num);font-weight:700;font-size:1.1rem;color:var(--olive)}
+@media (max-width:860px){.why{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){.why{grid-template-columns:1fr}}
+
+/* roles */
+.roles{display:grid;grid-template-columns:repeat(3,1fr);border:var(--line) solid var(--ink);border-radius:var(--r);overflow:hidden}
+.roles article{padding:24px;display:grid;gap:12px;align-content:start;border-right:var(--line) solid var(--ink);min-width:0}
+.roles article:last-child{border-right:0}
+.roles .lead{background:var(--leaf)}
+.roles .mate{background:var(--peach)}
+.roles .you{background:var(--card)}
+.roles .tag{display:inline-block;justify-self:start;font-size:.75rem;font-weight:700;letter-spacing:.08em;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:var(--paper)}
+.roles ul{margin:0;padding-left:1.1em;display:grid;gap:4px}
+@media (max-width:860px){.roles{grid-template-columns:1fr}.roles article{border-right:0;border-bottom:var(--line) solid var(--ink)}.roles article:last-child{border-bottom:0}}
+
+/* chain */
+.chain{margin-top:24px;overflow-x:auto;border:var(--line) dashed var(--ink-soft);border-radius:var(--r);padding:20px;background:var(--paper-2)}
+.chain ol{list-style:none;margin:0;padding:0;display:flex;align-items:stretch;gap:0;min-width:760px}
+.chain li{flex:1;display:grid;gap:4px;text-align:center;align-content:center;padding:12px 8px;border:2px solid var(--ink);border-radius:14px;background:var(--card);font-size:.9rem}
+.chain li b{font-size:.98rem}
+.chain li.me{background:var(--ink);color:var(--paper)}
+.chain li.ptn{background:var(--peach)}
+.chain .arw{flex:0 0 40px;display:grid;place-items:center;border:0;background:none;padding:0;font-family:var(--f-num);font-size:1.3rem}
+.chain .money{margin-top:14px;min-width:760px;display:flex;justify-content:space-between;gap:12px;font-size:.88rem;color:var(--ink-soft)}
+.chain .money b{color:var(--ember)}
+
+/* terms table */
+.terms{border:var(--line) solid var(--ink);border-radius:var(--r);overflow:hidden;background:var(--card)}
+.terms .row{display:grid;grid-template-columns:200px 1fr;border-bottom:2px solid var(--paper-2)}
+.terms .row:last-child{border-bottom:0}
+.terms dt{padding:14px 18px;font-weight:700;background:var(--paper-2)}
+.terms dd{margin:0;padding:14px 18px;min-width:0}
+.terms dd .num{font-weight:700;font-size:1.08rem}
+@media (max-width:600px){.terms .row{grid-template-columns:1fr}.terms dt{padding-bottom:6px}.terms dd{padding-top:8px}}
+.note{margin-top:14px;font-size:.86rem;color:var(--ink-soft);max-width:60em}
+
+/* calculator */
+.tool{border:var(--line) solid var(--ink);border-radius:var(--r);overflow:hidden;background:var(--card)}
+.tabs{display:flex;border-bottom:var(--line) solid var(--ink)}
+.tabs button{flex:1;font:700 1rem var(--f-body);padding:14px 10px;border:0;background:var(--paper-2);color:var(--ink);cursor:pointer}
+.tabs button+button{border-left:var(--line) solid var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--peach)}
+.pane{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:0}
+.pane>div{padding:24px;min-width:0}
+.pane .in{border-right:var(--line) solid var(--ink);display:grid;gap:18px;align-content:start}
+@media (max-width:820px){.pane{grid-template-columns:1fr}.pane .in{border-right:0;border-bottom:var(--line) solid var(--ink)}}
+.field{display:grid;gap:6px}
+.field label{font-weight:700;font-size:.92rem;display:flex;justify-content:space-between;gap:10px}
+.field label output{font-family:var(--f-num);font-weight:700;color:var(--ember)}
+input[type=range]{width:100%;accent-color:var(--ember)}
+input[type=number],input[type=text],input[type=tel],input[type=email],select,textarea{width:100%;font:500 1rem var(--f-body);padding:10px 12px;border:2px solid var(--ink);border-radius:12px;background:var(--paper);color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg label{display:flex;align-items:center;gap:6px;padding:6px 12px;border:2px solid var(--ink);border-radius:999px;cursor:pointer;font-weight:500;font-size:.92rem;background:var(--paper)}
+.seg input{accent-color:var(--ember)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:.95rem;cursor:pointer}
+.check input{width:20px;height:20px;margin-top:3px;accent-color:var(--olive);flex:0 0 auto}
+.big{font-family:var(--f-num);font-weight:700;font-size:clamp(2.4rem,6vw,3.4rem);line-height:1;color:var(--ink)}
+.big small{font-size:.4em;margin-left:4px;color:var(--ink-soft)}
+.out{display:grid;gap:16px;align-content:start}
+.lines{display:grid;gap:0;border-top:2px solid var(--paper-2)}
+.lines div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:2px solid var(--paper-2);font-size:.95rem}
+.lines div span:last-child{font-family:var(--f-num);font-weight:700;white-space:nowrap}
+.pill{display:inline-block;font-size:.78rem;font-weight:700;padding:2px 10px;border-radius:999px;border:2px solid currentColor}
+.pill.ok{color:var(--ok)}.pill.warn{color:var(--warn)}
+.stack{display:flex;height:34px;border:2px solid var(--ink);border-radius:10px;overflow:hidden}
+.stack i{display:block;height:100%;min-width:0;transition:width .3s}
+.stack i+i{border-left:2px solid var(--ink)}
+.key{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.84rem}
+.key span{display:flex;align-items:center;gap:6px}
+.key i{width:12px;height:12px;border:2px solid var(--ink);border-radius:3px;display:inline-block}
+.c-op{background:var(--ember)}.c-dep{background:var(--olive)}.c-fee{background:var(--leaf)}.c-cash{background:var(--peach)}
+.anchors{width:100%;border-collapse:collapse;font-size:.88rem}
+.anchors th,.anchors td{text-align:right;padding:6px 8px;border-bottom:2px solid var(--paper-2);font-variant-numeric:tabular-nums}
+.anchors th:first-child,.anchors td:first-child{text-align:left}
+.anchors td{font-family:var(--f-num)}
+.anchors tr.hit td{background:var(--peach)}
+
+/* brand bento */
+.family{display:grid;grid-template-columns:repeat(3,1fr);border:4px solid var(--ink);border-radius:28px;overflow:hidden}
+.family button{all:unset;box-sizing:border-box;cursor:pointer;padding:20px;display:grid;gap:6px;align-content:start;min-height:150px;border-right:3px solid var(--ink);border-bottom:3px solid var(--ink);position:relative}
+.family button:nth-child(3n){border-right:0}
+.family button:nth-child(n+4){border-bottom:0;background:var(--peach)}
+.family button:nth-child(-n+3){background:var(--leaf)}
+.family button:hover,.family button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.family button:hover .ser,.family button[aria-pressed="true"] .ser{color:var(--paper)}
+.family button:focus-visible{outline:3px solid var(--ember);outline-offset:-6px}
+.family .ser{font-size:.75rem;font-weight:700;letter-spacing:.1em;color:var(--olive)}
+.family .nm{font-family:var(--f-display);font-weight:900;font-size:1.3rem}
+.family .nm u{text-decoration:none;color:var(--ember)}
+.family .sl{font-size:.92rem}
+.family .tm{position:absolute;top:14px;right:14px;font-size:.7rem;font-weight:700;padding:1px 8px;border:1.5px solid currentColor;border-radius:999px}
+@media (max-width:640px){.family{grid-template-columns:1fr 1fr}.family button{border-right:3px solid var(--ink)!important;border-bottom:3px solid var(--ink)!important;min-height:120px;padding:14px}.family button:nth-child(2n){border-right:0!important}.family button:nth-child(n+5){border-bottom:0!important}}
+.brandnote{margin-top:14px;padding:14px 18px;border:2px solid var(--ink);border-radius:14px;background:var(--card);font-size:.92rem}
+
+/* steps */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;counter-reset:s}
+.steps li{counter-increment:s;border:2px solid var(--ink);border-radius:16px;padding:16px;background:var(--card);display:grid;gap:6px;align-content:start;min-width:0}
+.steps li::before{content:counter(s);font-family:var(--f-num);font-weight:700;font-size:1.6rem;line-height:1;color:var(--ember)}
+.steps li b{font-size:1rem}
+.steps li span{font-size:.88rem;color:var(--ink-soft)}
+@media (max-width:860px){.steps{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:440px){.steps{grid-template-columns:1fr}}
+
+.qualify{margin-top:20px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:0;border:var(--line) solid var(--ink);border-radius:var(--r);overflow:hidden}
+.qualify>div{padding:22px;display:grid;gap:12px;align-content:start}
+.qualify .res{background:var(--leaf);border-left:var(--line) solid var(--ink)}
+.qualify .res.bad{background:var(--peach)}
+@media (max-width:760px){.qualify{grid-template-columns:1fr}.qualify .res{border-left:0;border-top:var(--line) solid var(--ink)}}
+
+/* openings */
+.open{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.open article{border:var(--line) solid var(--ink);border-radius:var(--r);padding:22px;background:var(--card);display:grid;gap:10px;align-content:start}
+.open .st{justify-self:start}
+.open dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.92rem}
+.open dt{color:var(--ink-soft)}
+.open dd{margin:0}
+.st-now{color:var(--ok)}.st-wait{color:var(--warn)}.st-plan{color:var(--ink-soft)}
+@media (max-width:760px){.open{grid-template-columns:1fr}}
+
+/* trial band */
+.trial{margin-top:72px;background:var(--ink);color:var(--paper);border-radius:28px;padding:36px;display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center}
+.trial h2{color:var(--paper)}
+.trial h2 em{font-style:normal;color:var(--ember)}
+.trial p{color:var(--paper);opacity:.85}
+.trial ul{margin:0;padding-left:1.1em;display:grid;gap:6px}
+@media (max-width:760px){.trial{grid-template-columns:1fr;padding:24px}}
+
+/* form */
+.contact{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:24px}
+form.lead{border:var(--line) solid var(--ink);border-radius:var(--r);padding:24px;background:var(--card);display:grid;grid-template-columns:1fr 1fr;gap:16px}
+form.lead .full{grid-column:1/-1}
+form.lead label{font-weight:700;font-size:.9rem}
+@media (max-width:640px){form.lead{grid-template-columns:1fr}}
+.direct{display:grid;gap:14px;align-content:start}
+.card{border:2px solid var(--ink);border-radius:16px;padding:18px;background:var(--leaf);display:grid;gap:6px}
+.card .v{font-family:var(--f-num);font-weight:700;font-size:1.2rem;user-select:all;word-break:break-all}
+.copy{font:700 .8rem var(--f-body);justify-self:start;padding:4px 12px;border:2px solid var(--ink);border-radius:999px;background:var(--paper);color:var(--ink);cursor:pointer}
+#summary{grid-column:1/-1;white-space:pre-wrap;font-family:var(--f-body);font-size:.9rem;background:var(--paper);border:2px dashed var(--ink);border-radius:12px;padding:14px;margin:0;user-select:all}
+.err{color:var(--warn);font-size:.85rem;font-weight:700}
+
+footer{margin-top:80px;border-top:var(--line) solid var(--ink);padding-block:28px 40px;font-size:.84rem;color:var(--ink-soft)}
+footer .wrap{display:grid;gap:12px}
+footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="bento" viewBox="0 0 120 112">
+      <g class="steam" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round">
+        <path d="M40 30c-6-6 6-10 0-18"/>
+        <path d="M60 28c-6-7 6-11 0-20"/>
+        <path d="M80 30c-6-6 6-10 0-18"/>
+      </g>
+      <rect x="8" y="38" width="104" height="68" rx="16" style="fill:var(--paper)" stroke="currentColor" stroke-width="5"/>
+      <path d="M10.5 54a13.5 13.5 0 0 1 13.5-13.5h72a13.5 13.5 0 0 1 13.5 13.5V72H10.5z" style="fill:var(--leaf)"/>
+      <path d="M10.5 72h99v18a13.5 13.5 0 0 1-13.5 13.5H24A13.5 13.5 0 0 1 10.5 90z" fill="#F0A06F"/>
+      <rect x="8" y="38" width="104" height="68" rx="16" fill="none" stroke="currentColor" stroke-width="5"/>
+      <path d="M8 72h104M43 38v68M77 38v68" stroke="currentColor" stroke-width="4.5"/>
+      <path d="M52 56h16" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+      <text x="60" y="96" text-anchor="middle" font-family="Noto Sans TC, sans-serif" font-weight="900" font-size="20" fill="currentColor">卯</text>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="卯很多 首頁">
+      <svg width="40" height="38" aria-hidden="true"><use href="#bento"/></svg>
+      <span><b>卯很多</b><small>MAO MANY</small></span>
+    </a>
+    <nav aria-label="主要">
+      <a href="#model">合作模式</a>
+      <a href="#terms">招商條件</a>
+      <a href="#calc">試算</a>
+      <a href="#brands">品牌</a>
+      <a href="#openings">招募櫃位</a>
+    </nav>
+    <a class="btn" href="#contact">預約洽談</a>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+
+  <section class="hero">
+    <div>
+      <p class="eyebrow">封閉市場品牌平台 · 經營夥伴招募</p>
+      <h1>科技廠的櫃位，<br>一個窗口<em>卯</em>到。</h1>
+      <p class="lede">卯很多由<b>品富餐飲</b>主導，負責對接廠區業主與團膳承包商、代辦入廠與食安稽核；<b>卯食團隊</b>以合夥身分負責品牌、菜單與開辦輔導。你專心把每一餐做好。</p>
+      <div class="ctas">
+        <a class="btn" href="#calc">先算要準備多少資金</a>
+        <a class="btn ghost" href="#terms">看完整招商條件</a>
+      </div>
+      <p class="tagline">每一樣都專一，加起來卯很多。</p>
+    </div>
+    <svg class="hero-bento" viewBox="0 0 120 112" role="img" aria-label="卯很多六格便當標誌：上排一系列，下排卯系列"><use href="#bento"/></svg>
+  </section>
+
+  <div class="facts" aria-label="品富餐飲營運現況">
+    <div><span class="num">2013</span><span>品富前身紅屋食品創立</span></div>
+    <div><span class="num">4</span><span>現行營運場域</span></div>
+    <div><span class="num">8</span><span>現行營運櫃位</span></div>
+    <div><span class="num">14</span><span>處食品業者登錄</span></div>
+    <div><span class="num">11–16</span><span>2027 年底營運或已簽約櫃位（預估）</span></div>
+  </div>
+
+  <section class="block" id="why">
+    <div class="head">
+      <p class="eyebrow">WHY CLOSED MARKET</p>
+      <h2>封閉市場不缺客人，缺的是進得去的人</h2>
+      <p class="muted">科技廠、醫院、企業廠區的員工餐廳，人流和用餐時段都排在班表上。難的是進場：供應商審核、入廠資格、食安稽核，一般創業者很難單獨拿到。</p>
+    </div>
+    <div class="why">
+      <article><span class="k">01 人流可預測</span><h3>班別決定來客</h3><p class="small">用餐時段固定，備料與排班可以精準推估，耗損與尖峰缺貨都比街邊店低。</p></article>
+      <article><span class="k">02 門檻高</span><h3>競爭者少</h3><p class="small">食安、證照、稽核把關，篩掉短期進出的攤商，留下來的是長期供應者。</p></article>
+      <article><span class="k">03 年約制</span><h3>關係會延續</h3><p class="small">合作以年為單位，菜單能依銷售數據逐檔優化，不是一次性生意。</p></article>
+      <article><span class="k">04 量能穩</span><h3>營運可預估</h3><p class="small">現金流相對穩定，經營者能把力氣放在出餐品質，而不是每天找客人。</p></article>
+    </div>
+  </section>
+
+  <section class="block" id="model">
+    <div class="head">
+      <p class="eyebrow">THREE PARTIES</p>
+      <h2>品富主導，卯食合夥，你經營</h2>
+      <p class="muted">卯很多是承接櫃位的接案方。上游條件原數轉給經營夥伴，卯很多只加收平台服務費，各方的責任寫在合約上。</p>
+    </div>
+    <div class="roles">
+      <article class="lead">
+        <span class="tag">主導 · 品富餐飲</span>
+        <h3>拿到櫃位，管好合約</h3>
+        <ul class="small">
+          <li>對接廠區業主與團膳承包商，簽約承接櫃位</li>
+          <li>代辦入廠資格與人員入廠證</li>
+          <li>合約、帳款對帳、背對背撥款</li>
+          <li>SGS 月稽核、留樣 48 小時、食安事件 24 小時通報</li>
+          <li>中央採購與快取GO 預訂系統</li>
+        </ul>
+      </article>
+      <article class="mate">
+        <span class="tag">合夥 · 卯食團隊</span>
+        <h3>給你品牌，帶你開店</h3>
+        <ul class="small">
+          <li>卯系列品牌授權與菜單研發</li>
+          <li>開辦輔導、試菜、SOP 與共用後廚流程</li>
+          <li>逢甲訓練基地實際出餐見習</li>
+          <li>開幕後 365 天營運陪跑</li>
+          <li>檔期行銷：輪動護照、週五投票、預購</li>
+        </ul>
+      </article>
+      <article class="you">
+        <span class="tag">經營 · 你</span>
+        <h3>做好每一餐</h3>
+        <ul class="small">
+          <li>現場人力、排班與出餐</li>
+          <li>準備押金、進場服務費與周轉金</li>
+          <li>承擔營運盈虧</li>
+          <li>配合提供營運數據</li>
+          <li>表現達標，對後續新案有優先承接權</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="chain" role="region" aria-label="合約鏈與撥款流程" tabindex="0">
+      <ol>
+        <li><b>廠區業主</b><span class="small muted">科技廠 / 醫院</span></li>
+        <li class="arw" aria-hidden="true">→</li>
+        <li><b>團膳承包商</b><span class="small muted">員工餐廳經營方</span></li>
+        <li class="arw" aria-hidden="true">→</li>
+        <li><b>品牌商</b><span class="small muted">部分案件才有</span></li>
+        <li class="arw" aria-hidden="true">→</li>
+        <li class="me"><b>卯很多</b><span class="small">品富主導 · 接案方</span></li>
+        <li class="arw" aria-hidden="true">→</li>
+        <li class="ptn"><b>經營夥伴</b><span class="small">你</span></li>
+      </ol>
+      <div class="money"><span>簽約方向 →</span><span>← 款項方向：卯很多實際收到上游款項後 <b class="num">10</b> 個日曆天內撥付（背對背）</span></div>
+    </div>
+  </section>
+
+  <section class="block" id="terms">
+    <div class="head">
+      <p class="eyebrow">STANDARD TERMS</p>
+      <h2>標準招商條件，每案只換「上游條件附表」</h2>
+      <p class="muted">上游的抽成、管理費、押金原數轉給你，卯很多只加收服務費，轉嫁費用一律附對帳單影本。</p>
+    </div>
+    <dl class="terms">
+      <div class="row"><dt>平台服務費（自有品牌）</dt><dd>上游抽成 <span class="num">＋3%</span></dd></div>
+      <div class="row"><dt>平台服務費（卯很多品牌品項）</dt><dd>上游抽成 <span class="num">＋6%</span>；POS 建立獨立品項代碼，對帳單分開列示</dd></div>
+      <div class="row"><dt>月保底</dt><dd>＋3% 方案 <span class="num">12,000</span> 元／月，＋6% 方案 <span class="num">21,000</span> 元／月；第 <span class="num">3</span> 個月起算，策略案可豁免</dd></div>
+      <div class="row"><dt>轉嫁費用</dt><dd>管理費、POS、電子支付手續費、濾芯、維修、設備檢查、橫招：原價轉嫁，附對帳單影本</dd></div>
+      <div class="row"><dt>押金（履約保證金）</dt><dd>按上游要求金額原數轉付，卯很多不另外加收；結清且上游退還後 <span class="num">10</span> 日內無息退還</dd></div>
+      <div class="row"><dt>進場服務費</dt><dd><span class="num">50,000</span> 元（含稅），不退還；包含媒合、入廠資格代辦、開辦輔導</dd></div>
+      <div class="row"><dt>撥款</dt><dd>卯很多實際收到上游款項後 <span class="num">10</span> 個日曆天內撥付；上游未付款時，卯很多不負墊付責任</dd></div>
+      <div class="row"><dt>營業稅</dt><dd>每一層依撥款淨額開立發票；以收據請款者，從撥款中扣 <span class="num">5%</span></dd></div>
+      <div class="row"><dt>罰則</dt><dd>上游開出的罰款、SGS 不合格費用、撤櫃復原費，全額由經營夥伴負擔</dd></div>
+      <div class="row"><dt>夥伴資格</dt><dd>可開立統一發票的營業人、完成食品業者登錄、員工有勞保或團保</dd></div>
+    </dl>
+    <p class="note">使用卯很多品牌品項的案件屬於加盟，簽約前會提供加盟資訊揭露書，進場服務費一併載明。條件以正式合約為準。</p>
+  </section>
+
+  <section class="block" id="calc">
+    <div class="head">
+      <p class="eyebrow">CALCULATOR</p>
+      <h2>先算清楚：每月付多少，總共要準備多少</h2>
+      <p class="muted">經營夥伴最常低估的是周轉金。上游帳期加上撥款的 10 天，會長期壓住約一個半月的營業額，資金最緊的一天通常不在開幕，而在第二期款入帳前。</p>
+    </div>
+    <div class="tool">
+      <div class="tabs" role="tablist">
+        <button role="tab" id="tab-fee" aria-controls="pane-fee" aria-selected="true">平台服務費</button>
+        <button role="tab" id="tab-gap" aria-controls="pane-gap" aria-selected="false">資金缺口最深點</button>
+      </div>
+
+      <div class="pane" id="pane-fee" role="tabpanel" aria-labelledby="tab-fee">
+        <div class="in">
+          <div class="field">
+            <label for="f-rev">月營業額 <output id="o-rev" for="f-rev"></output></label>
+            <input type="range" id="f-rev" min="10" max="200" step="1" value="30">
+          </div>
+          <div class="field">
+            <label>品項方案</label>
+            <div class="seg">
+              <label><input type="radio" name="plan" id="plan-3" value="3" checked> 自有品牌 ＋3%</label>
+              <label><input type="radio" name="plan" id="plan-6" value="6"> 卯很多品牌 ＋6%</label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-up">上游抽成率（範例值，依各案附表）<output id="o-up" for="f-up"></output></label>
+            <input type="range" id="f-up" min="5" max="20" step="0.5" value="11">
+          </div>
+          <div class="field">
+            <label for="f-mon">營運第幾個月 <output id="o-mon" for="f-mon"></output></label>
+            <input type="range" id="f-mon" min="1" max="12" step="1" value="3">
+          </div>
+          <label class="check"><input type="checkbox" id="f-strat"> 策略案（豁免月保底）</label>
+        </div>
+        <div class="out" aria-live="polite">
+          <div>
+            <p class="small muted">本月卯很多平台服務費</p>
+            <p class="big" id="r-fee"></p>
+            <p id="r-floor" class="small"></p>
+          </div>
+          <div class="lines">
+            <div><span>服務費 = 營業額 × <span id="r-rate"></span></span><span id="r-base"></span></div>
+            <div><span>月保底門檻</span><span id="r-floorv"></span></div>
+            <div><span>上游抽成（原數轉付，非卯很多收入）</span><span id="r-upamt"></span></div>
+            <div><span>合計抽成率</span><span id="r-total"></span></div>
+          </div>
+          <p class="small muted">管理費、POS、電子支付手續費等轉嫁費用另依上游實際金額收取，未列入此試算。</p>
+        </div>
+      </div>
+
+      <div class="pane" id="pane-gap" role="tabpanel" aria-labelledby="tab-gap" hidden>
+        <div class="in">
+          <div class="field">
+            <label for="g-rev">月營業額 <output id="o-grev" for="g-rev"></output></label>
+            <input type="range" id="g-rev" min="30" max="80" step="1" value="50">
+            <span class="small muted">試算範圍 30–80 萬，超出範圍不外推</span>
+          </div>
+          <div class="field">
+            <label for="g-dep">上游押金（萬元）</label>
+            <input type="number" id="g-dep" min="0" max="200" step="1" value="30" inputmode="numeric">
+            <span class="small muted">預設 30 萬為範例案數字，實際金額依各案附表</span>
+          </div>
+          <label class="check"><input type="checkbox" id="g-cash"> 食材現金進貨（沒有月結）</label>
+          <table class="anchors" aria-label="範例案試算錨點">
+            <thead><tr><th>範例案月營業額</th><th>周轉部分</th><th>缺口最深點</th></tr></thead>
+            <tbody id="g-anchors"></tbody>
+          </table>
+        </div>
+        <div class="out" aria-live="polite">
+          <div>
+            <p class="small muted">需準備資金（缺口最深點，含押金與進場服務費）</p>
+            <p class="big" id="g-total"></p>
+          </div>
+          <div class="stack" id="g-stack" aria-hidden="true"></div>
+          <div class="key" id="g-key"></div>
+          <div class="lines" id="g-lines"></div>
+          <p class="small muted">周轉部分依範例案三個情境（月營業額 30／50／80 萬）的現金流試算線性內插。範例假設：食材 35%、人事 25%、包材雜支 5%、電子支付 1.5%，食材貨款月結、薪資次月 10 日發放。現金進貨的增加額依範例案 30 萬與 80 萬情境（13.5～36.0 萬，約月營業額 45%）推算。本試算只估資金需求，不代表獲利。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="brands">
+    <div class="head">
+      <p class="eyebrow">SIX CELLS · ONE FAMILY</p>
+      <h2>六格便當，就是六個品牌</h2>
+      <p class="muted">上排綠色是品富的「一」系列，下排橘色是卯食的「卯」系列。每個品牌保持自己的招牌，卯很多只出現在櫃位招牌與菜單頁尾。點一格看它在哪個時段上場。</p>
+    </div>
+    <div class="family" id="family">
+      <button type="button" data-k="0" aria-pressed="false"><span class="ser">一系列 · 品富</span><span class="nm">楊家一鍋滷</span><span class="sl">一鍋滷到底。</span></button>
+      <button type="button" data-k="1" aria-pressed="false"><span class="ser">一系列 · 品富</span><span class="nm">一杯紅</span><span class="sl">午後一杯，剛好紅。</span></button>
+      <button type="button" data-k="2" aria-pressed="false"><span class="tm">商標檢索中</span><span class="ser">一系列 · 品富</span><span class="nm">餃一局</span><span class="sl">午餐來一局。</span></button>
+      <button type="button" data-k="3" aria-pressed="false"><span class="ser">卯系列 · 卯食</span><span class="nm"><u>卯</u>食早午餐</span><span class="sl">早上就卯到。</span></button>
+      <button type="button" data-k="4" aria-pressed="true"><span class="ser">卯系列 · 卯食</span><span class="nm"><u>卯</u>起來吃飯</span><span class="sl">午餐卯起來，下午不掉線。</span></button>
+      <button type="button" data-k="5" aria-pressed="false"><span class="tm">商標檢索中</span><span class="ser">卯系列 · 卯食</span><span class="nm"><u>卯</u>剛好</span><span class="sl">好吃剛好，健康剛好。</span></button>
+    </div>
+    <p class="brandnote" id="brandnote" aria-live="polite"></p>
+  </section>
+
+  <section class="block" id="process">
+    <div class="head">
+      <p class="eyebrow">ROUTE TO OPENING</p>
+      <h2>從洽談到開幕的 8 步</h2>
+      <p class="muted">每一案都走同一套流程。中情境的夥伴營業利益率低於 8% 的案件，卯很多不會拿出來招商。</p>
+    </div>
+    <ol class="steps">
+      <li><b>收上游條件</b><span>抽成、管理費、押金、帳期、合約期、份數、售價、設備、簽約層級、競業條款，缺一項不試算</span></li>
+      <li><b>三情境試算</b><span>低、中、高營業額下的利潤率與資金缺口最深點</span></li>
+      <li><b>門檻篩選</b><span>中情境利益率 &lt;8% 不接，8～12% 回頭重談，&gt;12% 可接</span></li>
+      <li><b>定費率</b><span>＋3%、＋6% 或中央供貨價差，決定保底與押金</span></li>
+      <li><b>當面洽談</b><span>業主名稱與條件只在當面洽談時提供</span></li>
+      <li><b>資格審核</b><span>發票、食品業者登錄、勞保或團保，資金是否覆蓋缺口最深點</span></li>
+      <li><b>揭露書與簽約</b><span>加盟案先提供加盟資訊揭露書，再簽約</span></li>
+      <li><b>入廠與開幕</b><span>卯很多代辦入廠手續、試菜，然後開幕</span></li>
+    </ol>
+
+    <div class="qualify">
+      <div>
+        <h3>30 秒資格自檢</h3>
+        <label class="check"><input type="checkbox" id="q1"> 我是可開立統一發票的營業人（公司或行號）</label>
+        <label class="check"><input type="checkbox" id="q2"> 已完成食品業者登錄，或可在簽約前完成</label>
+        <label class="check"><input type="checkbox" id="q3"> 員工都有勞保或團保</label>
+        <label class="check"><input type="checkbox" id="q4"> 可準備的資金 ≥ 上方試算的缺口最深點（<span id="q-gap" class="num"></span>）</label>
+      </div>
+      <div class="res" id="q-res" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="block" id="openings">
+    <div class="head">
+      <p class="eyebrow">NOW RECRUITING</p>
+      <h2>招募中的櫃位</h2>
+      <p class="muted">依招商規範，公開頁面只寫地區與品類。業主名稱、上游條件附表與完整試算，在當面洽談時提供。</p>
+    </div>
+    <div class="open">
+      <article>
+        <span class="pill ok st st-now">招募中</span>
+        <h3>中部科技廠 · 員工餐廳麵食櫃</h3>
+        <dl>
+          <dt>開幕</dt><dd>2026 年 12 月，合約一年</dd>
+          <dt>類型</dt><dd>策略案（免月保底）</dd>
+          <dt>品項</dt><dd>品牌商麵食＋卯很多特餐</dd>
+          <dt>資金</dt><dd>約 72～132 萬（依營業額情境）</dd>
+        </dl>
+      </article>
+      <article>
+        <span class="pill warn st st-wait">條件確認中</span>
+        <h3>中部科技廠 · 獨家四餐櫃</h3>
+        <dl>
+          <dt>時段</dt><dd>早餐、午餐、晚餐、宵夜，全年營業</dd>
+          <dt>客群</dt><dd>菲律賓餐為主、台灣餐為輔</dd>
+          <dt>需求</dt><dd>多語菜單、全年排班人力</dd>
+          <dt>資金</dt><dd>正式條件到齊後試算</dd>
+        </dl>
+      </article>
+      <article>
+        <span class="pill warn st st-wait">提案中</span>
+        <h3>中部科技廠 · 輪動櫃（3 區）</h3>
+        <dl>
+          <dt>模式</dt><dd>每檔 4 週，品牌輪流上場</dd>
+          <dt>品牌</dt><dd>卯食、一杯紅、楊家一鍋滷、餃一局</dd>
+          <dt>進度</dt><dd>確認承包商抽成、檔期與試菜日期</dd>
+        </dl>
+      </article>
+      <article>
+        <span class="pill st st-plan">規劃中</span>
+        <h3>科技廠 · 餃類與卯食正櫃</h3>
+        <dl>
+          <dt>櫃數</dt><dd>潛在 5 櫃</dd>
+          <dt>進度</dt><dd>列入整體營運計畫，條件待更新</dd>
+          <dt>優先</dt><dd>前案表現達標的夥伴優先承接</dd>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <section class="trial">
+    <div>
+      <p class="eyebrow" style="color:var(--ember)">TRY BEFORE YOU SIGN</p>
+      <h2>先吃再加入：<em>三天見習</em>，不收費不綁約</h2>
+      <p>到卯食的逢甲訓練基地實際出餐三天，看現任經營者怎麼備料、怎麼對付尖峰。覺得適合，再談櫃位。</p>
+    </div>
+    <ul class="small">
+      <li>站位、尖峰出餐、日結與盤點</li>
+      <li>共用後廚的五區動線</li>
+      <li>快取GO 預訂單怎麼變成備料量</li>
+      <li>和現任經營者面對面</li>
+    </ul>
+  </section>
+
+  <section class="block" id="contact">
+    <div class="head">
+      <p class="eyebrow">CONTACT</p>
+      <h2>預約洽談或見習</h2>
+      <p class="muted">填好後產生一份洽談摘要，複製後寄到信箱或傳給我們即可。</p>
+    </div>
+    <div class="contact">
+      <form class="lead" id="lead" novalidate>
+        <div class="field"><label for="l-name">聯絡人</label><input type="text" id="l-name" autocomplete="name" required></div>
+        <div class="field"><label for="l-tel">手機</label><input type="tel" id="l-tel" autocomplete="tel" inputmode="tel" required placeholder="09xx-xxx-xxx"></div>
+        <div class="field"><label for="l-co">公司或行號名稱</label><input type="text" id="l-co" autocomplete="organization"></div>
+        <div class="field"><label for="l-mail">Email</label><input type="email" id="l-mail" autocomplete="email"></div>
+        <div class="field"><label for="l-type">想了解</label>
+          <select id="l-type">
+            <option>中部科技廠 · 員工餐廳麵食櫃</option>
+            <option>中部科技廠 · 獨家四餐櫃</option>
+            <option>輪動櫃檔期</option>
+            <option>三天見習</option>
+            <option>其他合作</option>
+          </select></div>
+        <div class="field"><label for="l-fund">可準備資金</label>
+          <select id="l-fund">
+            <option>70 萬以下</option>
+            <option selected>70～100 萬</option>
+            <option>100～140 萬</option>
+            <option>140 萬以上</option>
+          </select></div>
+        <div class="field full"><label for="l-exp">餐飲經營經驗</label><textarea id="l-exp" placeholder="例如：經營麵店 3 年，目前 2 名正職、1 名兼職"></textarea></div>
+        <div class="full" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <button class="btn" type="submit">產生洽談摘要</button>
+          <span class="err" id="l-err" role="alert"></span>
+        </div>
+        <pre id="summary" hidden></pre>
+        <button type="button" class="copy full" id="copy-sum" hidden>複製摘要</button>
+      </form>
+      <div class="direct">
+        <div class="card">
+          <span class="small muted">Email</span>
+          <span class="v" id="v-mail">contact@pinfu.tw</span>
+          <button class="copy" type="button" data-copy="v-mail">複製</button>
+        </div>
+        <div class="card" style="background:var(--peach)">
+          <span class="small muted">楊進德 Dirk · AI × ESG 餐飲升級總監</span>
+          <span class="v" id="v-tel">0938-317-517</span>
+          <button class="copy" type="button" data-copy="v-tel">複製</button>
+        </div>
+        <p class="small muted">品富餐飲服務股份有限公司<br>Pin Fu Foods Co., Ltd. · pinfu.tw</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>卯很多 MAO MANY</b> · 品富餐飲服務股份有限公司主導 · 卯食團隊合夥經營</p>
+    <p>本頁內容為招商說明，不構成獲利保證。所有試算僅估算資金需求，實際數字依各案上游條件附表、正式合約與加盟資訊揭露書為準。經營夥伴承擔營運盈虧與資金風險。</p>
+    <p>© 2026 品富餐飲服務 · Powered by 快取GO 數位系統</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var fmt = function(n){ return Math.round(n).toLocaleString('zh-TW'); };
+  var wan = function(n){ return (Math.round(n*10)/10).toFixed(1) + ' 萬'; };
+
+  /* tabs */
+  var tabs = [['tab-fee','pane-fee'],['tab-gap','pane-gap']];
+  tabs.forEach(function(t){
+    $(t[0]).addEventListener('click', function(){
+      tabs.forEach(function(u){
+        var on = u[0] === t[0];
+        $(u[0]).setAttribute('aria-selected', on);
+        $(u[1]).hidden = !on;
+      });
+    });
+  });
+
+  /* 平台服務費 */
+  var FLOOR = {3:12000, 6:21000};
+  function fee(){
+    var rev = +$('f-rev').value * 10000;
+    var plan = document.querySelector('input[name=plan]:checked').value === '6' ? 6 : 3;
+    var up = +$('f-up').value;
+    var mon = +$('f-mon').value;
+    var strat = $('f-strat').checked;
+    var base = rev * plan / 100;
+    var floor = FLOOR[plan];
+    var floorActive = !strat && mon >= 3;
+    var applies = floorActive && base < floor;
+    var charged = applies ? floor : base;
+
+    $('o-rev').textContent = $('f-rev').value + ' 萬';
+    $('o-up').textContent = up + '%';
+    $('o-mon').textContent = '第 ' + mon + ' 個月';
+    $('r-fee').innerHTML = fmt(charged) + '<small>元</small>';
+    $('r-rate').textContent = plan + '%';
+    $('r-base').textContent = fmt(base) + ' 元';
+    $('r-floorv').textContent = strat ? '豁免' : (mon < 3 ? '第 3 個月起算' : fmt(floor) + ' 元');
+    $('r-upamt').textContent = fmt(rev * up / 100) + ' 元';
+    $('r-total').textContent = (up + plan) + '%';
+    var msg;
+    if (strat) msg = '<span class="pill ok">策略案</span> 依營業額 ' + plan + '% 計收，無保底。';
+    else if (mon < 3) msg = '<span class="pill ok">保底未起算</span> 前 2 個月依營業額 ' + plan + '% 計收。';
+    else if (applies) msg = '<span class="pill warn">保底生效</span> 營業額 × ' + plan + '% 低於 ' + fmt(floor) + ' 元，以保底計收；月營業額達 ' + (Math.round(floor * 100 / plan / 1000) / 10) + ' 萬以上即依比例計收。';
+    else msg = '<span class="pill ok">依比例計收</span> 營業額 × ' + plan + '% 已高於保底 ' + fmt(floor) + ' 元。';
+    $('r-floor').innerHTML = msg;
+  }
+  ['f-rev','f-up','f-mon','f-strat','plan-3','plan-6'].forEach(function(id){ $(id).addEventListener('input', fee); });
+
+  /* 資金缺口：範例案錨點（萬元）。最深點 = 周轉部分 + 押金 30 + 進場服務費 5 */
+  var ANCHORS = [[30,72.0],[50,96.0],[80,132.1]];
+  var EX_DEP = 30, ENTRY = 5, CASH_RATIO = 0.45; // 13.5/30 = 36.0/80 = 0.45
+  var OPS = ANCHORS.map(function(a){ return [a[0], a[1] - EX_DEP - ENTRY]; });
+  function opGap(r){
+    for (var i = 0; i < OPS.length - 1; i++){
+      var a = OPS[i], b = OPS[i+1];
+      if (r <= b[0]) return a[1] + (b[1] - a[1]) * (r - a[0]) / (b[0] - a[0]);
+    }
+    return OPS[OPS.length-1][1];
+  }
+  var lastGap = 0;
+  function gap(){
+    var r = Math.min(80, Math.max(30, +$('g-rev').value));
+    var depRaw = parseFloat($('g-dep').value);
+    var dep = isFinite(depRaw) && depRaw >= 0 ? depRaw : 0;
+    var cash = $('g-cash').checked ? r * CASH_RATIO : 0;
+    var op = opGap(r);
+    var total = op + dep + ENTRY + cash;
+    lastGap = total;
+    $('o-grev').textContent = r + ' 萬';
+    $('g-total').innerHTML = (Math.round(total*10)/10).toFixed(1) + '<small>萬元</small>';
+    var parts = [['c-op','營運周轉（帳期壓住的營業額與成本）',op],['c-dep','上游押金',dep],['c-fee','進場服務費（含稅）',ENTRY],['c-cash','現金進貨增加額',cash]].filter(function(p){ return p[2] > 0; });
+    $('g-stack').innerHTML = parts.map(function(p){ return '<i class="'+p[0]+'" style="width:'+(p[2]/total*100)+'%"></i>'; }).join('');
+    $('g-key').innerHTML = parts.map(function(p){ return '<span><i class="'+p[0]+'"></i>'+p[1].split('（')[0]+'</span>'; }).join('');
+    $('g-lines').innerHTML = parts.map(function(p){ return '<div><span>'+p[1]+'</span><span>'+wan(p[2])+'</span></div>'; }).join('');
+    $('g-anchors').innerHTML = ANCHORS.map(function(a, i){
+      return '<tr'+(a[0]===r?' class="hit"':'')+'><td>'+a[0]+' 萬</td><td>'+wan(OPS[i][1])+'</td><td>'+wan(a[1])+'</td></tr>';
+    }).join('');
+    $('q-gap').textContent = wan(total);
+    qualify();
+  }
+  ['g-rev','g-dep','g-cash'].forEach(function(id){ $(id).addEventListener('input', gap); });
+
+  /* 資格自檢 */
+  function qualify(){
+    var items = [['q1','可開立統一發票'],['q2','食品業者登錄'],['q3','員工勞保或團保'],['q4','資金覆蓋缺口最深點 ' + wan(lastGap)]];
+    var miss = items.filter(function(i){ return !$(i[0]).checked; });
+    var box = $('q-res');
+    box.classList.toggle('bad', miss.length > 0);
+    if (!miss.length){
+      box.innerHTML = '<h3>符合基本資格</h3><p class="small">可以預約當面洽談，我們會帶上游條件附表與完整試算。</p><a class="btn" href="#contact">預約洽談</a>';
+    } else {
+      box.innerHTML = '<h3>還差 ' + miss.length + ' 項</h3><ul class="small" style="margin:0;padding-left:1.1em">' + miss.map(function(m){ return '<li>' + m[1] + '</li>'; }).join('') + '</ul><p class="small">入廠手續由卯很多代辦；資格項目可以先洽談，在簽約前補齊。</p>';
+    }
+  }
+  ['q1','q2','q3','q4'].forEach(function(id){ $(id).addEventListener('change', qualify); });
+
+  /* 品牌六格 */
+  var NOTES = [
+    '楊家一鍋滷｜中式複合菜系：滷肉飯、便當、自助取餐。輪動櫃可作主檔或配菜加購。',
+    '一杯紅｜天然茶底飲品：午後 14:00–16:00 主力，承接下午茶與部門團購。',
+    '餃一局｜亞洲餃定位：韓式 Mandu、和風羽根煎餃、川味紅油拌餃、花雕雞湯餃，與台式水餃區隔。',
+    '卯食早午餐｜刈包、麵線配基礎茶，快速、溫熱、可帶走，接早班人流。',
+    '卯起來吃飯｜科技廠飯類主力，招牌標示「卯起來吃飯 by 卯食」，主打份量與速度。',
+    '卯剛好｜熱量、蛋白質、鈉標示的輕食線，文案只寫可驗證數字，不寫療效。'
+  ];
+  var fam = $('family');
+  function pick(k){
+    fam.querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.k === String(k)); });
+    $('brandnote').textContent = NOTES[k];
+  }
+  fam.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) pick(+b.dataset.k); });
+  pick(4);
+
+  /* 複製 */
+  function copyText(text, btn, el){
+    var done = function(){ var o = btn.textContent; btn.textContent = '已複製'; setTimeout(function(){ btn.textContent = o; }, 1600); };
+    var fallback = function(){
+      if (!el) return;
+      var range = document.createRange(); range.selectNodeContents(el);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(range);
+      btn.textContent = '已選取，請按複製';
+    };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+      else fallback();
+    } catch (e) { fallback(); }
+  }
+  document.querySelectorAll('[data-copy]').forEach(function(b){
+    b.addEventListener('click', function(){ var el = $(b.dataset.copy); copyText(el.textContent, b, el); });
+  });
+
+  /* 洽談摘要 */
+  $('lead').addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = $('l-name').value.trim(), tel = $('l-tel').value.trim();
+    var telOk = /^09\d{2}-?\d{3}-?\d{3}$/.test(tel.replace(/\s/g,''));
+    if (!name || !telOk){
+      $('l-err').textContent = !name ? '請填寫聯絡人姓名。' : '手機格式應為 09 開頭共 10 碼，例如 0912-345-678。';
+      (!name ? $('l-name') : $('l-tel')).focus();
+      return;
+    }
+    $('l-err').textContent = '';
+    var lines = [
+      '【卯很多 經營夥伴洽談】',
+      '聯絡人：' + name,
+      '手機：' + tel,
+      '公司／行號：' + ($('l-co').value.trim() || '未填'),
+      'Email：' + ($('l-mail').value.trim() || '未填'),
+      '想了解：' + $('l-type').value,
+      '可準備資金：' + $('l-fund').value,
+      '資金試算（缺口最深點）：' + wan(lastGap) + '（月營業額 ' + $('g-rev').value + ' 萬情境）',
+      '經驗：' + ($('l-exp').value.trim() || '未填'),
+      '請寄至 contact@pinfu.tw'
+    ];
+    var pre = $('summary');
+    pre.textContent = lines.join('\n');
+    pre.hidden = false;
+    $('copy-sum').hidden = false;
+  });
+  $('copy-sum').addEventListener('click', function(){ copyText($('summary').textContent, $('copy-sum'), $('summary')); });
+
+  fee(); gap();
+})();
+</script>
+<!--BODY-END-->
+</body>
+</html>
