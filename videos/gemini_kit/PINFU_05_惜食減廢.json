@@ -1,0 +1,88 @@
+{
+ "id": "05",
+ "title": "惜食減廢",
+ "series": "一起珍惜每一口",
+ "voice": "zh-TW-YunJheNeural",
+ "scenes": [
+  {
+   "scene": 1,
+   "start": 0.0,
+   "end": 9.93,
+   "head": "珍惜每一口",
+   "say": "減少食物浪費，不需要很困難。從眼前這一餐飯開始，我們就能一起做到。",
+   "veo": "Gentle shot of a clean empty plate with chopsticks resting on it after a finished meal, warm light."
+  },
+  {
+   "scene": 2,
+   "start": 9.93,
+   "end": 19.64,
+   "head": "吃多少，點多少",
+   "say": "第一個習慣，吃多少，點多少。點餐前，先想想自己今天的食量。",
+   "veo": "A customer thoughtfully looking at a menu board at a food counter, pondering, natural light."
+  },
+  {
+   "scene": 3,
+   "start": 19.64,
+   "end": 27.96,
+   "head": "吃不完，打包帶走",
+   "say": "第二個習慣，吃不完就打包帶走，記得在兩小時內放進冰箱冷藏。",
+   "veo": "Hands packing leftover food neatly into a reusable container and closing the lid."
+  },
+  {
+   "scene": 4,
+   "start": 27.96,
+   "end": 35.67,
+   "head": "自備餐具與環保杯",
+   "say": "第三個習慣，外帶時自備餐具和環保杯，少用一次性用品。",
+   "veo": "A person pulling a reusable cutlery set and a stainless tumbler from a tote bag at a takeaway counter."
+  },
+  {
+   "scene": 5,
+   "start": 35.67,
+   "end": 45.29,
+   "head": "做好分類回收",
+   "say": "第四個習慣，用完餐後，請依照現場標示，把廚餘、資源回收和一般垃圾分開。",
+   "veo": "Clean sorting station with three bins, a person dropping a paper cup into the recycling bin."
+  },
+  {
+   "scene": 6,
+   "start": 45.29,
+   "end": 55.0,
+   "head": "廚房端：我們這樣做",
+   "say": "在廚房裡，我們也用先進先出、精準分裝和期限管理，減少食材因為過期而被丟棄。",
+   "veo": "Kitchen staff organizing ingredients by date on shelves, measured portions in containers, orderly and calm."
+  },
+  {
+   "scene": 7,
+   "start": 55.0,
+   "end": 64.76,
+   "head": "智慧提醒",
+   "say": "導入智慧品保標籤後，即將到期的食材可以更早被提醒，讓食材在期限內被妥善使用。",
+   "veo": "A touchscreen terminal in a kitchen showing a gentle alert glow, staff member checking and nodding."
+  },
+  {
+   "scene": 8,
+   "start": 64.76,
+   "end": 72.19,
+   "head": "每個人少浪費一點",
+   "say": "每個人少浪費一點點，累積起來，就是很大的改變。",
+   "veo": "Montage of many different hands each placing a reusable cup on a long table, uplifting mood."
+  },
+  {
+   "scene": 9,
+   "start": 72.19,
+   "end": 82.81,
+   "head": "一起做到",
+   "say": "吃多少點多少，吃不完打包，自備餐具，做好分類。四個小習慣，一起做到。",
+   "veo": "Sunlit green leaves gently moving in the breeze with soft bokeh, calm and hopeful."
+  },
+  {
+   "scene": 10,
+   "start": 82.81,
+   "end": 90.0,
+   "head": "品富餐飲",
+   "say": "品富餐飲，珍惜每一口，謝謝你和我們一起行動。",
+   "veo": "Warm final shot of a smiling counter staff member handing a meal to a customer who holds a reusable bag."
+  }
+ ]
+}

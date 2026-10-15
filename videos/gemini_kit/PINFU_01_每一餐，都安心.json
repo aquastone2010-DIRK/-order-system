@@ -1,0 +1,88 @@
+{
+ "id": "01",
+ "title": "每一餐，都安心",
+ "series": "品牌形象",
+ "voice": "zh-TW-HsiaoChenNeural",
+ "scenes": [
+  {
+   "scene": 1,
+   "start": 0.0,
+   "end": 9.07,
+   "head": "歡迎來到品富餐飲",
+   "say": "你好，歡迎來到品富餐飲。用九十秒，認識我們怎麼準備你的每一餐。",
+   "veo": "Wide establishing shot of a bright, spotless food counter in a hospital food court at lunchtime, staff in white uniforms and hairnets smiling and serving customers."
+  },
+  {
+   "scene": 2,
+   "start": 9.07,
+   "end": 19.06,
+   "head": "我們在你身邊",
+   "say": "品富在醫院、科技園區設櫃，服務每天忙碌的醫護人員、工程師，和每一位朋友。",
+   "veo": "Montage feel: a nurse and an engineer in a cleanroom-style jacket each picking up a lunch box from a counter, friendly handover, natural daylight."
+  },
+  {
+   "scene": 3,
+   "start": 19.06,
+   "end": 27.82,
+   "head": "好餐點的起點",
+   "say": "我們相信，一份好的餐點，從新鮮的食材開始，也從確實的流程開始。",
+   "veo": "Close-up of fresh vegetables, eggs and chicken being placed on a stainless steel prep table, droplets of water, morning light."
+  },
+  {
+   "scene": 4,
+   "start": 27.82,
+   "end": 37.11,
+   "head": "收貨把關",
+   "say": "每一批食材進到廚房，都要先檢查外觀、溫度與有效日期，合格才能入庫。",
+   "veo": "A kitchen staff member with gloves checking a delivery box, using a probe thermometer on chilled meat and reading the date on the package."
+  },
+  {
+   "scene": 5,
+   "start": 37.11,
+   "end": 46.26,
+   "head": "分區保存",
+   "say": "冷凍、冷藏、乾貨和蔬菜分區存放，各自有固定位置，避免交叉污染。",
+   "veo": "Slow pan across an organized walk-in refrigerator with labeled shelves and neatly stacked containers, cool blue light."
+  },
+  {
+   "scene": 6,
+   "start": 46.26,
+   "end": 57.52,
+   "head": "清楚標示",
+   "say": "分裝後的食材，都會貼上品保標籤，寫清楚品名、原包裝有效日、分裝日期和櫃位使用期限。",
+   "veo": "Macro shot of a gloved hand sticking a small white food label onto a sealed food container on a steel counter."
+  },
+  {
+   "scene": 7,
+   "start": 57.52,
+   "end": 66.54,
+   "head": "智慧升級中",
+   "say": "我們正在導入智慧品保標籤系統，由系統計算並列印日期，減少手寫錯誤。",
+   "veo": "A staff member tapping a rugged touchscreen terminal in a kitchen, a compact thermal label printer next to it printing a label."
+  },
+  {
+   "scene": 8,
+   "start": 66.54,
+   "end": 75.02,
+   "head": "用心烹調",
+   "say": "廚房夥伴依照標準流程烹調，讓每一份餐點的味道與份量都穩定一致。",
+   "veo": "Chef stir-frying vegetables in a wok with a gentle flame, steam rising, then plating rice and side dishes into a lunch box."
+  },
+  {
+   "scene": 9,
+   "start": 75.02,
+   "end": 82.8,
+   "head": "我們想聽你說",
+   "say": "對餐點有任何建議，歡迎告訴現場夥伴，我們會持續改進。",
+   "veo": "A customer chatting warmly with a counter staff member who nods and listens attentively, soft background bokeh."
+  },
+  {
+   "scene": 10,
+   "start": 82.8,
+   "end": 90.0,
+   "head": "品富餐飲",
+   "say": "品富餐飲，每一餐，都安心。謝謝你的光臨。",
+   "veo": "Slow push-in on a beautifully plated Taiwanese bento box on a wooden table, warm golden light, steam gently rising."
+  }
+ ]
+}

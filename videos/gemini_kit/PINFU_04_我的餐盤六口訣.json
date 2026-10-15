@@ -1,0 +1,88 @@
+{
+ "id": "04",
+ "title": "我的餐盤 六口訣",
+ "series": "均衡飲食",
+ "voice": "zh-TW-HsiaoChenNeural",
+ "scenes": [
+  {
+   "scene": 1,
+   "start": 0.0,
+   "end": 9.39,
+   "head": "吃得均衡，其實很簡單",
+   "say": "吃得均衡很簡單。國民健康署的「我的餐盤」，用六句口訣幫你記住。",
+   "veo": "Top-down shot of a round plate divided into sections with rice, vegetables, fruit, tofu and fish, bright natural light."
+  },
+  {
+   "scene": 2,
+   "start": 9.39,
+   "end": 19.35,
+   "head": "每天早晚一杯奶",
+   "say": "第一句，每天早晚一杯奶。每天一杯半到兩杯乳品，一杯約兩百四十毫升。",
+   "veo": "A glass of milk being poured on a breakfast table in soft morning light, slow motion."
+  },
+  {
+   "scene": 3,
+   "start": 19.35,
+   "end": 26.86,
+   "head": "每餐水果拳頭大",
+   "say": "第二句，每餐水果拳頭大，選擇當季、多樣化。",
+   "veo": "A hand holding a fresh guava next to a fist-sized portion of cut fruit in a small bowl, colorful and fresh."
+  },
+  {
+   "scene": 4,
+   "start": 26.86,
+   "end": 34.93,
+   "head": "菜比水果多一點",
+   "say": "第三句，菜比水果多一點，深色蔬菜最好佔三分之一以上。",
+   "veo": "Close-up of stir-fried leafy greens and broccoli in a bowl, vibrant green, steam rising."
+  },
+  {
+   "scene": 5,
+   "start": 34.93,
+   "end": 45.11,
+   "head": "飯跟蔬菜一樣多",
+   "say": "第四句，飯跟蔬菜一樣多，其中三分之一以上，選擇糙米、燕麥等未精製全穀。",
+   "veo": "Side-by-side bowls of brown rice and mixed vegetables of equal size on a table, gentle camera slide."
+  },
+  {
+   "scene": 6,
+   "start": 45.11,
+   "end": 56.51,
+   "head": "豆魚蛋肉一掌心",
+   "say": "第五句，豆魚蛋肉一掌心。優先選豆類，其次是魚和海鮮，再來是蛋，最後才是肉類。",
+   "veo": "An open palm next to a palm-sized piece of grilled fish and a block of tofu on a plate, clean composition."
+  },
+  {
+   "scene": 7,
+   "start": 56.51,
+   "end": 65.51,
+   "head": "堅果種子一茶匙",
+   "say": "第六句，堅果種子一茶匙。一天約一份，例如五粒杏仁果。",
+   "veo": "Macro shot of a teaspoon of mixed nuts and seeds being sprinkled over a salad."
+  },
+  {
+   "scene": 8,
+   "start": 65.51,
+   "end": 73.29,
+   "head": "選餐小技巧",
+   "say": "選餐時多一份蔬菜、少一點含糖飲料，就是好的開始。",
+   "veo": "A person at a food counter choosing an extra vegetable side dish and a bottle of water instead of soda."
+  },
+  {
+   "scene": 9,
+   "start": 73.29,
+   "end": 83.04,
+   "head": "資料來源",
+   "say": "資料來源：國民健康署。有特殊健康需求，請諮詢營養師或醫師。",
+   "veo": "Friendly dietitian in a white coat explaining a healthy plate model to a visitor in a bright clinic room."
+  },
+  {
+   "scene": 10,
+   "start": 83.04,
+   "end": 90.0,
+   "head": "品富餐飲",
+   "say": "品富餐飲，陪你均衡吃，每一餐都有好心情。",
+   "veo": "Group of coworkers sharing a balanced lunch together and laughing in a sunny break room."
+  }
+ ]
+}

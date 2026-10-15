@@ -1,0 +1,88 @@
+{
+ "id": "06",
+ "title": "外帶安心小撇步",
+ "series": "食品保存",
+ "voice": "zh-TW-HsiaoChenNeural",
+ "scenes": [
+  {
+   "scene": 1,
+   "start": 0.0,
+   "end": 7.2,
+   "head": "外帶餐點怎麼保存？",
+   "say": "外帶餐點怎麼保存最安心？記住這幾個重點。",
+   "veo": "Office worker carrying a takeaway bag through a bright office lobby, walking toward the camera."
+  },
+  {
+   "scene": 2,
+   "start": 7.2,
+   "end": 15.64,
+   "head": "儘快食用",
+   "say": "第一，熟食最好儘快食用，在室溫下放置，不要超過兩小時。",
+   "veo": "Close-up of a takeaway meal box on an office desk next to a desk clock, soft afternoon light."
+  },
+  {
+   "scene": 3,
+   "start": 15.64,
+   "end": 25.07,
+   "head": "天氣炎熱更要注意",
+   "say": "第二，天氣炎熱、氣溫超過攝氏三十二度時，室溫放置不要超過一小時。",
+   "veo": "Hot summer street scene with heat shimmer, a person holding a takeaway bag under bright sun."
+  },
+  {
+   "scene": 4,
+   "start": 25.07,
+   "end": 33.7,
+   "head": "冷藏 7°C 以下",
+   "say": "第三，暫時吃不完的餐點，請儘快放進攝氏七度以下的冰箱冷藏。",
+   "veo": "Hand placing a sealed food container into a clean home refrigerator, fridge light on."
+  },
+  {
+   "scene": 5,
+   "start": 33.7,
+   "end": 42.58,
+   "head": "分小份、用淺盒",
+   "say": "第四，大份量的食物，分成小份、裝在淺的盒子裡，降溫會更快。",
+   "veo": "Portioning a large amount of food into several shallow glass containers on a kitchen counter."
+  },
+  {
+   "scene": 6,
+   "start": 42.58,
+   "end": 52.84,
+   "head": "復熱要熱透",
+   "say": "第五，再次食用前要徹底加熱，讓中心溫度達到攝氏七十四度以上，整份均勻熱透。",
+   "veo": "Food thermometer inserted into the center of a steaming reheated dish, digital display glowing."
+  },
+  {
+   "scene": 7,
+   "start": 52.84,
+   "end": 61.57,
+   "head": "只復熱一次",
+   "say": "第六，復熱過的食物，建議一次吃完，不要反覆冷藏、反覆加熱。",
+   "veo": "A person enjoying a freshly reheated meal at a dining table, finishing the bowl."
+  },
+  {
+   "scene": 8,
+   "start": 61.57,
+   "end": 70.74,
+   "head": "生熟分開放",
+   "say": "第七，冰箱裡生食放下層、熟食放上層，避免生食汁液滴到熟食上。",
+   "veo": "Organized refrigerator interior: cooked food containers on upper shelf, raw meat in a sealed tray on the bottom shelf."
+  },
+  {
+   "scene": 9,
+   "start": 70.74,
+   "end": 81.82,
+   "head": "有疑慮，就別吃",
+   "say": "最後，食物如果有異味、變色或黏液，請不要食用。資料參考食藥署與美國農業部。",
+   "veo": "Person sniffing a food container with a doubtful expression and then closing the lid, neutral kitchen."
+  },
+  {
+   "scene": 10,
+   "start": 81.82,
+   "end": 90.0,
+   "head": "品富餐飲",
+   "say": "安心帶走，美味不減。品富餐飲提醒你，好好吃飯。",
+   "veo": "Warm closing shot of a takeaway bag with a meal box being handed over at a counter with a smile."
+  }
+ ]
+}
