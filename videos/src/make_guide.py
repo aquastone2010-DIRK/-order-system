@@ -11,7 +11,9 @@ from docx.oxml.ns import qn
 from docx.shared import Pt, RGBColor, Cm
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from content import STYLE, VIDEOS  # noqa: E402
+from content import STYLE, VIDEOS as ALL_VIDEOS  # noqa: E402
+
+VIDEOS = [v for v in ALL_VIDEOS if v.get("kind") != "pitch"]  # 手冊只收店內播放影片
 
 FONT = "Microsoft JhengHei"
 NAVY, TEAL, RED, GREY = RGBColor(0x1B, 0x36, 0x5D), RGBColor(0x0F, 0x6E, 0x6E), RGBColor(0xB4, 0x23, 0x18), RGBColor(0x66, 0x66, 0x66)

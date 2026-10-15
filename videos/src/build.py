@@ -15,7 +15,8 @@ import imageio_ffmpeg
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from content import VIDEOS  # noqa: E402
 
-W, H, FPS, TOTAL = 1920, 1080, 25, 90.0
+W, H, FPS = 1920, 1080, 25
+DEFAULT_TOTAL = 90.0  # 每部影片可在 content.py 以 "duration" 覆寫
 SR = 24000
 FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
 CA_BUNDLE = os.environ.get("TTS_CA_BUNDLE", "/root/.ccr/ca-bundle.crt")
@@ -46,8 +47,13 @@ def decode(path):
     return np.frombuffer(raw, dtype=np.float32).copy()
 
 
+def total_of(video):
+    return float(video.get("duration", DEFAULT_TOTAL))
+
+
 def plan_timing(video, work):
-    """選擇語速並分配每幕時長，總長固定 90 秒。"""
+    """選擇語速並分配每幕時長，總長固定為該片設定秒數。"""
+    TOTAL = total_of(video)
     for rate in RATES:
         clips = []
         for i, s in enumerate(video["scenes"]):
@@ -63,7 +69,7 @@ def plan_timing(video, work):
             durs[-1] = TOTAL - sum(durs[:-1])  # 浮點誤差補到最後一幕
             print(f"  [{video['id']}] rate={rate} speech={sum(len(a) for a in clips)/SR:.1f}s pad/scene={extra:.2f}s")
             return rate, clips, durs, lead
-    raise RuntimeError("旁白過長，90 秒放不下，請縮短腳本")
+    raise RuntimeError(f"旁白過長，{TOTAL:.0f} 秒放不下，請縮短腳本")
 
 
 # ---------------- 背景音樂（自行合成，無版權疑慮） ----------------
@@ -103,7 +109,7 @@ def music(total):
     return out / (np.abs(out).max() + 1e-9)
 
 
-def build_audio(clips, durs, lead, path):
+def build_audio(clips, durs, lead, path, TOTAL):
     n = int(TOTAL * SR)
     voice = np.zeros(n)
     t0 = 0.0
@@ -227,12 +233,34 @@ def static_layer(v, fonts, idx, n):
     return im
 
 
+def label_icon(fonts):
+    """「品保標籤」示意圖，取代 emoji 作為主圖示（icon 設為 "label"）。"""
+    im = Image.new("RGBA", (300, 300), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((18, 40, 282, 262), 14, fill=(255, 255, 255, 255), outline=(40, 40, 40, 255), width=4)
+    d.rectangle((22, 44, 278, 84), fill=(27, 54, 93, 255))
+    f = fonts.get(26, "Bold")
+    d.text((150 - f.getlength("品保標籤") / 2, 47), "品保標籤", font=f, fill=(255, 255, 255, 255))
+    rows = [("品名", "雞腿肉"), ("原包裝有效日", "10/30"), ("分裝日期", "10/15"), ("櫃位使用期限", "10/17")]
+    fl, fv = fonts.get(19, "Medium"), fonts.get(22, "Black")
+    for i, (k, val) in enumerate(rows):
+        y = 96 + i * 41
+        if i:
+            d.line((30, y - 6, 270, y - 6), fill=(200, 200, 200, 255), width=2)
+        d.text((34, y + 4), k, font=fl, fill=(60, 60, 60, 255))
+        col = (200, 40, 40, 255) if i == 3 else (20, 20, 20, 255)
+        d.text((266 - fv.getlength(val), y), val, font=fv, fill=col)
+    return im
+
+
 def render_video(v, durs, lead, clips, fonts, emoji_dir, audio_path, out_path, thumb_path):
+    TOTAL = total_of(v)
     bg = background(v)
     n = len(v["scenes"])
     scenes = []
     for i, s in enumerate(v["scenes"]):
-        icon = Image.open(os.path.join(emoji_dir, s["icon"] + ".png")).convert("RGBA").resize((300, 300), Image.LANCZOS)
+        icon = label_icon(fonts) if s["icon"] == "label" else \
+            Image.open(os.path.join(emoji_dir, s["icon"] + ".png")).convert("RGBA").resize((300, 300), Image.LANCZOS)
         card = Image.new("RGBA", (480, 480), (0, 0, 0, 0))
         cd = ImageDraw.Draw(card)
         cd.ellipse((20, 20, 460, 460), fill=(255, 255, 255, 235))
@@ -358,7 +386,7 @@ def main():
             continue
         rate, clips, durs, lead = plan_timing(v, a.work)
         wav = os.path.join(a.work, f"v{v['id']}.wav")
-        build_audio(clips, durs, lead, wav)
+        build_audio(clips, durs, lead, wav, total_of(v))
         name = f"PINFU_{v['id']}_{v['title'].replace(' ', '')}"
         extras = os.path.join(a.out, "gemini_kit")
         os.makedirs(extras, exist_ok=True)
