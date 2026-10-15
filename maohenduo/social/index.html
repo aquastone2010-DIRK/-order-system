@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!--BODY-START-->
+<title>卯很多社群招商套件</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Zilla+Slab:wght@600;700&display=swap">
+<style>
+/* Layout: 一頁看完三個平台——先看帳號長相，再看貼文與文案，最後是排程與規範 */
+:root{
+  --paper:#F1E6D3; --paper-2:#E8D9C1; --ink:#24211C; --soft:#5E574B;
+  --leaf:#DCE8C4; --olive:#56663A; --peach:#FBDCC9; --ember:#D9703F; --card:#FBF6EC;
+  --phone:#FFFFFF; --phone-ink:#111111; --phone-soft:#737373;
+  --f:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --n:"Zilla Slab","Rockwell",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--paper:#1D1B17;--paper-2:#26231D;--ink:#F1E6D3;--soft:#BDB29F;--leaf:#2F3A25;--olive:#B7CB8C;--peach:#43291D;--ember:#F0956A;--card:#2A2620;--phone:#000000;--phone-ink:#F5F5F5;--phone-soft:#A8A8A8;color-scheme:dark}
+}
+:root[data-theme="dark"]{--paper:#1D1B17;--paper-2:#26231D;--ink:#F1E6D3;--soft:#BDB29F;--leaf:#2F3A25;--olive:#B7CB8C;--peach:#43291D;--ember:#F0956A;--card:#2A2620;--phone:#000000;--phone-ink:#F5F5F5;--phone-soft:#A8A8A8;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1120px;margin:0 auto;padding-block:40px 80px}
+h1,h2,h3{margin:0;font-weight:900;line-height:1.25;text-wrap:balance}
+h1{font-size:clamp(2rem,5vw,3.2rem)}
+h2{font-size:clamp(1.5rem,3vw,2rem)}
+h3{font-size:1.1rem}
+p{margin:0}
+.n{font-family:var(--n);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:.8rem;font-weight:700;letter-spacing:.12em;color:var(--olive)}
+.muted{color:var(--soft)}
+.small{font-size:.86rem}
+section{padding-top:64px}
+.head{display:grid;gap:8px;margin-bottom:24px;max-width:46em}
+:focus-visible{outline:3px solid var(--ember);outline-offset:3px;border-radius:6px}
+img{max-width:100%;display:block}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{font-size:.82rem;font-weight:700;padding:3px 12px;border:2px solid var(--ink);border-radius:999px;background:var(--card)}
+
+/* accounts table */
+.acct{border:3px solid var(--ink);border-radius:20px;overflow:hidden;background:var(--card)}
+.acct .row{display:grid;grid-template-columns:150px repeat(3,minmax(0,1fr));border-bottom:2px solid var(--paper-2)}
+.acct .row:last-child{border-bottom:0}
+.acct .row>*{padding:12px 14px;min-width:0;font-size:.9rem;overflow-wrap:anywhere}
+.acct .row>b:first-child{background:var(--paper-2)}
+.acct .hdr>*{font-weight:900;background:var(--leaf)}
+.acct .hdr>*:first-child{background:var(--leaf)}
+.scroll{overflow-x:auto}
+.scroll .acct{min-width:780px}
+.cnt{font-family:var(--n);font-size:.78rem;color:var(--soft);display:block;margin-top:4px}
+
+/* mockups */
+.mocks{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:860px){.mocks{grid-template-columns:1fr}}
+.phone{background:var(--phone);color:var(--phone-ink);border:3px solid var(--ink);border-radius:32px;padding:18px 14px;display:grid;gap:14px;max-width:380px;width:100%;justify-self:center}
+.ig-top{display:flex;align-items:center;gap:16px}
+.ig-top img{width:84px;height:84px;border-radius:50%;border:1px solid #ddd;flex:0 0 auto}
+.ig-stats{display:flex;gap:14px;flex:1;justify-content:space-around;text-align:center;font-size:.8rem}
+.ig-stats b{display:block;font-size:1rem}
+.bio{font-size:.82rem;line-height:1.5;white-space:pre-line}
+.bio a{color:#2b5fa8;text-decoration:none}
+.hls{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px}
+.hls figure{margin:0;display:grid;gap:4px;justify-items:center;font-size:.72rem;flex:0 0 auto}
+.hls .ring{width:62px;height:62px;border-radius:50%;border:1px solid #ccc;padding:3px;overflow:hidden}
+.hls img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-inline:-14px}
+.ig-grid img{width:100%;aspect-ratio:3/4;object-fit:cover}
+.fbmock{border:3px solid var(--ink);border-radius:20px;overflow:hidden;background:var(--card)}
+.fbmock .cover{width:100%;aspect-ratio:1640/624;object-fit:cover}
+.fbmock .meta{display:flex;align-items:flex-end;gap:16px;padding:0 20px 18px;margin-top:-48px;flex-wrap:wrap}
+.fbmock .meta img{width:112px;height:112px;border-radius:50%;border:4px solid var(--card);background:var(--card)}
+.fbmock .meta div{display:grid;gap:2px;padding-bottom:6px;min-width:0}
+.fbmock .meta b{font-size:1.25rem}
+.btns{display:flex;gap:8px;flex-wrap:wrap;padding:0 20px 20px}
+.fbbtn{font-size:.85rem;font-weight:700;padding:6px 14px;border-radius:8px;background:#1877F2;color:#fff}
+.fbbtn.alt{background:var(--paper-2);color:var(--ink)}
+.side{display:grid;gap:24px}
+.threads{border:3px solid var(--ink);border-radius:20px;background:var(--card);padding:18px;display:grid;gap:0}
+.th{display:grid;grid-template-columns:40px 1fr;gap:12px;padding-block:14px;border-bottom:1px solid var(--paper-2)}
+.th:last-child{border-bottom:0}
+.th img{width:40px;height:40px;border-radius:50%}
+.th p{white-space:pre-line;font-size:.92rem}
+.th .who{font-weight:700;font-size:.88rem}
+
+/* posts */
+.posts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+@media (max-width:900px){.posts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.posts{grid-template-columns:1fr}}
+.post{border:3px solid var(--ink);border-radius:20px;overflow:hidden;background:var(--card);display:flex;flex-direction:column}
+.post img{width:100%;aspect-ratio:4/5;object-fit:cover;border-bottom:3px solid var(--ink)}
+.post .body{padding:14px;display:grid;gap:10px;flex:1;align-content:start}
+.post .cap{font-size:.86rem;white-space:pre-line;max-height:12.5em;overflow:auto;background:var(--paper);border-radius:10px;padding:10px}
+.post .tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.copy{font:700 .8rem var(--f);padding:5px 12px;border:2px solid var(--ink);border-radius:999px;background:var(--paper);color:var(--ink);cursor:pointer}
+.copy:hover{background:var(--ink);color:var(--paper)}
+.tag{font-size:.75rem;font-weight:700;color:var(--olive)}
+.strip{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+.strip img{width:220px;flex:0 0 auto;border:3px solid var(--ink);border-radius:14px}
+.strip img.tall{width:170px}
+
+/* calendar */
+.cal{width:100%;border-collapse:collapse;font-size:.9rem;min-width:720px;background:var(--card)}
+.cal th,.cal td{padding:9px 12px;border-bottom:2px solid var(--paper-2);text-align:left;vertical-align:top}
+.cal th{background:var(--leaf);font-weight:900}
+.cal td:first-child{font-family:var(--n);white-space:nowrap;font-variant-numeric:tabular-nums}
+.cal tr.wk td{background:var(--paper-2);font-weight:900;font-family:var(--f)}
+.pf{display:inline-block;font-size:.72rem;font-weight:700;padding:1px 8px;border-radius:999px;border:1.5px solid currentColor;margin-right:4px;white-space:nowrap}
+.pf.ig{color:#C13584}.pf.fb{color:#1877F2}.pf.th{color:var(--ink)}.pf.line{color:#06A847}
+.tablebox{overflow-x:auto;border:3px solid var(--ink);border-radius:20px}
+
+/* rules */
+.rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.rules{grid-template-columns:1fr}}
+.rules article{border:3px solid var(--ink);border-radius:20px;padding:20px;display:grid;gap:10px;align-content:start;background:var(--card)}
+.rules article.no{background:var(--peach)}
+.rules article.yes{background:var(--leaf)}
+.rules ul{margin:0;padding-left:1.1em;display:grid;gap:6px;font-size:.92rem}
+.funnel{display:flex;flex-wrap:wrap;gap:0;border:3px solid var(--ink);border-radius:20px;overflow:hidden}
+.funnel div{flex:1 1 150px;padding:16px;border-right:3px solid var(--ink);display:grid;gap:4px;background:var(--card);min-width:0}
+.funnel div:nth-child(odd){background:var(--leaf)}
+.funnel div:last-child{border-right:0}
+.funnel b{font-size:1rem}
+.funnel span{font-size:.84rem;color:var(--soft)}
+@media (max-width:760px){.funnel div{flex-basis:100%;border-right:0;border-bottom:3px solid var(--ink)}.funnel div:last-child{border-bottom:0}}
+footer{margin-top:64px;border-top:3px solid var(--ink);padding-top:20px;font-size:.84rem;color:var(--soft)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">卯很多 MAO MANY · 招商官方帳號</p>
+  <h1>IG、Facebook、Threads 社群招商套件</h1>
+  <p class="muted" style="margin-top:10px;max-width:44em">三個平台共用一套六格便當視覺，所有數字與官網一致。目標只有一個：把看到的人帶進 LINE，進入見習與洽談流程。</p>
+  <div class="chips"><span class="chip">23 張圖，尺寸已對齊各平台</span><span class="chip">9 則首發貼文＋5 張輪播</span><span class="chip">10 則 Threads 文字貼文</span><span class="chip">4 週排程</span></div>
+</header>
+
+<section id="accounts">
+  <div class="head">
+    <p class="eyebrow">ACCOUNTS</p>
+    <h2>帳號設定</h2>
+    <p class="muted">Threads 用 Instagram 帳號登入，帳號名稱會跟 IG 相同。三個平台的 ID 建議統一為 maomany.partner；註冊時若已被使用，改用 maomany_partner。</p>
+  </div>
+  <div class="scroll"><div class="acct" role="table" aria-label="三平台帳號設定">
+    <div class="row hdr" role="row"><b>項目</b><b>Instagram</b><b>Facebook 粉絲專頁</b><b>Threads</b></div>
+    <div class="row" role="row"><b>名稱</b><span>卯很多 MAO MANY｜餐飲夥伴招商</span><span>卯很多 MAO MANY 餐飲夥伴招商</span><span>同 IG</span></div>
+    <div class="row" role="row"><b>帳號</b><span>@maomany.partner</span><span>facebook.com/maomany.partner</span><span>@maomany.partner</span></div>
+    <div class="row" role="row"><b>簡介</b><span id="bio-ig"></span><span id="bio-fb"></span><span id="bio-th"></span></div>
+    <div class="row" role="row"><b>連結</b><span>官網招商頁（第一個）＋ LINE 加好友連結</span><span>網站：官網招商頁；按鈕：「傳送訊息」</span><span>官網招商頁</span></div>
+    <div class="row" role="row"><b>帳號類型</b><span>商業帳號（才能看洞察報告、設定自動回覆）</span><span>類別選「餐飲服務」相關項目，聯絡電話 0989-470806，Email contact@pinfu.tw</span><span>公開帳號</span></div>
+    <div class="row" role="row"><b>大頭貼／封面</b><span>avatar.png（1080×1080）；精選動態 6 個封面</span><span>avatar.png；封面 fb-cover.jpg（1640×624，重點都在中間）</span><span>avatar.png</span></div>
+  </div></div>
+</section>
+
+<section id="look">
+  <div class="head">
+    <p class="eyebrow">PREVIEW</p>
+    <h2>上線後的樣子</h2>
+    <p class="muted">IG 網格依 01 到 09 排列。因為最新貼文排在左上角，首發要倒過來發：先發 09，最後發 01。</p>
+  </div>
+  <div class="mocks">
+    <div class="phone" aria-label="Instagram 個人檔案示意">
+      <div class="ig-top">
+        <img src="img/avatar.png" alt="卯很多大頭貼">
+        <div class="ig-stats"><span><b>9</b>貼文</span><span><b>—</b>粉絲</span><span><b>—</b>追蹤中</span></div>
+      </div>
+      <div><b style="font-size:.88rem">卯很多 MAO MANY｜餐飲夥伴招商</b><p class="bio" id="bio-ig-mock"></p></div>
+      <div class="hls" id="hls"></div>
+      <div class="ig-grid" id="ig-grid"></div>
+    </div>
+    <div class="side">
+      <div class="fbmock" aria-label="Facebook 粉絲專頁示意">
+        <img class="cover" src="img/fb-cover.jpg" alt="Facebook 封面">
+        <div class="meta"><img src="img/avatar.png" alt=""><div><b>卯很多 MAO MANY 餐飲夥伴招商</b><span class="small muted">@maomany.partner · 餐飲服務</span></div></div>
+        <div class="btns"><span class="fbbtn">傳送訊息</span><span class="fbbtn alt">前往網站</span></div>
+      </div>
+      <div class="threads" id="threads-mock" aria-label="Threads 示意"></div>
+    </div>
+  </div>
+</section>
+
+<section id="posts">
+  <div class="head">
+    <p class="eyebrow">LAUNCH · 9 POSTS</p>
+    <h2>首發九宮格與文案</h2>
+    <p class="muted">每張圖都有 IG 與 Facebook 兩種文案。IG 短、帶 hashtag，引導看個人檔案連結；Facebook 可以放完整說明與連結。</p>
+  </div>
+  <div class="posts" id="post-list"></div>
+</section>
+
+<section id="carousel">
+  <div class="head">
+    <p class="eyebrow">CAROUSEL</p>
+    <h2>輪播：開店前，先算清楚要準備多少錢</h2>
+    <p class="muted">5 張一組，數字取自官網試算：建議準備資金＝開辦預算 50 萬＋營業稅 2 萬＋營運周轉。</p>
+  </div>
+  <div class="strip" id="car-strip"></div>
+  <div class="posts" style="margin-top:20px" id="car-cap"></div>
+</section>
+
+<section id="stories">
+  <div class="head">
+    <p class="eyebrow">STORIES & HIGHLIGHTS</p>
+    <h2>限時動態與精選封面</h2>
+    <p class="muted">見習梯次範本每週更新日期與名額。精選動態六個分類：條件、預算、品牌、區域、街邊店、見習；IG 只會顯示圖片中間的圓形。</p>
+  </div>
+  <div class="strip" id="story-strip"></div>
+</section>
+
+<section id="threads">
+  <div class="head">
+    <p class="eyebrow">THREADS</p>
+    <h2>Threads 文字貼文 10 則</h2>
+    <p class="muted">Threads 以文字對話為主，語氣比 IG 更直接，每則結尾丟一個問題讓人回覆。單則 500 字以內。</p>
+  </div>
+  <div class="posts" id="th-list"></div>
+</section>
+
+<section id="calendar">
+  <div class="head">
+    <p class="eyebrow">4-WEEK PLAN</p>
+    <h2>上線 4 週排程</h2>
+    <p class="muted">以 2026 年 10 月 19 日（一）為第 1 天。每週固定：IG 3 則、Facebook 3 則、Threads 5 則、限時動態 2 則。</p>
+  </div>
+  <div class="tablebox"><table class="cal" id="cal"><thead><tr><th>日期</th><th>平台</th><th>格式</th><th>內容</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section id="rules">
+  <div class="head">
+    <p class="eyebrow">FUNNEL & RULES</p>
+    <h2>導流路徑與發文規範</h2>
+  </div>
+  <div class="funnel">
+    <div><b>看到</b><span>IG／FB／Threads 貼文、廣告</span></div>
+    <div><b>了解</b><span>個人檔案連結 → 官網條件與試算</span></div>
+    <div><b>加 LINE</b><span>abingo2025（官方帳號開通後換成 @ID）</span></div>
+    <div><b>見習</b><span>逢甲訓練基地三天，不收費不綁約</span></div>
+    <div><b>洽談</b><span>提供業主名稱、上游條件附表、完整試算</span></div>
+  </div>
+  <div class="rules" style="margin-top:20px">
+    <article class="no">
+      <h3>不能寫、不能拍</h3>
+      <ul>
+        <li>不寫收益承諾：不寫「月賺」「保證回本」「穩賺」，也不寫回收期（公平交易法第 21 條）。</li>
+        <li>不公開業主名稱與上游條件：只寫區域與品類。</li>
+        <li>不在廠區內拍攝或打卡：科技廠受資安規範限制，素材在廠外、中央廚房、逢甲基地拍。</li>
+        <li>健康文案只寫可驗證數字（熱量、蛋白質、鈉），不寫減重、降血糖、排毒（食安法第 28 條）。</li>
+        <li>夥伴或員工入鏡要先取得書面同意。</li>
+        <li>廣告文字避免寫成徵才（「徵」「職缺」「月薪」），以免被 Meta 歸入就業類廣告而限制受眾。</li>
+      </ul>
+    </article>
+    <article class="yes">
+      <h3>一定要寫</h3>
+      <ul>
+        <li>費用一律標「未稅」；需要時補「加盟金、進場服務費、物料費另加 5% 營業稅共 2 萬」。</li>
+        <li>試算數字標「範例試算，僅估資金需求，不代表獲利」。</li>
+        <li>條件以正式合約為準；加盟案簽約前提供加盟資訊揭露書。</li>
+        <li>街邊店：標準店、旗艦店等規格，費用另洽。</li>
+        <li>可加盟品牌：卯起來六格品牌家族＋市場一、二線品牌，名單洽談時提供。</li>
+      </ul>
+    </article>
+    <article>
+      <h3>留言與私訊回覆範本</h3>
+      <ul id="replies"></ul>
+    </article>
+    <article>
+      <h3>廣告測試建議</h3>
+      <ul>
+        <li>目標：訊息（導向 LINE 或 Messenger），不選「觸及」。</li>
+        <li>地區：7 個招募區域所在縣市，各園區周邊半徑約 15 公里；街邊店廣告另開一組，用全台。</li>
+        <li>素材：輪播「先算要準備多少錢」、post-09 見習、post-04 開辦預算，三組各自測。</li>
+        <li>預算：先用每組每日 300 元跑 14 天，以每位加 LINE 成本與見習預約數決定加碼。</li>
+        <li>每週看：觸及、點擊、加 LINE 數、見習預約數、洽談數；第 4 週後再定目標值。</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<footer>
+  <p>原始檔與圖檔在 repo 的 <code>maohenduo/social/</code>：<code>kit-src.html</code> 改字後執行 <code>render.mjs</code> 即可重出全部圖片。所有費用為未稅金額，條件以正式合約為準。</p>
+</footer>
+</div>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var esc = function(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+  var SITE = '（官網招商頁連結）';
+  var TAGS = '#卯很多 #品富餐飲 #卯食 #餐飲加盟 #餐飲創業 #團膳 #科學園區';
+
+  var BIO = {
+    ig: '封閉市場餐飲品牌平台｜品富主導 × 卯食合夥\n招募科學園區・醫院美食街・街邊店經營夥伴\n開辦預算 50 萬（未稅）・三天見習不綁約\n↓ 條件與試算',
+    fb: '卯很多是品富餐飲主導、卯食團隊合夥的封閉市場餐飲品牌平台。招募科學園區、醫院體系美食街與街邊店經營夥伴。開辦預算 50 萬（未稅），三天見習不收費不綁約。LINE：abingo2025',
+    th: '封閉市場餐飲品牌平台｜品富主導 × 卯食合夥\n聊餐飲創業的真實數字：要準備多少錢、怎麼進科學園區\nLINE：abingo2025'
+  };
+  [['ig','bio-ig'],['fb','bio-fb'],['th','bio-th']].forEach(function(p){
+    $(p[1]).innerHTML = esc(BIO[p[0]]).replace(/\n/g,'<br>') + '<span class="cnt">' + Array.from(BIO[p[0]]).length + ' 字</span>';
+  });
+  $('bio-ig-mock').innerHTML = esc(BIO.ig) + '\n<a>maomany.partner 官網</a>';
+
+  var POSTS = [
+    {id:'post-01', title:'品牌宣言',
+     ig:'科技廠的櫃位，一個窗口卯到。\n\n卯很多是品富餐飲主導、卯食團隊合夥的封閉市場品牌平台。我們負責拿到櫃位、代辦入廠、對帳撥款；卯食團隊給你品牌、帶你開店。你專心把每一餐做好。\n\n條件與試算在個人檔案連結。\n\n' + TAGS,
+     fb:'【卯很多 經營夥伴招募】\n科技廠的櫃位，一個窗口卯到。\n\n科學園區和醫院的員工餐廳，人流排在班表上，難的是進場：供應商審核、入廠資格、食安稽核。卯很多由品富餐飲主導，負責對接業主與承包商、代辦入廠、對帳撥款；卯食團隊以合夥身分負責品牌、菜單與開辦輔導。\n\n完整條件與資金試算：' + SITE + '\nLINE 洽談：abingo2025'},
+    {id:'post-02', title:'封閉市場四優勢',
+     ig:'封閉市場不缺客人，缺的是進得去的人。\n\n① 人流可預測：用餐時段排在班表上\n② 進場門檻高：食安、證照、稽核把關\n③ 以年為約：菜單可逐檔優化\n④ 量能穩定：不必每天找客人\n\n入廠手續由卯很多代辦。\n\n' + TAGS,
+     fb:'為什麼選封閉市場？\n\n街邊店每天都在找客人；科學園區、醫院美食街的客人排在班表上。真正的門檻是進場：供應商審核、入廠資格、食安稽核。\n\n品富餐飲自 2013 年起深耕封閉場域，目前 4 個場域、8 個櫃位、14 處食品業者登錄。入廠手續由卯很多代辦。\n\n' + SITE},
+    {id:'post-03', title:'三方分工',
+     ig:'品富主導，卯食合夥，你經營。\n\n品富：對接業主與承包商、代辦入廠、對帳撥款、SGS 月稽核\n卯食：品牌授權、菜單研發、開辦輔導、365 天陪跑\n你：現場人力與出餐，承擔營運盈虧\n\n上游條件原數轉給你，卯很多只加收平台服務費。\n\n' + TAGS,
+     fb:'誰負責什麼，先寫清楚。\n\n▸ 品富餐飲（主導）：對接業主與團膳承包商、代辦入廠、合約與對帳、背對背撥款、SGS 月稽核\n▸ 卯食團隊（合夥）：品牌授權、菜單研發、試菜與開辦輔導、開幕後 365 天陪跑\n▸ 經營夥伴（你）：現場人力、排班與出餐，承擔營運盈虧\n\n上游條件原數轉給你，卯很多只加收平台服務費，轉嫁費用一律附對帳單影本。\n' + SITE},
+    {id:'post-04', title:'開辦預算 50 萬',
+     ig:'夥伴基本開辦預算 50 萬（未稅）\n\n保證金 10 萬：合約結束後 90 天內退還\n加盟金 10 萬：不可退\n進場服務費 10 萬：不可退\n物料費 20 萬：預付，叫貨時扣抵\n\n加盟金、進場服務費、物料費另加 5% 營業稅共 2 萬。另需營運周轉金，官網可試算。\n\n' + TAGS,
+     fb:'【開辦預算一次講清楚】50 萬（未稅）\n\n・保證金 10 萬：合約結束後 90 天內退還\n・加盟金 10 萬：不可退\n・進場服務費 10 萬：不可退，含媒合、入廠資格代辦、開辦輔導\n・物料費 20 萬：預付，叫貨時扣抵貨款\n\n加盟金、進場服務費、物料費另加 5% 營業稅共 2 萬，含稅應付 52 萬；保證金不計稅。個別案件上游押金高於 10 萬時，差額列於該案附表。\n\n開幕後還需要營運周轉金，請用官網試算：' + SITE + '\n條件以正式合約為準。'},
+    {id:'post-05', title:'招商條件',
+     ig:'條件透明，每案只換一張附表。\n\n平台服務費：上游抽成＋3%（自有品牌）／＋6%（卯很多品牌）\n月保底：12,000／21,000 元，第 3 個月起算\n撥款：收到上游款項後 10 天內\n轉嫁費用：原價，附對帳單影本\n\n' + TAGS,
+     fb:'卯很多的標準招商條件：\n\n・平台服務費：上游抽成＋3%（夥伴自有品牌）；卯很多品牌品項＋6%，POS 分開列帳\n・月保底：＋3% 方案 12,000 元、＋6% 方案 21,000 元，第 3 個月起算，策略案可豁免\n・撥款：卯很多實際收到上游款項後 10 個日曆天內撥付（背對背）\n・轉嫁費用：管理費、POS、電子支付手續費等原價轉嫁，附對帳單影本\n\n每個新案只換「上游條件附表」。條件以正式合約為準。\n' + SITE},
+    {id:'post-06', title:'招募區域',
+     ig:'目前招募區域，由北到南：\n\n新竹科學園區\n新竹科學園區銅鑼園區\n台中科學園區\n台中精密園區\n南部科學園區嘉義園區\n南部科學園區\n醫院體系美食街\n\n業主名稱與條件於當面洽談時提供。\n\n#卯很多 #竹科 #中科 #南科 #醫院美食街 #餐飲加盟',
+     fb:'【7 區同步招募經營夥伴】\n\n新竹科學園區／新竹科學園區銅鑼園區／台中科學園區／台中精密園區／南部科學園區嘉義園區／南部科學園區／醫院體系美食街\n\n依招商規範，公開管道只說明區域與品類；業主名稱、上游條件附表與完整試算，在當面洽談時提供。\n\n想了解哪一區，私訊或 LINE：abingo2025'},
+    {id:'post-07', title:'六格品牌家族',
+     ig:'六格便當，就是六個品牌。\n\n上排「一」系列：楊家一鍋滷、一杯紅、餃一局\n下排「卯」系列：卯食早午餐、卯起來吃飯、卯剛好\n\n再加上市場一、二線品牌，依場域客群媒合。\n\n#卯很多 #卯起來 #六格便當 #餐飲加盟 #品牌加盟',
+     fb:'可加盟品牌有兩類：\n\n① 卯起來六格品牌家族：上排品富「一」系列（楊家一鍋滷、一杯紅、餃一局），下排卯食「卯」系列（卯食早午餐、卯起來吃飯、卯剛好）。卯食團隊負責菜單研發與開辦輔導。\n② 市場一、二線品牌：依場域客群與品類缺口媒合，品牌名單與授權條件於當面洽談時提供。\n\n' + SITE},
+    {id:'post-08', title:'街邊店招募',
+     ig:'卯起來六格品牌家族，招募街邊店。\n\n標準店、旗艦店兩種規格\n早餐、午餐、下午茶三段營收\n兩個品牌共用一個後廚\n開幕後 365 天陪跑\n\n規格不同，費用另洽。LINE：abingo2025\n\n#卯很多 #卯起來 #街邊店 #餐飲加盟 #餐飲創業',
+     fb:'不在園區裡，也能開卯起來。\n\n卯起來六格品牌家族招募街邊店，分標準店、旗艦店等規格。前台各品牌保持自己的招牌，後台共用人力、設備、倉儲、採購與數位系統；早餐、午餐、下午茶三段營收；開幕後 365 天陪跑。\n\n店面、裝修與設備投入依規格與地點不同，費用另洽。\nLINE：abingo2025'},
+    {id:'post-09', title:'三天見習',
+     ig:'先吃再加入：三天見習，不收費、不綁約。\n\n到卯食逢甲訓練基地實際出餐三天，看現任經營者怎麼備料、怎麼對付尖峰。覺得適合，再談櫃位。\n\n掃 QR 或 LINE：abingo2025\n\n' + TAGS,
+     fb:'【三天見習 不收費不綁約】\n\n加盟前最該做的事，是先站上出餐台。\n到卯食逢甲訓練基地實際出餐三天：站位、尖峰出餐、日結與盤點、共用後廚動線，和現任經營者面對面。覺得適合，再談櫃位。\n\n預約：LINE abingo2025 ／ 電話 0989-470806'}
+  ];
+  $('ig-grid').innerHTML = POSTS.map(function(p){ return '<img src="img/' + p.id + '.jpg" alt="' + esc(p.title) + '">'; }).join('');
+  var HLS = [['hl-terms','條件'],['hl-budget','預算'],['hl-brands','品牌'],['hl-areas','區域'],['hl-street','街邊店'],['hl-trial','見習']];
+  $('hls').innerHTML = HLS.map(function(h){ return '<figure><span class="ring"><img src="img/' + h[0] + '.jpg" alt=""></span><figcaption>' + h[1] + '</figcaption></figure>'; }).join('');
+
+  var store = {};
+  function card(img, title, tag, caps){
+    var k = Object.keys(store).length;
+    var btns = caps.map(function(c, i){ store[k + '-' + i] = c[1]; return '<button type="button" class="copy" data-k="' + k + '-' + i + '">複製 ' + c[0] + ' 文案</button>'; }).join('');
+    return '<article class="post">' + (img ? '<img src="img/' + img + '.jpg" alt="' + esc(title) + '" loading="lazy">' : '') +
+      '<div class="body"><span class="tag">' + esc(tag) + '</span><h3>' + esc(title) + '</h3><p class="cap">' + esc(caps[0][1]) + '</p><div class="tools">' + btns + '</div></div></article>';
+  }
+  $('post-list').innerHTML = POSTS.map(function(p, i){ return card(p.id, p.title, (i < 9 ? '首發 ' + p.id.slice(-2) : ''), [['IG', p.ig], ['FB', p.fb]]); }).join('');
+
+  $('car-strip').innerHTML = [1,2,3,4,5].map(function(i){ return '<img src="img/carousel-0' + i + '.jpg" alt="輪播第 ' + i + ' 張" loading="lazy">'; }).join('');
+  var CAR_IG = '開店前，先算清楚要準備多少錢。往右滑 →\n\n第一筆：開辦預算 50 萬（未稅）\n第二筆：營業稅 2 萬（加盟金、進場服務費、物料費 40 萬 × 5%）\n第三筆：營運周轉金\n\n範例試算：月營業額 30／50／80 萬，建議準備 89.0／113.0／149.1 萬。僅估資金需求，不代表獲利。\n\n你的情境，到個人檔案連結自己算。\n\n' + TAGS;
+  var CAR_FB = '夥伴最常低估的不是開辦費，是開幕後的周轉金。\n\n上游帳期加上撥款的 10 天，會長期壓住約一個半月的營業額，資金最緊的一天在第二期款入帳前。\n\n建議準備資金＝開辦預算 50 萬（未稅）＋營業稅 2 萬＋營運周轉\n・月營業額 30 萬：周轉 37.0 萬，建議準備 89.0 萬\n・月營業額 50 萬：周轉 61.0 萬，建議準備 113.0 萬\n・月營業額 80 萬：周轉 97.1 萬，建議準備 149.1 萬\n\n範例假設：食材 35%、人事 25%、包材雜支 5%、電子支付 1.5%，食材貨款月結；物料費 20 萬可抵初期叫貨。僅估資金需求，不代表獲利。\n\n自己試算：' + SITE;
+  $('car-cap').innerHTML = card(null, '輪播文案', '輪播 5 張', [['IG', CAR_IG], ['FB', CAR_FB]]);
+  $('story-strip').innerHTML = ['story-trial'].concat(HLS.map(function(h){ return h[0]; })).map(function(id){ return '<img class="tall" src="img/' + id + '.jpg" alt="' + id + '" loading="lazy">'; }).join('');
+
+  var THREADS = [
+    '開餐飲店最常算錯的，不是加盟金。\n是開幕後第 100 天左右，第二期款入帳前的那一天。\n上游帳期加上撥款天數，會壓住一個半月的營業額。\n你開店前有算過周轉金嗎？',
+    '科學園區的員工餐廳，客人是排班表排出來的。\n早班、午休、夜班交班，時段幾乎不會變。\n難的不是找客人，是拿到入場資格。\n你覺得進園區最難的是哪一關？',
+    '我們把開辦預算全部攤開：\n保證金 10 萬（可退）、加盟金 10 萬、進場服務費 10 萬、物料費 20 萬（抵叫貨）。\n合計 50 萬，未稅。\n還想知道哪一筆的細節？',
+    '「卯」字左右兩半，像兩顆半個餃子對望，合起來才是一整顆。\n品富拿櫃位，卯食帶品牌，再加上把每一餐做好的你。\n每一樣都專一，加起來卯很多。',
+    '加盟前最該做的一件事：站上出餐台三天。\n逢甲訓練基地見習，不收費不綁約。\n看完尖峰，再決定要不要簽。\n你會想先見習還是先看數字？',
+    '六格便當，上排綠色是品富的「一」系列，下排橘色是卯食的「卯」系列。\n楊家一鍋滷、一杯紅、餃一局、卯食早午餐、卯起來吃飯、卯剛好。\n你最想經營哪一格？',
+    '撥款怎麼算？\n卯很多收到上游款項後 10 個日曆天內撥給夥伴，背對背。\n上游的抽成、管理費原數轉，轉嫁費用附對帳單。\n透明的帳，才有長期合作。',
+    '目前 7 區同步招募：\n竹科、銅鑼、中科、台中精密、南科嘉義、南科，加上醫院美食街。\n你住哪一區？留言告訴我們。',
+    '卯起來也招街邊店了。\n標準店、旗艦店兩種規格，早餐、午餐、下午茶三段營收，兩個品牌共用一個後廚。\n規格不同，費用另洽。',
+    '我們不寫「月賺多少」。\n因為每一案的上游條件不同，數字要當面攤開附表才算得準。\n能先告訴你的是：要準備多少錢、錢花在哪裡。'
+  ];
+  $('th-list').innerHTML = THREADS.map(function(t, i){ return card(null, 'Threads ' + (i + 1), Array.from(t).length + ' 字', [['Threads', t]]); }).join('');
+  $('threads-mock').innerHTML = THREADS.slice(0, 3).map(function(t){
+    return '<div class="th"><img src="img/avatar.png" alt=""><div><span class="who">maomany.partner</span><p>' + esc(t) + '</p></div></div>';
+  }).join('');
+
+  /* 4 週排程：day 為距 2026-10-19 的天數 */
+  var PF = {ig:'IG', fb:'FB', th:'Threads', line:'LINE'};
+  var PLAN = [
+    [0,['ig'],'貼文 ×3','首發 09 → 08 → 07（倒序發，網格才會從 01 排起）'],
+    [0,['fb'],'貼文','post-01 品牌宣言（FB 版文案）＋設定封面與按鈕'],
+    [0,['th'],'文字','Threads 4「卯」字拆解'],
+    [1,['ig'],'貼文 ×3','首發 06 → 05 → 04'],
+    [1,['th'],'文字','Threads 2 科學園區的客人'],
+    [2,['ig'],'貼文 ×3','首發 03 → 02 → 01，完成九宮格'],
+    [2,['fb'],'貼文','post-04 開辦預算'],
+    [2,['th'],'文字','Threads 3 開辦預算攤開'],
+    [3,['ig','fb'],'輪播','開店前先算錢（5 張）'],
+    [3,['th'],'文字','Threads 1 第 100 天'],
+    [4,['ig','fb'],'限時動態','見習梯次範本；設定 6 個精選動態'],
+    [4,['th'],'文字','Threads 5 站上出餐台三天'],
+    [4,['fb'],'貼文','post-09 三天見習'],
+    [7,['ig','fb'],'Reels','30 秒：逢甲基地尖峰出餐（廠外拍攝）'],
+    [7,['th'],'文字','Threads 8 七區招募，問住哪一區'],
+    [9,['fb'],'貼文','post-05 招商條件（長文版）'],
+    [9,['th'],'文字','Threads 7 撥款怎麼算'],
+    [10,['ig'],'貼文','post-06 招募區域重發為限時動態＋精選「區域」'],
+    [11,['ig','fb'],'限時動態','本週見習梯次'],
+    [11,['th'],'文字','Threads 6 你最想經營哪一格'],
+    [14,['ig','fb'],'Reels','六格便當開箱：一格一個品牌'],
+    [14,['th'],'文字','Threads 10 我們不寫月賺多少'],
+    [16,['fb'],'貼文','post-08 街邊店招募'],
+    [16,['th'],'文字','Threads 9 街邊店'],
+    [17,['ig'],'輪播','重發輪播第 4 張周轉金試算為單張貼文'],
+    [18,['ig','fb'],'限時動態','見習梯次＋問答貼紙「你最想知道哪一筆費用？」'],
+    [18,['th'],'文字','回覆本週留言最多的問題'],
+    [21,['ig','fb'],'Reels','開辦預算 50 萬口播：每一筆花在哪'],
+    [21,['th'],'文字','整理 Threads 1～10 留言最多的問題'],
+    [23,['fb'],'貼文','post-07 六格品牌家族＋一二線品牌'],
+    [24,['ig'],'貼文','見習夥伴心得（取得書面同意後）'],
+    [25,['ig','fb'],'限時動態','下月見習梯次'],
+    [27,['line'],'檢討','4 週數據：觸及、點擊、加 LINE、見習預約、洽談，決定下月廣告與主題']
+  ];
+  var start = new Date(2026, 9, 19);
+  var WD = '日一二三四五六';
+  var rows = [], lastWeek = -1;
+  PLAN.forEach(function(r){
+    var d = new Date(start); d.setDate(d.getDate() + r[0]);
+    var wk = Math.floor(r[0] / 7);
+    if (wk !== lastWeek){ rows.push('<tr class="wk"><td colspan="4">第 ' + (wk + 1) + ' 週' + ['：首發九宮格','：條件與區域','：品牌與街邊店','：互動與檢討'][wk] + '</td></tr>'); lastWeek = wk; }
+    rows.push('<tr><td>' + (d.getMonth() + 1) + '/' + d.getDate() + '（' + WD[d.getDay()] + '）</td><td>' +
+      r[1].map(function(p){ return '<span class="pf ' + p + '">' + PF[p] + '</span>'; }).join('') + '</td><td>' + esc(r[2]) + '</td><td>' + esc(r[3]) + '</td></tr>');
+  });
+  document.querySelector('#cal tbody').innerHTML = rows.join('');
+
+  var REPLIES = [
+    ['問「要多少錢」','開辦預算 50 萬（未稅）：保證金 10 萬可退、加盟金 10 萬、進場服務費 10 萬、物料費 20 萬抵叫貨；另需營運周轉金。完整試算在個人檔案連結，或 LINE：abingo2025。'],
+    ['問「賺多少」','每一案上游條件不同，我們不公開收益數字。當面洽談時會帶上游條件附表與完整試算給你。'],
+    ['問「是哪家公司的廠」','公開管道只說明區域與品類，業主名稱在當面洽談時提供。想了解哪一區？'],
+    ['問「街邊店」','卯起來街邊店分標準店、旗艦店等規格，費用另洽。方便留下想開的地區嗎？'],
+    ['問「有哪些品牌」','卯起來六格品牌家族，加上市場一、二線品牌，名單於洽談時提供。']
+  ];
+  $('replies').innerHTML = REPLIES.map(function(r){ return '<li><b>' + esc(r[0]) + '</b>：' + esc(r[1]) + '</li>'; }).join('');
+
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('.copy[data-k]'); if (!b) return;
+    var text = store[b.dataset.k], orig = b.textContent;
+    var done = function(){ b.textContent = '已複製'; setTimeout(function(){ b.textContent = orig; }, 1500); };
+    var fail = function(){
+      var cap = b.closest('.post').querySelector('.cap');
+      cap.textContent = text;
+      var r = document.createRange(); r.selectNodeContents(cap); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      b.textContent = '已選取，請按複製';
+    };
+    try { navigator.clipboard.writeText(text).then(done, fail); } catch (err) { fail(); }
+  });
+})();
+</script>
+<!--BODY-END-->
+</body>
+</html>

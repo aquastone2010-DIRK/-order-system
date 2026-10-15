@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>卯很多社群素材原始檔</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&family=Zilla+Slab:wght@600;700&display=swap">
+<style>
+/* 每個 .frame 是一張輸出圖，id 即檔名；render.mjs 依 data-w/data-h 截圖 */
+:root{
+  --paper:#F1E6D3; --paper-2:#E8D9C1; --ink:#24211C; --soft:#5E574B;
+  --leaf:#DCE8C4; --olive:#56663A; --peach:#FBDCC9; --ember:#D9703F; --orange:#F0A06F; --card:#FBF6EC;
+  --f:"Noto Sans TC",sans-serif; --n:"Zilla Slab",serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#999;font-family:var(--f);color:var(--ink)}
+.frame{position:relative;overflow:hidden;background:var(--paper);margin:0 0 40px;display:flex;flex-direction:column}
+.post{width:1080px;height:1350px;padding:72px 80px 64px;gap:36px}
+.story{width:1080px;height:1920px}
+.n{font-family:var(--n);font-variant-numeric:tabular-nums}
+h1,h2{margin:0;font-weight:900;line-height:1.2;letter-spacing:.01em}
+p{margin:0}
+.bar{display:flex;align-items:center;gap:18px;font-weight:700;font-size:30px}
+.bar svg{width:72px;height:68px}
+.bar .pg{margin-left:auto;font-family:var(--n);font-size:30px;color:var(--soft)}
+.foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;font-size:26px;color:var(--soft);border-top:4px solid var(--ink);padding-top:22px}
+.foot b{color:var(--ink)}
+.eyebrow{font-size:30px;font-weight:700;letter-spacing:.14em;color:var(--olive)}
+.h-xl{font-size:118px}
+.h-l{font-size:84px}
+.h-m{font-size:64px}
+em{font-style:normal;color:var(--ember)}
+.sub{font-size:36px;line-height:1.6;color:var(--soft)}
+.grid{display:grid;border:7px solid var(--ink);border-radius:44px;overflow:hidden}
+.grid>div{padding:36px;display:flex;flex-direction:column;gap:10px;border-right:5px solid var(--ink);border-bottom:5px solid var(--ink)}
+.lf{background:var(--leaf)} .pc{background:var(--peach)} .dk{background:var(--ink);color:var(--paper)} .cd{background:var(--card)}
+.k{font-family:var(--n);font-weight:700;font-size:96px;line-height:1}
+.k small{font-size:.42em;margin-left:6px}
+.t{font-size:44px;font-weight:900}
+.d{font-size:30px;line-height:1.5;color:var(--soft)}
+.dk .d{color:var(--paper);opacity:.85}
+.note{font-size:24px;line-height:1.5;color:var(--soft)}
+.steam path{fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="bento" viewBox="0 0 120 112">
+      <g class="steam"><path d="M40 30c-6-6 6-10 0-18"/><path d="M60 28c-6-7 6-11 0-20"/><path d="M80 30c-6-6 6-10 0-18"/></g>
+      <rect x="8" y="38" width="104" height="68" rx="16" fill="#F1E6D3"/>
+      <path d="M10.5 54a13.5 13.5 0 0 1 13.5-13.5h72a13.5 13.5 0 0 1 13.5 13.5V72H10.5z" fill="#DCE8C4"/>
+      <path d="M10.5 72h99v18a13.5 13.5 0 0 1-13.5 13.5H24A13.5 13.5 0 0 1 10.5 90z" fill="#F0A06F"/>
+      <rect x="8" y="38" width="104" height="68" rx="16" fill="none" stroke="currentColor" stroke-width="5"/>
+      <path d="M8 72h104M43 38v68M77 38v68" stroke="currentColor" stroke-width="4.5"/>
+      <path d="M52 56h16" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+      <text x="60" y="96" text-anchor="middle" font-family="Noto Sans TC, sans-serif" font-weight="900" font-size="20" fill="currentColor">卯</text>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============ 大頭貼 1080×1080 ============ -->
+<section class="frame" id="avatar" data-w="1080" data-h="1080" data-type="png" style="width:1080px;height:1080px;background:var(--leaf);align-items:center;justify-content:center;gap:0">
+  <svg viewBox="0 0 120 112" style="width:640px;height:600px;color:var(--ink);margin-top:-40px"><use href="#bento"/></svg>
+  <div style="font-weight:900;font-size:120px;line-height:1;margin-top:-10px">卯很多</div>
+</section>
+
+<!-- ============ FB 封面 1640×624（手機會裁左右，重點放中間 1000px） ============ -->
+<section class="frame" id="fb-cover" data-w="1640" data-h="624" style="width:1640px;height:624px;flex-direction:row;align-items:center;justify-content:center;padding:0 240px;gap:56px;background:var(--paper)">
+  <div style="position:absolute;inset:0 0 0 auto;width:190px;background:var(--leaf);border-left:7px solid var(--ink)"></div>
+  <div style="position:absolute;inset:0 auto 0 0;width:190px;background:var(--peach);border-right:7px solid var(--ink)"></div>
+  <svg viewBox="0 0 120 112" style="position:relative;width:280px;height:262px;color:var(--ink);flex:0 0 auto"><use href="#bento"/></svg>
+  <div style="position:relative;display:flex;flex-direction:column;gap:22px">
+    <div class="eyebrow" style="font-size:26px">封閉市場品牌平台・經營夥伴招募</div>
+    <h1 style="font-size:78px">科技廠的櫃位，<br>一個窗口<em>卯</em>到。</h1>
+    <div style="font-size:28px;font-weight:700">7 大招募區域・開辦預算 50 萬（未稅）・三天見習</div>
+  </div>
+</section>
+
+<!-- ============ 首發九宮格 1080×1350 ============ -->
+<section class="frame post" id="post-01" data-w="1080" data-h="1350">
+  <div class="bar"><svg viewBox="0 0 120 112"><use href="#bento"/></svg>卯很多 招商<span class="pg">01 / 09</span></div>
+  <svg viewBox="0 0 120 112" style="width:460px;height:430px;align-self:flex-end;margin:-10px 0 -40px"><use href="#bento"/></svg>
+  <div class="eyebrow">封閉市場品牌平台・經營夥伴招募</div>
+  <h1 class="h-xl">科技廠的櫃位，<br>一個窗口<em>卯</em>到。</h1>
+  <p class="sub">品富餐飲主導，卯食團隊合夥。<br>你專心把每一餐做好。</p>
+  <div class="foot"><span><b>卯很多 MAO MANY</b></span><span>每一樣都專一，加起來卯很多。</span></div>
+</section>
+
+<section class="frame post" id="post-02" data-w="1080" data-h="1350">
+  <div class="bar"><svg viewBox="0 0 120 112"><use href="#bento"/></svg>卯很多 招商<span class="pg">02 / 09</span></div>
+  <h2 class="h-l">封閉市場不缺客人，<br>缺的是<em>進得去</em>的人</h2>
+  <div class="grid" style="grid-template-columns:1fr 1fr;flex:1">
+    <div class="lf"><span class="t">人流可預測</span><span class="d">用餐時段排在班表上，備料與排班可以精準推估</span></div>
+    <div class="lf" style="border-right:0"><span class="t">進場門檻高</span><span class="d">食安、證照、稽核把關，競爭者少</span></div>
+    <div class="pc" style="border-bottom:0"><span class="t">以年為約</span><span class="d">合作關係會延續，菜單可逐檔優化</span></div>
+    <div class="pc" style="border:0"><span class="t">量能穩定</span><span class="d">現金流相對可預估，不必每天找客人</span></div>
+  </div>
+  <div class="foot"><span><b>卯很多</b> 幫你拿到入場資格</span><span>入廠手續代辦</span></div>
+</section>
+
+<section class="frame post" id="post-03" data-w="1080" data-h="1350">
+  <div class="bar"><svg viewBox="0 0 120 112"><use href="#bento"/></svg>卯很多 招商<span class="pg">03 / 09</span></div>
+  <h2 class="h-l">品富主導，<br>卯食合夥，<em>你經營</em></h2>
+  <div class="grid" style="grid-template-columns:1fr;flex:1">
+    <div class="lf"><span class="eyebrow" style="font-size:26px">主導・品富餐飲</span><span class="t">拿到櫃位，管好合約</span><span class="d">對接業主與承包商、代辦入廠、對帳撥款、SGS 月稽核</span></div>
+    <div class="pc"><span class="eyebrow" style="font-size:26px;color:var(--ember)">合夥・卯食團隊</span><span class="t">給你品牌，帶你開店</span><span class="d">品牌授權、菜單研發、開辦輔導、365 天陪跑</span></div>
+    <div class="cd" style="border-bottom:0"><span class="eyebrow" style="font-size:26px;color:var(--soft)">經營・你</span><span class="t">做好每一餐</span><span class="d">現場人力與出餐，承擔營運盈虧</span></div>
+  </div>
+  <div class="foot"><span>上游條件<b>原數轉給你</b></span><span>卯很多只加收平台服務費</span></div>
+</section>
+
+<section class="frame post" id="post-04" data-w="1080" data-h="1350">
+  <div class="bar"><svg viewBox="0 0 120 112"><use href="#bento"/></svg>卯很多 招商<span class="pg">04 / 09</span></div>
+  <div><div class="eyebrow">夥伴基本開辦預算</div><h2 class="h-l" style="margin-top:8px"><span class="n" style="font-size:150px;color:var(--ember)">50</span> 萬<span style="font-size:44px;color:var(--soft)">（未稅）</span></h2></div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;flex:1">
+    <div class="lf"><span class="d">可退</span><span class="t">保證金</span><span class="k">10<small>萬</small></span><span class="d">合約結束後 90 天內退還</span></div>
+    <div class="pc" style="border-right:0"><span class="d">不可退</span><span class="t">加盟金</span><span class="k">10<small>萬</small></span><span class="d">品牌授權與加盟資格</span></div>
+    <div class="pc" style="border-bottom:0"><span class="d">不可退</span><span class="t">進場服務費</span><span class="k">10<small>萬</small></span><span class="d">媒合、入廠代辦、開辦輔導</span></div>
+    <div class="lf" style="border:0"><span class="d">扣抵叫貨</span><span class="t">物料費</span><span class="k">20<small>萬</small></span><span class="d">預付，叫貨時扣抵貨款</span></div>
+  </div>
+  <p class="note">加盟金、進場服務費、物料費另加 5% 營業稅共 2 萬，含稅應付 52 萬；保證金不計稅。另需營運周轉金。</p>
+  <div class="foot"><span><b>先講清楚，再談簽約</b></span><span>以正式合約為準</span></div>
+</section>
+
+<section class="frame post" id="post-05" data-w="1080" data-h="1350">
+  <div class="bar"><svg viewBox="0 0 120 112"><use href="#bento"/></svg>卯很多 招商<span class="pg">05 / 09</span></div>
+  <h2 class="h-l">條件透明，<br>每案只換<em>一張附表</em></h2>
+  <div class="grid" style="grid-template-columns:1fr 1fr;flex:1">
+    <div class="lf"><span class="k">+3%</span><span class="t">自有品牌</span><span class="d">上游抽成 + 3% 平台服務費</span></div>
+    <div class="lf" style="border-right:0"><span class="k">+6%</span><span class="t">卯很多品牌</span><span class="d">上游抽成 + 6%，POS 分開列帳</span></div>
+    <div class="pc" style="border-bottom:0"><span class="k">10<small>天</small></span><span class="t">背對背撥款</span><span class="d">卯很多收到上游款項後 10 個日曆天內撥付</span></div>
+    <div class="pc" style="border:0"><span class="k" style="font-size:72px">12,000</span><span class="t">月保底</span><span class="d">+6% 方案 21,000 元；第 3 個月起算，策略案可豁免</span></div>
+  </div>
+  <div class="foot"><span>轉嫁費用<b>原價</b>，附對帳單影本</span><span>以正式合約為準</span></div>
+</section>
+
+<section class="frame post" id="post-06" data-w="1080" data-h="1350">
+  <div class="bar"><svg viewBox="0 0 120 112"><use href="#bento"/></svg>卯很多 招商<span class="pg">06 / 09</span></div>
+  <h2 class="h-l">目前招募區域<br><span style="font-size:52px;color:var(--soft)">由北到南</span></h2>
+  <div style="position:relative;flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:6px 0 6px 20px">
+    <div style="position:absolute;left:46px;top:30px;bottom:110px;width:12px;background:var(--olive);border-radius:6px"></div>
+    <div class="stop"></div>
+  </div>
+  <div class="foot"><span>業主名稱與條件<b>當面洽談時提供</b></span><span>7 區同步招募</span></div>
+</section>
+
+<section class="frame post" id="post-07" data-w="1080" data-h="1350">
+  <div class="bar"><svg viewBox="0 0 120 112"><use href="#bento"/></svg>卯很多 招商<span class="pg">07 / 09</span></div>
+  <h2 class="h-l">六格便當，<br>就是<em>六個品牌</em></h2>
+  <div class="grid" style="grid-template-columns:repeat(3,1fr);flex:1">
+    <div class="lf"><span class="d" style="font-size:24px">一系列</span><span class="t">楊家<br>一鍋滷</span></div>
+    <div class="lf"><span class="d" style="font-size:24px">一系列</span><span class="t">一杯紅</span></div>
+    <div class="lf" style="border-right:0"><span class="d" style="font-size:24px">一系列</span><span class="t">餃一局</span></div>
+    <div class="pc" style="border-bottom:0"><span class="d" style="font-size:24px">卯系列</span><span class="t"><em>卯</em>食<br>早午餐</span></div>
+    <div class="pc" style="border-bottom:0"><span class="d" style="font-size:24px">卯系列</span><span class="t"><em>卯</em>起來<br>吃飯</span></div>
+    <div class="pc" style="border:0"><span class="d" style="font-size:24px">卯系列</span><span class="t"><em>卯</em>剛好</span></div>
+  </div>
+  <div style="border:7px solid var(--ink);border-radius:999px;padding:22px 40px;font-size:44px;font-weight:900;text-align:center;background:var(--card)">＋ 市場一、二線品牌</div>
+  <div class="foot"><span><b>卯起來六格品牌家族</b></span><span>品牌名單洽談時提供</span></div>
+</section>
+
+<section class="frame post" id="post-08" data-w="1080" data-h="1350">
+  <div class="bar"><svg viewBox="0 0 120 112"><use href="#bento"/></svg>卯很多 招商<span class="pg">08 / 09</span></div>
+  <div><div class="eyebrow">卯起來六格品牌家族</div><h2 class="h-xl" style="margin-top:8px">招募<em>街邊店</em></h2></div>
+  <div class="grid" style="grid-template-columns:1fr 1fr">
+    <div class="lf" style="border-bottom:0"><span class="t">標準店</span><span class="d">一般商圈店面</span></div>
+    <div class="pc" style="border:0"><span class="t">旗艦店</span><span class="d">大坪數、品牌展示</span></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:34px;font-size:48px;font-weight:700;flex:1;justify-content:center">
+    <div>● 早餐、午餐、下午茶三段營收</div>
+    <div>● 兩個品牌共用一個後廚</div>
+    <div>● 少品項，一人可營運</div>
+    <div>● 開幕後 365 天陪跑</div>
+  </div>
+  <div class="foot"><span>規格不同，<b>費用另洽</b></span><span>LINE：abingo2025</span></div>
+</section>
+
+<section class="frame post" id="post-09" data-w="1080" data-h="1350" style="background:var(--ink);color:var(--paper)">
+  <div class="bar" style="color:var(--paper)"><svg viewBox="0 0 120 112" style="color:var(--paper)"><use href="#bento"/></svg>卯很多 招商<span class="pg" style="color:var(--paper);opacity:.7">09 / 09</span></div>
+  <div class="eyebrow" style="color:var(--orange)">先吃再加入</div>
+  <h1 class="h-xl" style="color:var(--paper)"><em style="color:var(--orange)">三天見習</em><br>不收費<br>不綁約</h1>
+  <p class="sub" style="color:var(--paper);opacity:.85">到卯食逢甲訓練基地實際出餐三天，<br>覺得適合，再談櫃位。</p>
+  <div style="display:flex;gap:40px;align-items:center;margin-top:auto">
+    <img src="qr-line.png" alt="" style="width:260px;height:260px;border-radius:24px;background:#fff;padding:12px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <span style="font-size:30px;opacity:.8">LINE 洽談</span>
+      <span class="n" style="font-size:64px;font-weight:700">abingo2025</span>
+      <span class="n" style="font-size:40px;opacity:.85">0989-470806</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 輪播：開店前先算錢 1080×1350 ============ -->
+<section class="frame post" id="carousel-01" data-w="1080" data-h="1350" style="background:var(--peach)">
+  <div class="bar"><svg viewBox="0 0 120 112"><use href="#bento"/></svg>卯很多 招商<span class="pg">1 / 5</span></div>
+  <h1 style="font-size:128px;margin-top:80px">開店前，<br>先算清楚<br><em>要準備多少錢</em></h1>
+  <p class="sub">夥伴最常低估的不是開辦費，<br>是開幕後的周轉金。往右滑 →</p>
+  <div class="foot"><span><b>三筆錢</b>：開辦預算・營業稅・周轉金</span><span>範例試算</span></div>
+</section>
+
+<section class="frame post" id="carousel-02" data-w="1080" data-h="1350">
+  <div class="bar"><svg viewBox="0 0 120 112"><use href="#bento"/></svg>卯很多 招商<span class="pg">2 / 5</span></div>
+  <div><div class="eyebrow">第一筆</div><h2 class="h-l" style="margin-top:8px">開辦預算 <span class="n" style="color:var(--ember)">50</span> 萬（未稅）</h2></div>
+  <div class="grid" style="grid-template-columns:1fr;flex:1">
+    <div class="lf" style="flex-direction:row;align-items:center;justify-content:space-between"><span class="t">保證金</span><span class="d">合約結束後 90 天內退還</span><span class="k" style="font-size:72px">10<small>萬</small></span></div>
+    <div class="pc" style="flex-direction:row;align-items:center;justify-content:space-between"><span class="t">加盟金</span><span class="d">不可退</span><span class="k" style="font-size:72px">10<small>萬</small></span></div>
+    <div class="pc" style="flex-direction:row;align-items:center;justify-content:space-between"><span class="t">進場服務費</span><span class="d">不可退</span><span class="k" style="font-size:72px">10<small>萬</small></span></div>
+    <div class="lf" style="flex-direction:row;align-items:center;justify-content:space-between;border-bottom:0"><span class="t">物料費</span><span class="d">扣抵叫貨</span><span class="k" style="font-size:72px">20<small>萬</small></span></div>
+  </div>
+  <div class="foot"><span><b>30 萬</b>可退或可抵用</span><span>以正式合約為準</span></div>
+</section>
+
+<section class="frame post" id="carousel-03" data-w="1080" data-h="1350">
+  <div class="bar"><svg viewBox="0 0 120 112"><use href="#bento"/></svg>卯很多 招商<span class="pg">3 / 5</span></div>
+  <div><div class="eyebrow">第二筆</div><h2 class="h-l" style="margin-top:8px">營業稅 <span class="n" style="color:var(--ember)">2</span> 萬</h2></div>
+  <div class="grid" style="grid-template-columns:1fr;flex:1">
+    <div class="cd" style="justify-content:center;gap:26px;border-bottom:0">
+      <div style="font-size:46px;font-weight:700;line-height:1.6">加盟金 10 萬<br>＋ 進場服務費 10 萬<br>＋ 物料費 20 萬</div>
+      <div style="font-size:46px;font-weight:700;border-top:5px solid var(--ink);padding-top:22px">＝ <span class="n">40</span> 萬 × 5% ＝ <span class="n" style="color:var(--ember)">2</span> 萬</div>
+      <div class="d">保證金是可退還款項，不加計營業稅。</div>
+    </div>
+  </div>
+  <div class="foot"><span>含稅應付 <b class="n">52</b> 萬</span><span>以正式合約為準</span></div>
+</section>
+
+<section class="frame post" id="carousel-04" data-w="1080" data-h="1350">
+  <div class="bar"><svg viewBox="0 0 120 112"><use href="#bento"/></svg>卯很多 招商<span class="pg">4 / 5</span></div>
+  <div><div class="eyebrow">第三筆</div><h2 class="h-l" style="margin-top:8px">營運周轉金</h2></div>
+  <p class="sub" style="font-size:32px">上游帳期加上撥款的 10 天，會壓住約一個半月的營業額。資金最緊的一天在第二期款入帳前。</p>
+  <div class="grid" style="grid-template-columns:1fr 1fr 1fr;flex:1">
+    <div class="cd" style="border-bottom:0"><span class="d">月營業額</span><span class="k" style="font-size:80px">30<small>萬</small></span><span class="d">周轉 37.0 萬</span><span class="t" style="margin-top:auto">建議準備</span><span class="k" style="font-size:76px;color:var(--ember)">89.0<small>萬</small></span></div>
+    <div class="lf" style="border-bottom:0"><span class="d">月營業額</span><span class="k" style="font-size:80px">50<small>萬</small></span><span class="d">周轉 61.0 萬</span><span class="t" style="margin-top:auto">建議準備</span><span class="k" style="font-size:76px;color:var(--ember)">113.0<small>萬</small></span></div>
+    <div class="pc" style="border:0"><span class="d">月營業額</span><span class="k" style="font-size:80px">80<small>萬</small></span><span class="d">周轉 97.1 萬</span><span class="t" style="margin-top:auto">建議準備</span><span class="k" style="font-size:76px;color:var(--ember)">149.1<small>萬</small></span></div>
+  </div>
+  <p class="note">建議準備＝開辦預算 50 萬＋營業稅 2 萬＋周轉。範例案假設食材 35%、人事 25%、包材雜支 5%、電子支付 1.5%，食材月結；物料費可抵初期叫貨。僅估資金需求，不代表獲利。</p>
+</section>
+
+<section class="frame post" id="carousel-05" data-w="1080" data-h="1350" style="background:var(--leaf)">
+  <div class="bar"><svg viewBox="0 0 120 112"><use href="#bento"/></svg>卯很多 招商<span class="pg">5 / 5</span></div>
+  <h1 style="font-size:110px;margin-top:40px">你的情境，<br>上網站<em>自己算</em></h1>
+  <p class="sub" style="color:var(--ink)">拉動月營業額，看建議準備資金。<br>官網連結在個人檔案。</p>
+  <div style="display:flex;gap:40px;align-items:center;margin-top:auto;background:var(--card);border:7px solid var(--ink);border-radius:44px;padding:36px">
+    <img src="qr-line.png" alt="" style="width:220px;height:220px">
+    <div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:30px;color:var(--soft)">想直接聊？LINE</span><span class="n" style="font-size:60px;font-weight:700">abingo2025</span></div>
+  </div>
+</section>
+
+<!-- ============ 限時動態範本 1080×1920 ============ -->
+<section class="frame story" id="story-trial" data-w="1080" data-h="1920" style="padding:180px 90px 220px;gap:40px;background:var(--peach)">
+  <div class="bar"><svg viewBox="0 0 120 112"><use href="#bento"/></svg>卯很多 招商</div>
+  <div class="eyebrow" style="font-size:36px;margin-top:40px">先吃再加入</div>
+  <h1 style="font-size:150px">本週<br>見習梯次</h1>
+  <div class="grid" style="grid-template-columns:1fr">
+    <div class="cd"><span class="d">日期</span><span class="t" style="font-size:64px">＿＿／＿＿（＿）</span></div>
+    <div class="cd"><span class="d">地點</span><span class="t" style="font-size:64px">卯食逢甲訓練基地</span></div>
+    <div class="lf" style="border-bottom:0"><span class="d">名額</span><span class="t" style="font-size:64px">＿＿ 位</span></div>
+  </div>
+  <div style="margin-top:auto;font-size:48px;font-weight:900;text-align:center;border:7px solid var(--ink);border-radius:999px;padding:30px;background:var(--card)">私訊或 LINE：abingo2025</div>
+</section>
+
+<!-- ============ 精選動態封面 1080×1920（IG 只顯示中間圓形） ============ -->
+<section class="frame story hl" id="hl-terms" data-w="1080" data-h="1920" data-hl="條件|lf"></section>
+<section class="frame story hl" id="hl-budget" data-w="1080" data-h="1920" data-hl="預算|pc"></section>
+<section class="frame story hl" id="hl-brands" data-w="1080" data-h="1920" data-hl="品牌|lf"></section>
+<section class="frame story hl" id="hl-areas" data-w="1080" data-h="1920" data-hl="區域|pc"></section>
+<section class="frame story hl" id="hl-street" data-w="1080" data-h="1920" data-hl="街邊店|lf"></section>
+<section class="frame story hl" id="hl-trial" data-w="1080" data-h="1920" data-hl="見習|dk"></section>
+
+<script>
+/* 招募區域路線（post-06） */
+var AREAS = [['新竹科學園區','新竹'],['新竹科學園區銅鑼園區','苗栗銅鑼'],['台中科學園區','台中'],['台中精密園區','台中'],['南部科學園區嘉義園區','嘉義'],['南部科學園區','台南・高雄'],['醫院體系美食街','全區']];
+document.querySelector('#post-06 .stop').outerHTML = AREAS.map(function(a, i){
+  var last = i === AREAS.length - 1;
+  return '<div style="position:relative;display:flex;align-items:center;gap:34px">' +
+    '<i style="width:64px;height:64px;border-radius:50%;border:11px solid #24211C;background:' + (last ? '#D9703F' : '#F1E6D3') + ';flex:0 0 auto"></i>' +
+    '<span style="font-size:48px;font-weight:900">' + a[0] + '</span>' +
+    '<span style="margin-left:auto;font-size:32px;color:#5E574B">' + a[1] + '</span></div>';
+}).join('');
+/* 精選動態封面 */
+document.querySelectorAll('.hl').forEach(function(f){
+  var p = f.dataset.hl.split('|'), label = p[0], tone = p[1];
+  f.style.alignItems = 'center'; f.style.justifyContent = 'center';
+  f.innerHTML = '<div class="' + tone + '" style="width:760px;height:760px;border-radius:50%;border:14px solid #24211C;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px">' +
+    '<svg viewBox="0 0 120 112" style="width:260px;height:243px;color:' + (tone === 'dk' ? '#F1E6D3' : '#24211C') + '"><use href="#bento"/></svg>' +
+    '<span style="font-size:' + (label.length > 2 ? 120 : 150) + 'px;font-weight:900;line-height:1">' + label + '</span></div>';
+});
+</script>
+</body>
+</html>

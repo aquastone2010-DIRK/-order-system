@@ -269,12 +269,12 @@ a.copy{text-decoration:none;display:inline-block}
 .stop span{font-size:.8rem;color:var(--ink-soft)}
 .stop.hosp i{background:var(--ember)}
 @media (max-width:860px){.line-map{grid-template-columns:1fr;gap:0;padding-left:6px}.line-map::before{left:17px;right:auto;top:14px;bottom:60px;width:6px;height:auto}.stop{grid-template-columns:28px 1fr;justify-items:start;text-align:left;column-gap:14px;padding-block:8px}.stop i{grid-row:span 2}.stop b,.stop span{grid-column:2}}
-.street{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:4px solid var(--ink);border-radius:28px;overflow:hidden}
-.street article{padding:20px;display:grid;gap:8px;align-content:start;background:var(--peach);border-right:3px solid var(--ink)}
-.street article:last-child{border-right:0}
-.street article:nth-child(odd){background:var(--leaf)}
-@media (max-width:860px){.street{grid-template-columns:1fr 1fr}.street article{border-bottom:3px solid var(--ink)}.street article:nth-child(2n){border-right:0}.street article:nth-child(n+3){border-bottom:0}}
-@media (max-width:440px){.street{grid-template-columns:1fr}.street article{border-right:0!important;border-bottom:3px solid var(--ink)!important}.street article:last-child{border-bottom:0!important}}
+.street{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:4px solid var(--ink);border-radius:28px;overflow:hidden}
+.street article{padding:20px;display:grid;gap:8px;align-content:start;background:var(--peach);border-right:3px solid var(--ink);border-bottom:3px solid var(--ink);min-width:0}
+.street article:nth-child(-n+3){background:var(--leaf)}
+.street article:nth-child(3n){border-right:0}
+.street article:nth-child(n+4){border-bottom:0}
+@media (max-width:760px){.street{grid-template-columns:1fr 1fr}.street article{border-right:3px solid var(--ink)!important;border-bottom:3px solid var(--ink)!important}.street article:nth-child(2n){border-right:0!important}.street article:nth-child(n+5){border-bottom:0!important}}
 .fab{position:fixed;z-index:20;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;background:#06C755;color:#fff;font:700 .95rem var(--f-body);text-decoration:none;border:3px solid var(--ink);box-shadow:0 6px 0 var(--ink)}
 .fab:hover{transform:translateY(2px);box-shadow:0 4px 0 var(--ink)}
 footer{margin-top:80px;border-top:var(--line) solid var(--ink);padding-block:28px 40px;font-size:.84rem;color:var(--ink-soft)}
@@ -431,15 +431,16 @@ footer b{color:var(--ink)}
       <div class="row"><dt>轉嫁費用</dt><dd>管理費、POS、電子支付手續費、濾芯、維修、設備檢查、橫招：原價轉嫁，附對帳單影本</dd></div>
       <div class="row"><dt>保證金</dt><dd><span class="num">100,000</span> 元，合約結束後 <span class="num">90</span> 天內退還</dd></div>
       <div class="row"><dt>上游押金（個案）</dt><dd>個別案件的上游押金高於保證金時，差額另列於該案「上游條件附表」，由夥伴原數轉付，卯很多不另外加收；退還依上游規定辦理</dd></div>
-      <div class="row"><dt>加盟金</dt><dd><span class="num">100,000</span> 元，不可退</dd></div>
-      <div class="row"><dt>進場服務費</dt><dd><span class="num">100,000</span> 元（未稅，另加 5% 營業稅 <span class="num">5,000</span> 元），不可退；包含媒合、入廠資格代辦、開辦輔導</dd></div>
-      <div class="row"><dt>物料費</dt><dd><span class="num">200,000</span> 元，預付後扣抵叫貨貨款</dd></div>
+      <div class="row"><dt>加盟金</dt><dd><span class="num">100,000</span> 元（未稅），不可退</dd></div>
+      <div class="row"><dt>進場服務費</dt><dd><span class="num">100,000</span> 元（未稅），不可退；包含媒合、入廠資格代辦、開辦輔導</dd></div>
+      <div class="row"><dt>物料費</dt><dd><span class="num">200,000</span> 元（未稅），預付後扣抵叫貨貨款</dd></div>
+      <div class="row"><dt>費用稅別</dt><dd>加盟金、進場服務費、物料費皆為未稅金額，另加 <span class="num">5%</span> 營業稅（合計 <span class="num">20,000</span> 元）；保證金為可退還款項，不加計營業稅</dd></div>
       <div class="row"><dt>撥款</dt><dd>卯很多實際收到上游款項後 <span class="num">10</span> 個日曆天內撥付；上游未付款時，卯很多不負墊付責任</dd></div>
       <div class="row"><dt>營業稅</dt><dd>每一層依撥款淨額開立發票；以收據請款者，從撥款中扣 <span class="num">5%</span></dd></div>
       <div class="row"><dt>罰則</dt><dd>上游開出的罰款、SGS 不合格費用、撤櫃復原費，全額由經營夥伴負擔</dd></div>
       <div class="row"><dt>夥伴資格</dt><dd>可開立統一發票的營業人、完成食品業者登錄、員工有勞保或團保</dd></div>
     </dl>
-    <p class="note">加盟案件簽約前會提供加盟資訊揭露書，加盟金、進場服務費、保證金與物料費一併載明。條件以正式合約為準。</p>
+    <p class="note">加盟案件簽約前會提供加盟資訊揭露書，加盟金、進場服務費、保證金與物料費及其稅別一併載明。條件以正式合約為準。</p>
   </section>
 
   <section class="block" id="budget">
@@ -450,11 +451,11 @@ footer b{color:var(--ink)}
     </div>
     <div class="budget">
       <div class="refund"><span class="small muted">可退</span><b>保證金</b><span class="num">10<small>萬</small></span><span class="small">合約結束後 90 天內退還</span></div>
-      <div class="keep"><span class="small muted">不可退</span><b>加盟金</b><span class="num">10<small>萬</small></span><span class="small">品牌授權與加盟資格</span></div>
-      <div class="keep"><span class="small muted">不可退</span><b>進場服務費</b><span class="num">10<small>萬</small></span><span class="small">未稅，另加營業稅 5,000 元；媒合、入廠代辦、開辦輔導</span></div>
-      <div class="refund"><span class="small muted">扣抵叫貨</span><b>物料費</b><span class="num">20<small>萬</small></span><span class="small">預付，叫貨時扣抵貨款</span></div>
+      <div class="keep"><span class="small muted">不可退</span><b>加盟金</b><span class="num">10<small>萬</small></span><span class="small">未稅；品牌授權與加盟資格</span></div>
+      <div class="keep"><span class="small muted">不可退</span><b>進場服務費</b><span class="num">10<small>萬</small></span><span class="small">未稅；媒合、入廠代辦、開辦輔導</span></div>
+      <div class="refund"><span class="small muted">扣抵叫貨</span><b>物料費</b><span class="num">20<small>萬</small></span><span class="small">未稅；預付，叫貨時扣抵貨款</span></div>
     </div>
-    <div class="budget-sum"><span class="num">50 萬</span><span class="muted">開辦預算合計（進場服務費未稅），其中 30 萬可退或可抵用。進場服務費的營業稅 5,000 元另計。個別案件上游押金高於 10 萬時，差額列於該案附表。另需準備營運周轉金，見下方試算。</span></div>
+    <div class="budget-sum"><span class="num">50 萬</span><span class="muted">開辦預算合計（未稅）。加盟金、進場服務費、物料費另加 5% 營業稅共 2 萬，含稅應付 52 萬；其中保證金 10 萬可退、物料費 20 萬可抵叫貨。個別案件上游押金高於 10 萬時，差額列於該案附表。另需準備營運周轉金，見下方試算。</span></div>
   </section>
 
   <section class="block" id="calc">
@@ -517,7 +518,7 @@ footer b{color:var(--ink)}
           </div>
           <div class="field">
             <label>基本開辦預算（固定）</label>
-            <span class="small muted">保證金 10 萬＋加盟金 10 萬＋進場服務費 10 萬（未稅）＋物料費 20 萬＝<b class="num">50</b> 萬；試算另加進場服務費營業稅 0.5 萬</span>
+            <span class="small muted">保證金 10 萬＋加盟金 10 萬＋進場服務費 10 萬＋物料費 20 萬＝<b class="num">50</b> 萬（未稅）；試算另加營業稅 2 萬（保證金不計稅）</span>
           </div>
           <label class="check"><input type="checkbox" id="g-cash"> 食材現金進貨（沒有月結）</label>
           <table class="anchors" aria-label="範例案試算錨點">
@@ -527,7 +528,7 @@ footer b{color:var(--ink)}
         </div>
         <div class="out" aria-live="polite">
           <div>
-            <p class="small muted">建議準備資金（開辦預算 50 萬＋營業稅 0.5 萬＋營運周轉）</p>
+            <p class="small muted">建議準備資金（開辦預算 50 萬＋營業稅 2 萬＋營運周轉）</p>
             <p class="big" id="g-total"></p>
           </div>
           <div class="stack" id="g-stack" aria-hidden="true"></div>
@@ -569,11 +570,10 @@ footer b{color:var(--ink)}
         <span class="pill warn" style="justify-self:start">合作品牌</span>
         <h3>其他可加盟品牌：市場一、二線品牌</h3>
         <ul class="small">
-          <li><b>四海遊龍</b>：鍋貼水餃</li>
-          <li><b>餃逐天下</b>：現包水餃、鮮肉湯麵</li>
-          <li><b>米諾瓦咖啡</b>：精品咖啡</li>
-          <li><b>紅屋</b>：咖啡輕食、烘焙</li>
-          <li>以上等品牌，依場域客群與品類缺口媒合，避免和既有櫃位撞品項；授權條件於當面洽談時提供</li>
+          <li>市場上已有知名度的一、二線連鎖餐飲品牌</li>
+          <li>品類涵蓋水餃鍋貼、麵食、咖啡輕食、烘焙等</li>
+          <li>依場域客群與品類缺口媒合，避免和既有櫃位撞品項</li>
+          <li>品牌名單與授權條件於當面洽談時提供</li>
         </ul>
       </article>
     </div>
@@ -619,7 +619,7 @@ footer b{color:var(--ink)}
       <div class="stop" role="listitem"><i></i><b>新竹科學園區銅鑼園區</b><span>苗栗銅鑼</span></div>
       <div class="stop" role="listitem"><i></i><b>台中科學園區</b><span>台中</span></div>
       <div class="stop" role="listitem"><i></i><b>台中精密園區</b><span>台中</span></div>
-      <div class="stop" role="listitem"><i></i><b>嘉義科學園區</b><span>嘉義</span></div>
+      <div class="stop" role="listitem"><i></i><b>南部科學園區嘉義園區</b><span>嘉義</span></div>
       <div class="stop" role="listitem"><i></i><b>南部科學園區</b><span>台南・高雄</span></div>
       <div class="stop hosp" role="listitem"><i></i><b>醫院體系美食街</b><span>全區</span></div>
     </div>
@@ -632,7 +632,7 @@ footer b{color:var(--ink)}
           <dt>開幕</dt><dd>2026 年 12 月，合約一年</dd>
           <dt>類型</dt><dd>策略案（免月保底）</dd>
           <dt>品項</dt><dd>品牌商麵食＋卯很多特餐</dd>
-          <dt>資金</dt><dd>約 87.5～147.6 萬（開辦預算＋營業稅＋周轉，依營業額情境）</dd>
+          <dt>資金</dt><dd>約 89.0～149.1 萬（開辦預算＋營業稅＋周轉，依營業額情境）</dd>
         </dl>
       </article>
       <article>
@@ -676,9 +676,11 @@ footer b{color:var(--ink)}
       <article><h3>三時段營收</h3><p class="small">早餐刈包配茶、午餐麵線刈包滷味套餐、下午茶特色茶飲，同一間店有三段現金流。</p></article>
       <article><h3>共用後廚</h3><p class="small">熱加工、冷藏分裝、飲品製備、洗滌、出餐集貨五區整合，兩個品牌用一個後台。</p></article>
       <article><h3>少 SKU，一人可營運</h3><p class="small">爆款 7 品與 89～149 元四級套餐，降低備料與耗損。</p></article>
+      <article><h3>標準店／旗艦店</h3><p class="small">依店面坪數與商圈選擇規格，費用另洽。</p></article>
       <article><h3>逢甲實驗店先驗證</h3><p class="small">菜單、SOP 與單店模型先在逢甲跑過，再複製到你的店。</p></article>
+      <article><h3>365 天陪跑</h3><p class="small">開幕後每日看板、每週改善、每月經營會議，第 30、90、180 天重點檢核。</p></article>
     </div>
-    <p class="note">街邊店的店面、裝修與設備投入依地點與坪數不同，開辦預算於洽談時依店面條件另行試算。參考：Partner 365 逢甲實驗店模型的初始投入基準區間為 108～167 萬（含裝修招牌、廚房與飲品設備、POS、押金與開辦費、首批原料、週轉金），此為示意模型，不構成獲利保證。</p>
+    <p class="note">街邊店分為標準店、旗艦店等不同規格，店面、裝修與設備投入依規格與地點而不同，費用另洽。</p>
   </section>
 
   <section class="trial">
@@ -724,7 +726,7 @@ footer b{color:var(--ink)}
             <option>新竹科學園區銅鑼園區</option>
             <option selected>台中科學園區</option>
             <option>台中精密園區</option>
-            <option>嘉義科學園區</option>
+            <option>南部科學園區嘉義園區</option>
             <option>南部科學園區</option>
             <option>醫院體系美食街</option>
             <option>街邊店（自選地點）</option>
@@ -833,7 +835,7 @@ footer b{color:var(--ink)}
   var SRC_DEP = 30, SRC_ENTRY = 5, CASH_RATIO = 0.45; // 13.5/30 = 36.0/80 = 0.45
   var OPS = SRC.map(function(a){ return [a[0], Math.round((a[1] - SRC_DEP - SRC_ENTRY) * 10) / 10]; });
   /* 夥伴基本開辦預算（萬元） */
-  var BUDGET = [['c-dep','保證金（合約結束後 90 天內退還）',10],['c-fee','加盟金（不可退）',10],['c-fee2','進場服務費（未稅，不可退）',10],['c-tax','進場服務費營業稅 5%',0.5],['c-mat','物料費（扣抵叫貨）',20]];
+  var BUDGET = [['c-dep','保證金（合約結束後 90 天內退還）',10],['c-fee','加盟金（未稅，不可退）',10],['c-fee2','進場服務費（未稅，不可退）',10],['c-mat','物料費（未稅，扣抵叫貨）',20],['c-tax','營業稅 5%（加盟金、進場服務費、物料費）',2]];
   var BUDGET_SUM = BUDGET.reduce(function(t,b){ return t + b[2]; }, 0);
   function opGap(r){
     for (var i = 0; i < OPS.length - 1; i++){
