@@ -172,7 +172,7 @@ textarea{min-height:90px;resize:vertical}
 .key{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.84rem}
 .key span{display:flex;align-items:center;gap:6px}
 .key i{width:12px;height:12px;border:2px solid var(--ink);border-radius:3px;display:inline-block}
-.c-op{background:var(--ember)}.c-dep{background:var(--olive)}.c-fee{background:var(--leaf)}.c-fee2{background:var(--paper-2)}.c-mat{background:#E9B98F}.c-cash{background:var(--peach)}
+.c-op{background:var(--ember)}.c-dep{background:var(--olive)}.c-fee{background:var(--leaf)}.c-fee2{background:var(--paper-2)}.c-mat{background:#E9B98F}.c-tax{background:var(--ink-soft)}.c-cash{background:var(--peach)}
 .anchors{width:100%;border-collapse:collapse;font-size:.88rem}
 .anchors th,.anchors td{text-align:right;padding:6px 8px;border-bottom:2px solid var(--paper-2);font-variant-numeric:tabular-nums}
 .anchors th:first-child,.anchors td:first-child{text-align:left}
@@ -261,6 +261,20 @@ a.copy{text-decoration:none;display:inline-block}
 .others article.mine{background:var(--leaf)}
 .others ul{margin:0;padding-left:1.1em;display:grid;gap:4px}
 @media (max-width:760px){.others{grid-template-columns:1fr}}
+.line-map{position:relative;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;padding-top:6px;margin-bottom:8px}
+.line-map::before{content:"";position:absolute;left:4%;right:18%;top:17px;height:6px;background:var(--olive);border-radius:3px}
+.stop{position:relative;display:grid;gap:4px;justify-items:center;text-align:center;min-width:0}
+.stop i{width:28px;height:28px;border-radius:50%;background:var(--paper);border:5px solid var(--ink);display:block;position:relative;z-index:1}
+.stop b{font-size:.95rem;line-height:1.35}
+.stop span{font-size:.8rem;color:var(--ink-soft)}
+.stop.hosp i{background:var(--ember)}
+@media (max-width:860px){.line-map{grid-template-columns:1fr;gap:0;padding-left:6px}.line-map::before{left:17px;right:auto;top:14px;bottom:60px;width:6px;height:auto}.stop{grid-template-columns:28px 1fr;justify-items:start;text-align:left;column-gap:14px;padding-block:8px}.stop i{grid-row:span 2}.stop b,.stop span{grid-column:2}}
+.street{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:4px solid var(--ink);border-radius:28px;overflow:hidden}
+.street article{padding:20px;display:grid;gap:8px;align-content:start;background:var(--peach);border-right:3px solid var(--ink)}
+.street article:last-child{border-right:0}
+.street article:nth-child(odd){background:var(--leaf)}
+@media (max-width:860px){.street{grid-template-columns:1fr 1fr}.street article{border-bottom:3px solid var(--ink)}.street article:nth-child(2n){border-right:0}.street article:nth-child(n+3){border-bottom:0}}
+@media (max-width:440px){.street{grid-template-columns:1fr}.street article{border-right:0!important;border-bottom:3px solid var(--ink)!important}.street article:last-child{border-bottom:0!important}}
 .fab{position:fixed;z-index:20;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;background:#06C755;color:#fff;font:700 .95rem var(--f-body);text-decoration:none;border:3px solid var(--ink);box-shadow:0 6px 0 var(--ink)}
 .fab:hover{transform:translateY(2px);box-shadow:0 4px 0 var(--ink)}
 footer{margin-top:80px;border-top:var(--line) solid var(--ink);padding-block:28px 40px;font-size:.84rem;color:var(--ink-soft)}
@@ -301,7 +315,8 @@ footer b{color:var(--ink)}
       <a href="#calc">試算</a>
       <a href="#budget">開辦預算</a>
       <a href="#brands">加盟品牌</a>
-      <a href="#openings">招募櫃位</a>
+      <a href="#openings">招募區域</a>
+      <a href="#street">街邊店</a>
     </nav>
     <a class="btn" href="#contact">預約洽談</a>
   </div>
@@ -313,7 +328,7 @@ footer b{color:var(--ink)}
     <div>
       <p class="eyebrow">封閉市場品牌平台 · 經營夥伴招募</p>
       <h1>科技廠的櫃位，<br>一個窗口<em>卯</em>到。</h1>
-      <p class="lede">卯很多由<b>品富餐飲</b>主導，負責對接廠區業主與團膳承包商、代辦入廠與食安稽核；<b>卯食團隊</b>以合夥身分負責品牌、菜單與開辦輔導。你專心把每一餐做好。</p>
+      <p class="lede">卯很多由<b>品富餐飲</b>主導，負責對接廠區業主與團膳承包商、代辦入廠與食安稽核；<b>卯食團隊</b>以合夥身分負責品牌、菜單與開辦輔導。你專心把每一餐做好。卯起來六格品牌家族同步招募街邊店。</p>
       <div class="ctas">
         <a class="btn" href="#calc">先算要準備多少資金</a>
         <a class="btn ghost" href="#terms">看完整招商條件</a>
@@ -415,8 +430,9 @@ footer b{color:var(--ink)}
       <div class="row"><dt>月保底</dt><dd>＋3% 方案 <span class="num">12,000</span> 元／月，＋6% 方案 <span class="num">21,000</span> 元／月；第 <span class="num">3</span> 個月起算，策略案可豁免</dd></div>
       <div class="row"><dt>轉嫁費用</dt><dd>管理費、POS、電子支付手續費、濾芯、維修、設備檢查、橫招：原價轉嫁，附對帳單影本</dd></div>
       <div class="row"><dt>保證金</dt><dd><span class="num">100,000</span> 元，合約結束後 <span class="num">90</span> 天內退還</dd></div>
+      <div class="row"><dt>上游押金（個案）</dt><dd>個別案件的上游押金高於保證金時，差額另列於該案「上游條件附表」，由夥伴原數轉付，卯很多不另外加收；退還依上游規定辦理</dd></div>
       <div class="row"><dt>加盟金</dt><dd><span class="num">100,000</span> 元，不可退</dd></div>
-      <div class="row"><dt>進場服務費</dt><dd><span class="num">100,000</span> 元，不可退；包含媒合、入廠資格代辦、開辦輔導</dd></div>
+      <div class="row"><dt>進場服務費</dt><dd><span class="num">100,000</span> 元（未稅，另加 5% 營業稅 <span class="num">5,000</span> 元），不可退；包含媒合、入廠資格代辦、開辦輔導</dd></div>
       <div class="row"><dt>物料費</dt><dd><span class="num">200,000</span> 元，預付後扣抵叫貨貨款</dd></div>
       <div class="row"><dt>撥款</dt><dd>卯很多實際收到上游款項後 <span class="num">10</span> 個日曆天內撥付；上游未付款時，卯很多不負墊付責任</dd></div>
       <div class="row"><dt>營業稅</dt><dd>每一層依撥款淨額開立發票；以收據請款者，從撥款中扣 <span class="num">5%</span></dd></div>
@@ -435,10 +451,10 @@ footer b{color:var(--ink)}
     <div class="budget">
       <div class="refund"><span class="small muted">可退</span><b>保證金</b><span class="num">10<small>萬</small></span><span class="small">合約結束後 90 天內退還</span></div>
       <div class="keep"><span class="small muted">不可退</span><b>加盟金</b><span class="num">10<small>萬</small></span><span class="small">品牌授權與加盟資格</span></div>
-      <div class="keep"><span class="small muted">不可退</span><b>進場服務費</b><span class="num">10<small>萬</small></span><span class="small">媒合、入廠資格代辦、開辦輔導</span></div>
+      <div class="keep"><span class="small muted">不可退</span><b>進場服務費</b><span class="num">10<small>萬</small></span><span class="small">未稅，另加營業稅 5,000 元；媒合、入廠代辦、開辦輔導</span></div>
       <div class="refund"><span class="small muted">扣抵叫貨</span><b>物料費</b><span class="num">20<small>萬</small></span><span class="small">預付，叫貨時扣抵貨款</span></div>
     </div>
-    <div class="budget-sum"><span class="num">50 萬</span><span class="muted">開辦預算合計，其中 30 萬可退或可抵用。另需準備營運周轉金，見下方試算。</span></div>
+    <div class="budget-sum"><span class="num">50 萬</span><span class="muted">開辦預算合計（進場服務費未稅），其中 30 萬可退或可抵用。進場服務費的營業稅 5,000 元另計。個別案件上游押金高於 10 萬時，差額列於該案附表。另需準備營運周轉金，見下方試算。</span></div>
   </section>
 
   <section class="block" id="calc">
@@ -501,7 +517,7 @@ footer b{color:var(--ink)}
           </div>
           <div class="field">
             <label>基本開辦預算（固定）</label>
-            <span class="small muted">保證金 10 萬＋加盟金 10 萬＋進場服務費 10 萬＋物料費 20 萬＝<b class="num">50</b> 萬</span>
+            <span class="small muted">保證金 10 萬＋加盟金 10 萬＋進場服務費 10 萬（未稅）＋物料費 20 萬＝<b class="num">50</b> 萬；試算另加進場服務費營業稅 0.5 萬</span>
           </div>
           <label class="check"><input type="checkbox" id="g-cash"> 食材現金進貨（沒有月結）</label>
           <table class="anchors" aria-label="範例案試算錨點">
@@ -511,7 +527,7 @@ footer b{color:var(--ink)}
         </div>
         <div class="out" aria-live="polite">
           <div>
-            <p class="small muted">建議準備資金（開辦預算 50 萬＋營運周轉）</p>
+            <p class="small muted">建議準備資金（開辦預算 50 萬＋營業稅 0.5 萬＋營運周轉）</p>
             <p class="big" id="g-total"></p>
           </div>
           <div class="stack" id="g-stack" aria-hidden="true"></div>
@@ -553,10 +569,11 @@ footer b{color:var(--ink)}
         <span class="pill warn" style="justify-self:start">合作品牌</span>
         <h3>其他可加盟品牌：市場一、二線品牌</h3>
         <ul class="small">
-          <li>市場上已有知名度的一、二線連鎖餐飲品牌</li>
-          <li>依場域客群與品類缺口媒合，避免和既有櫃位撞品項</li>
-          <li>卯很多負責櫃位媒合、入廠代辦與帳務對接</li>
-          <li>品牌名單與授權條件於當面洽談時提供</li>
+          <li><b>四海遊龍</b>：鍋貼水餃</li>
+          <li><b>餃逐天下</b>：現包水餃、鮮肉湯麵</li>
+          <li><b>米諾瓦咖啡</b>：精品咖啡</li>
+          <li><b>紅屋</b>：咖啡輕食、烘焙</li>
+          <li>以上等品牌，依場域客群與品類缺口媒合，避免和既有櫃位撞品項；授權條件於當面洽談時提供</li>
         </ul>
       </article>
     </div>
@@ -594,18 +611,28 @@ footer b{color:var(--ink)}
   <section class="block" id="openings">
     <div class="head">
       <p class="eyebrow">NOW RECRUITING</p>
-      <h2>招募中的櫃位</h2>
-      <p class="muted">依招商規範，公開頁面只寫地區與品類。業主名稱、上游條件附表與完整試算，在當面洽談時提供。</p>
+      <h2>目前招募區域</h2>
+      <p class="muted">六個科學園區由北到南，加上醫院體系美食街。依招商規範，公開頁面只寫地區與品類；業主名稱、上游條件附表與完整試算，在當面洽談時提供。</p>
     </div>
+    <div class="line-map" role="list" aria-label="招募區域，由北到南">
+      <div class="stop" role="listitem"><i></i><b>新竹科學園區</b><span>新竹</span></div>
+      <div class="stop" role="listitem"><i></i><b>新竹科學園區銅鑼園區</b><span>苗栗銅鑼</span></div>
+      <div class="stop" role="listitem"><i></i><b>台中科學園區</b><span>台中</span></div>
+      <div class="stop" role="listitem"><i></i><b>台中精密園區</b><span>台中</span></div>
+      <div class="stop" role="listitem"><i></i><b>嘉義科學園區</b><span>嘉義</span></div>
+      <div class="stop" role="listitem"><i></i><b>南部科學園區</b><span>台南・高雄</span></div>
+      <div class="stop hosp" role="listitem"><i></i><b>醫院體系美食街</b><span>全區</span></div>
+    </div>
+    <h3 style="margin:36px 0 16px">已有案件的櫃位</h3>
     <div class="open">
       <article>
         <span class="pill ok st st-now">招募中</span>
-        <h3>中部科技廠 · 員工餐廳麵食櫃</h3>
+        <h3>銅鑼園區科技廠 · 員工餐廳麵食櫃</h3>
         <dl>
           <dt>開幕</dt><dd>2026 年 12 月，合約一年</dd>
           <dt>類型</dt><dd>策略案（免月保底）</dd>
           <dt>品項</dt><dd>品牌商麵食＋卯很多特餐</dd>
-          <dt>資金</dt><dd>約 87～147 萬（開辦預算 50 萬＋周轉，依營業額情境）</dd>
+          <dt>資金</dt><dd>約 87.5～147.6 萬（開辦預算＋營業稅＋周轉，依營業額情境）</dd>
         </dl>
       </article>
       <article>
@@ -639,6 +666,21 @@ footer b{color:var(--ink)}
     </div>
   </section>
 
+  <section class="block" id="street">
+    <div class="head">
+      <p class="eyebrow">STREET STORES</p>
+      <h2>卯起來六格品牌家族，同步招募街邊店</h2>
+      <p class="muted">不在廠區裡，也能用同一套品牌、供應鏈與 365 天陪跑開店。前台各品牌保持自己的招牌，後台共用人力、設備、倉儲、採購與數位系統。</p>
+    </div>
+    <div class="street">
+      <article><h3>三時段營收</h3><p class="small">早餐刈包配茶、午餐麵線刈包滷味套餐、下午茶特色茶飲，同一間店有三段現金流。</p></article>
+      <article><h3>共用後廚</h3><p class="small">熱加工、冷藏分裝、飲品製備、洗滌、出餐集貨五區整合，兩個品牌用一個後台。</p></article>
+      <article><h3>少 SKU，一人可營運</h3><p class="small">爆款 7 品與 89～149 元四級套餐，降低備料與耗損。</p></article>
+      <article><h3>逢甲實驗店先驗證</h3><p class="small">菜單、SOP 與單店模型先在逢甲跑過，再複製到你的店。</p></article>
+    </div>
+    <p class="note">街邊店的店面、裝修與設備投入依地點與坪數不同，開辦預算於洽談時依店面條件另行試算。參考：Partner 365 逢甲實驗店模型的初始投入基準區間為 108～167 萬（含裝修招牌、廚房與飲品設備、POS、押金與開辦費、首批原料、週轉金），此為示意模型，不構成獲利保證。</p>
+  </section>
+
   <section class="trial">
     <div>
       <p class="eyebrow" style="color:var(--ember)">TRY BEFORE YOU SIGN</p>
@@ -669,13 +711,25 @@ footer b{color:var(--ink)}
           <select id="l-type">
             <option>中部科技廠 · 員工餐廳麵食櫃</option>
             <option>中部科技廠 · 獨家四餐櫃</option>
-            <option>加盟：卯起來六格品牌</option>
+            <option>加盟：卯起來六格品牌（園區櫃位）</option>
+            <option>加盟：卯起來六格品牌（街邊店）</option>
             <option>加盟：市場一、二線品牌</option>
             <option>輪動櫃檔期</option>
             <option>三天見習</option>
             <option>其他合作</option>
           </select></div>
-        <div class="field"><label for="l-fund">可準備資金</label>
+        <div class="field"><label for="l-area">意向區域</label>
+          <select id="l-area">
+            <option>新竹科學園區</option>
+            <option>新竹科學園區銅鑼園區</option>
+            <option selected>台中科學園區</option>
+            <option>台中精密園區</option>
+            <option>嘉義科學園區</option>
+            <option>南部科學園區</option>
+            <option>醫院體系美食街</option>
+            <option>街邊店（自選地點）</option>
+          </select></div>
+        <div class="field full"><label for="l-fund">可準備資金</label>
           <select id="l-fund">
             <option>90 萬以下</option>
             <option selected>90～120 萬</option>
@@ -779,7 +833,7 @@ footer b{color:var(--ink)}
   var SRC_DEP = 30, SRC_ENTRY = 5, CASH_RATIO = 0.45; // 13.5/30 = 36.0/80 = 0.45
   var OPS = SRC.map(function(a){ return [a[0], Math.round((a[1] - SRC_DEP - SRC_ENTRY) * 10) / 10]; });
   /* 夥伴基本開辦預算（萬元） */
-  var BUDGET = [['c-dep','保證金（合約結束後 90 天內退還）',10],['c-fee','加盟金（不可退）',10],['c-fee2','進場服務費（不可退）',10],['c-mat','物料費（扣抵叫貨）',20]];
+  var BUDGET = [['c-dep','保證金（合約結束後 90 天內退還）',10],['c-fee','加盟金（不可退）',10],['c-fee2','進場服務費（未稅，不可退）',10],['c-tax','進場服務費營業稅 5%',0.5],['c-mat','物料費（扣抵叫貨）',20]];
   var BUDGET_SUM = BUDGET.reduce(function(t,b){ return t + b[2]; }, 0);
   function opGap(r){
     for (var i = 0; i < OPS.length - 1; i++){
@@ -876,6 +930,7 @@ footer b{color:var(--ink)}
       '公司／行號：' + ($('l-co').value.trim() || '未填'),
       'Email：' + ($('l-mail').value.trim() || '未填'),
       '想了解：' + $('l-type').value,
+      '意向區域：' + $('l-area').value,
       '可準備資金：' + $('l-fund').value,
       '資金試算（缺口最深點）：' + wan(lastGap) + '（月營業額 ' + $('g-rev').value + ' 萬情境）',
       '經驗：' + ($('l-exp').value.trim() || '未填'),
