@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>卯很多 質感版社群素材原始檔</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* 每個 .frame 輸出一張圖，id 即檔名；render.mjs 依 data-w/data-h 截圖 */
+:root{
+  --bone:#F4F2EE; --surface:#FFFFFF; --ink:#17181A; --mute:#6A6862; --line:#DDD8CF;
+  --jade:#4F6446; --ember:#B8693F; --ember-l:#E09A6E; --graphite:#16181B; --on:#EEEAE3; --on-mute:#A7A39A;
+  --serif:"Noto Serif TC",serif; --sans:"Noto Sans TC",sans-serif; --mono:"IBM Plex Mono",monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#777;font-family:var(--sans);color:var(--ink)}
+.frame{position:relative;overflow:hidden;margin:0 0 40px;display:flex;flex-direction:column}
+.post{width:1080px;height:1350px}
+.story{width:1080px;height:1920px}
+.dk{background:var(--graphite);color:var(--on)}
+.lt{background:var(--bone);color:var(--ink)}
+h1,h2{font-family:var(--serif);font-weight:500;margin:0;line-height:1.25;letter-spacing:.01em}
+p{margin:0}
+.mono{font-family:var(--mono);font-size:24px;letter-spacing:.14em;text-transform:uppercase}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+em{font-style:normal;color:var(--ember-l)}
+.lt em{color:var(--ember)}
+.top{position:absolute;left:72px;right:72px;top:64px;display:flex;justify-content:space-between;align-items:center;z-index:3;font-family:var(--mono);font-size:22px;letter-spacing:.14em}
+.top .brand{display:flex;align-items:center;gap:16px;font-family:var(--serif);font-size:30px;letter-spacing:.08em}
+.top svg{width:56px;height:52px}
+.bot{position:absolute;left:72px;right:72px;bottom:56px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:20px;letter-spacing:.1em;z-index:3}
+.photo{position:absolute;inset:0;background-size:cover;background-position:center}
+.shade-b::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--graphite) 0%,rgba(22,24,27,.82) 34%,rgba(22,24,27,0) 62%)}
+.shade-t::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(22,24,27,.7) 0%,rgba(22,24,27,0) 26%)}
+.txt{position:absolute;left:72px;right:72px;z-index:3;display:flex;flex-direction:column;gap:24px}
+.prices{display:grid;gap:14px;border-top:1px solid rgba(238,234,227,.3);padding-top:24px}
+.prices div{display:flex;justify-content:space-between;font-size:38px}
+.prices .num{color:var(--ember-l)}
+.tags{display:flex;gap:12px}
+.tag{font-family:var(--mono);font-size:20px;letter-spacing:.08em;padding:6px 16px;border:1px solid rgba(238,234,227,.45);border-radius:999px}
+.lt .tag{border-color:var(--line);color:var(--mute)}
+.fine{font-size:20px;color:var(--on-mute);line-height:1.5}
+.lt .fine{color:var(--mute)}
+.rows{display:grid;border-top:1px solid var(--line)}
+.rows>div{display:grid;grid-template-columns:120px 1fr auto;gap:24px;align-items:center;padding:30px 0;border-bottom:1px solid var(--line)}
+.rows .k{font-family:var(--serif);font-size:56px;color:var(--mute)}
+.rows b{font-size:38px;font-weight:500;display:block}
+.rows small{font-size:26px;color:var(--mute)}
+.rows .p{font-family:var(--mono);font-size:46px}
+.checks{display:grid;border-top:1px solid rgba(238,234,227,.25)}
+.checks div{display:grid;grid-template-columns:200px 1fr;gap:24px;padding:22px 0;border-bottom:1px solid rgba(238,234,227,.25);font-size:32px}
+.checks .c{font-family:var(--mono);font-size:22px;color:var(--ember-l);padding-top:8px;letter-spacing:.08em}
+.bud{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);background:var(--surface)}
+.bud div{padding:36px;display:grid;gap:8px;border-bottom:1px solid var(--line)}
+.bud div:nth-child(odd){border-right:1px solid var(--line)}
+.bud div:nth-child(n+3){border-bottom:0}
+.bud .mono{font-size:18px;color:var(--jade)}
+.bud .mono.k{color:var(--ember)}
+.bud b{font-size:36px;font-weight:500}
+.bud .num{font-size:84px;line-height:1}
+.bud .num small{font-size:32px;color:var(--mute);margin-left:6px}
+.bud span:last-child{font-size:24px;color:var(--mute)}
+.hl{align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="mk" viewBox="0 0 120 112">
+    <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round">
+      <path d="M44 28c-5-5 5-9 0-16"/><path d="M60 26c-5-6 5-10 0-18"/><path d="M76 28c-5-5 5-9 0-16"/>
+      <rect x="10" y="38" width="100" height="66" rx="14"/><path d="M10 71h100M43.3 38v66M76.6 38v66M54 55h12"/>
+    </g>
+    <text x="60" y="95" text-anchor="middle" font-family="Noto Serif TC, serif" font-weight="700" font-size="19" fill="currentColor">卯</text>
+  </symbol>
+</defs></svg>
+
+<!-- 大頭貼 -->
+<section class="frame dk hl" id="avatar" data-w="1080" data-h="1080" data-type="png" style="width:1080px;height:1080px;gap:10px">
+  <svg viewBox="0 0 120 112" style="width:520px;height:486px;color:var(--on)"><use href="#mk"/></svg>
+  <div style="font-family:var(--serif);font-size:110px;letter-spacing:.12em">卯很多</div>
+</section>
+
+<!-- FB 封面 -->
+<section class="frame dk" id="fb-cover" data-w="1640" data-h="624" style="width:1640px;height:624px">
+  <div class="photo" style="background-image:url(../img/hero-bento.jpg);left:640px;background-position:60% 50%"></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(90deg,var(--graphite) 0,var(--graphite) 640px,rgba(22,24,27,.0) 980px)"></div>
+  <div class="txt" style="left:280px;top:150px;right:auto;width:760px;gap:20px">
+    <p class="mono" style="font-size:18px;color:var(--on-mute)">MAO MANY · CLOSED-MARKET FOOD PLATFORM</p>
+    <h1 style="font-size:74px">一個窗口，<br>走進科技廠的<em>餐桌</em>。</h1>
+    <p style="font-size:24px;color:var(--on-mute)">品富餐飲主導 · 卯食合夥 · 經營夥伴招募</p>
+  </div>
+</section>
+
+<!-- P1 品牌 -->
+<section class="frame post dk shade-b" id="p01" data-w="1080" data-h="1350">
+  <div class="photo" style="background-image:url(../img/hero-bento.jpg);background-size:auto 54%;background-position:72% 12%;background-repeat:no-repeat"></div>
+  <div class="top"><span class="brand"><svg viewBox="0 0 120 112"><use href="#mk"/></svg>卯很多</span><span>01 / 09</span></div>
+  <div class="txt" style="bottom:130px">
+    <p class="mono" style="color:var(--on-mute)">Closed-Market Food Platform</p>
+    <h1 style="font-size:90px">一個窗口，<br>走進科技廠的<em>餐桌</em>。</h1>
+    <p style="font-size:34px;color:var(--on-mute)">品富餐飲主導，卯食團隊合夥。</p>
+  </div>
+  <div class="bot" style="color:var(--on-mute)"><span>MAO MANY</span><span>示意圖</span></div>
+</section>
+
+<!-- P2–P5 商品規格 -->
+<section class="frame post dk shade-b" id="p02" data-w="1080" data-h="1350">
+  <div class="photo" style="background-image:url(../img/guabao.jpg);background-position:50% 20%"></div>
+  <div class="top"><span class="brand"><svg viewBox="0 0 120 112"><use href="#mk"/></svg>卯很多</span><span>02 / 09</span></div>
+  <div class="txt" style="bottom:110px">
+    <p class="mono" style="color:var(--on-mute)">SKU 01–03 · 卯食</p>
+    <h1 style="font-size:96px">刈包三味</h1>
+    <div class="tags"><span class="tag">早餐</span><span class="tag">午餐</span></div>
+    <div class="prices"><div><span>滷肉刈包</span><span class="num">$55</span></div><div><span>控肉刈包</span><span class="num">$65</span></div><div><span>雞腿刈包</span><span class="num">$75</span></div></div>
+  </div>
+  <div class="bot fine"><span>售價為單店模型參考</span><span>示意圖</span></div>
+</section>
+
+<section class="frame post dk shade-b" id="p03" data-w="1080" data-h="1350">
+  <div class="photo" style="background-image:url(../img/mianxian.jpg);background-position:50% 25%"></div>
+  <div class="top"><span class="brand"><svg viewBox="0 0 120 112"><use href="#mk"/></svg>卯很多</span><span>03 / 09</span></div>
+  <div class="txt" style="bottom:110px">
+    <p class="mono" style="color:var(--on-mute)">SKU 04–05 · 卯食</p>
+    <h1 style="font-size:96px">麵線</h1>
+    <div class="tags"><span class="tag">午餐</span></div>
+    <div class="prices"><div><span>大腸麵線</span><span class="num">$70</span></div><div><span>綜合麵線</span><span class="num">$85</span></div></div>
+  </div>
+  <div class="bot fine"><span>售價為單店模型參考</span><span>示意圖</span></div>
+</section>
+
+<section class="frame post dk shade-b" id="p04" data-w="1080" data-h="1350">
+  <div class="photo" style="background-image:url(../img/luwei.jpg);background-position:50% 30%"></div>
+  <div class="top"><span class="brand"><svg viewBox="0 0 120 112"><use href="#mk"/></svg>卯很多</span><span>04 / 09</span></div>
+  <div class="txt" style="bottom:110px">
+    <p class="mono" style="color:var(--on-mute)">SKU 06 · 卯食</p>
+    <h1 style="font-size:96px">滷味拼盤</h1>
+    <div class="tags"><span class="tag">午餐</span><span class="tag">下午茶</span></div>
+    <div class="prices"><div><span>滷味拼盤</span><span class="num">$60</span></div></div>
+  </div>
+  <div class="bot fine"><span>售價為單店模型參考</span><span>示意圖</span></div>
+</section>
+
+<section class="frame post dk shade-b" id="p05" data-w="1080" data-h="1350">
+  <div class="photo" style="background-image:url(../img/tea.jpg);background-position:60% 20%"></div>
+  <div class="top"><span class="brand"><svg viewBox="0 0 120 112"><use href="#mk"/></svg>卯很多</span><span>05 / 09</span></div>
+  <div class="txt" style="bottom:110px">
+    <p class="mono" style="color:var(--on-mute)">SKU 07 · 一杯紅</p>
+    <h1 style="font-size:96px">一杯紅</h1>
+    <div class="tags"><span class="tag">早餐</span><span class="tag">午餐</span><span class="tag">下午茶</span></div>
+    <div class="prices"><div><span>天然茶底飲品</span><span class="num">$35 起</span></div></div>
+  </div>
+  <div class="bot fine"><span>售價為單店模型參考</span><span>示意圖</span></div>
+</section>
+
+<!-- P6 套餐階梯 -->
+<section class="frame post lt" id="p06" data-w="1080" data-h="1350" style="padding:180px 72px 120px;gap:40px">
+  <div class="top" style="color:var(--ink)"><span class="brand"><svg viewBox="0 0 120 112"><use href="#mk"/></svg>卯很多</span><span>06 / 09</span></div>
+  <p class="mono" style="color:var(--jade)">Set Ladder</p>
+  <h1 style="font-size:88px">四級套餐，<br>讓客人不用想</h1>
+  <div class="rows">
+    <div><span class="k">A</span><span><b>經典套餐</b><small>滷肉刈包＋紅茶</small></span><span class="p">$89</span></div>
+    <div><span class="k">B</span><span><b>人氣套餐</b><small>控肉刈包＋紅茶</small></span><span class="p">$99</span></div>
+    <div><span class="k" style="color:var(--ember)">C</span><span><b>飽足套餐</b><small>大腸麵線＋滷味＋紅茶</small></span><span class="p" style="color:var(--ember)">$129</span></div>
+    <div><span class="k">D</span><span><b>豪華套餐</b><small>雞腿刈包＋綜合麵線＋紅茶</small></span><span class="p">$149</span></div>
+  </div>
+  <p class="fine">售價為單店模型參考，園區櫃位依場域另訂。</p>
+</section>
+
+<!-- P7 食安 -->
+<section class="frame post dk" id="p07" data-w="1080" data-h="1350">
+  <div class="photo" style="background-image:url(../img/kitchen.jpg);bottom:auto;height:470px"></div>
+  <div style="position:absolute;left:0;right:0;top:300px;height:170px;background:linear-gradient(0deg,var(--graphite),rgba(22,24,27,0))"></div><div style="position:absolute;left:0;right:0;top:0;height:260px;background:linear-gradient(180deg,rgba(22,24,27,.78),rgba(22,24,27,0));z-index:2"></div>
+  <div class="top"><span class="brand"><svg viewBox="0 0 120 112"><use href="#mk"/></svg>卯很多</span><span>07 / 09</span></div>
+  <div class="txt" style="top:500px;gap:26px">
+    <h1 style="font-size:70px">信任，來自<br>可以被檢查的東西</h1>
+    <div class="checks">
+      <div><span class="c">REG-14</span><span>14 處食品業者登錄</span></div>
+      <div><span class="c">SGS-M</span><span>SGS 月度稽核與成品採樣</span></div>
+      <div><span class="c">KEEP-48</span><span>留樣 48 小時</span></div>
+      <div><span class="c">ALERT-24</span><span>食安事件 24 小時應報</span></div>
+      <div><span class="c">INS-3</span><span>全櫃投保三險</span></div>
+    </div>
+  </div>
+  <div class="bot fine"><span>協力中央廚房 · 示意圖</span><span>MAO MANY</span></div>
+</section>
+
+<!-- P8 開辦預算 -->
+<section class="frame post lt" id="p08" data-w="1080" data-h="1350" style="padding:180px 72px 120px;gap:36px">
+  <div class="top" style="color:var(--ink)"><span class="brand"><svg viewBox="0 0 120 112"><use href="#mk"/></svg>卯很多</span><span>08 / 09</span></div>
+  <p class="mono" style="color:var(--jade)">Startup Budget · 未稅</p>
+  <h1 style="font-size:88px">開辦預算 <span class="num" style="font-size:110px">50</span> 萬</h1>
+  <div class="bud">
+    <div><span class="mono">Refundable</span><b>保證金</b><span class="num">10<small>萬</small></span><span>合約結束 90 天內退還</span></div>
+    <div><span class="mono k">Non-refundable</span><b>加盟金</b><span class="num">10<small>萬</small></span><span>品牌授權</span></div>
+    <div><span class="mono k">Non-refundable</span><b>進場服務費</b><span class="num">10<small>萬</small></span><span>媒合、入廠代辦</span></div>
+    <div><span class="mono">Credit</span><b>物料費</b><span class="num">20<small>萬</small></span><span>叫貨時扣抵</span></div>
+  </div>
+  <p class="fine" style="font-size:24px">另加營業稅 2 萬（保證金不計稅），含稅 52 萬；另需營運周轉金。條件以正式合約為準。</p>
+</section>
+
+<!-- P9 見習 -->
+<section class="frame post dk" id="p09" data-w="1080" data-h="1350">
+  <div class="photo" style="background-image:url(../img/breakfast.jpg);bottom:auto;height:640px;background-position:50% 60%"></div><div style="position:absolute;left:0;right:0;top:0;height:260px;background:linear-gradient(180deg,rgba(22,24,27,.78),rgba(22,24,27,0));z-index:2"></div>
+  <div class="top"><span class="brand"><svg viewBox="0 0 120 112"><use href="#mk"/></svg>卯很多</span><span>09 / 09</span></div>
+  <div class="txt" style="top:700px;gap:24px">
+    <p class="mono" style="color:var(--on-mute)">Try Before You Sign</p>
+    <h1 style="font-size:84px">先吃再加入：<br><em>三天見習</em>，不收費不綁約</h1>
+    <div style="display:flex;gap:36px;align-items:center;margin-top:12px">
+      <img src="../img/qr-line.png" alt="" style="width:200px;height:200px;background:#fff;padding:10px">
+      <div style="display:grid;gap:8px"><span class="mono" style="font-size:20px;color:var(--on-mute)">LINE</span><span class="num" style="font-size:52px">abingo2025</span><span class="num" style="font-size:32px;color:var(--on-mute)">0989-470806</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 品牌輪播 c1–c7 -->
+<section class="frame post dk" id="c1" data-w="1080" data-h="1350" style="padding:0">
+  <div style="position:absolute;inset:72px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:4px;top:220px;bottom:300px">
+    <div style="background:url(../img/lurou.jpg) center/cover"></div><div style="background:url(../img/tea.jpg) center/cover"></div><div style="background:url(../img/dumplings.jpg) center/cover"></div>
+    <div style="background:url(../img/breakfast.jpg) center/cover"></div><div style="background:url(../img/hero-bento.jpg) 68% 50%/cover"></div><div style="background:url(../img/healthy.jpg) center/cover"></div>
+  </div>
+  <div class="top"><span class="brand"><svg viewBox="0 0 120 112"><use href="#mk"/></svg>卯很多</span><span>1 / 7</span></div>
+  <div class="txt" style="bottom:110px;gap:14px"><h1 style="font-size:80px">卯起來六格品牌家族</h1><p style="font-size:30px;color:var(--on-mute)">一個便當六格，一格一個品牌。往右滑 →</p></div>
+</section>
+<section class="frame post dk shade-b" id="c2" data-w="1080" data-h="1350" data-brand="一系列 · 品富|楊家一鍋滷|滷肉飯、便當、自助取餐|lurou|2 / 7"></section>
+<section class="frame post dk shade-b" id="c3" data-w="1080" data-h="1350" data-brand="一系列 · 品富|一杯紅|天然茶底，午後一杯，剛好紅|tea|3 / 7"></section>
+<section class="frame post dk shade-b" id="c4" data-w="1080" data-h="1350" data-brand="一系列 · 品富|餃一局|亞洲餃：羽根煎餃、紅油拌餃|dumplings|4 / 7|商標檢索中"></section>
+<section class="frame post dk shade-b" id="c5" data-w="1080" data-h="1350" data-brand="卯系列 · 卯食|卯食早午餐|刈包配茶，早上就卯到|breakfast|5 / 7"></section>
+<section class="frame post dk shade-b" id="c6" data-w="1080" data-h="1350" data-brand="卯系列 · 卯食|卯起來吃飯|科技廠飯類主力|hero-bento|6 / 7"></section>
+<section class="frame post dk shade-b" id="c7" data-w="1080" data-h="1350" data-brand="卯系列 · 卯食|卯剛好|標示熱量、蛋白質、鈉的輕食|healthy|7 / 7|商標檢索中"></section>
+
+<!-- 限時動態：今日預購 -->
+<section class="frame story dk shade-b" id="s-preorder" data-w="1080" data-h="1920">
+  <div class="photo" style="background-image:url(../img/guabao.jpg);bottom:auto;height:1250px;background-position:50% 30%"></div>
+  <div class="top" style="top:180px"><span class="brand"><svg viewBox="0 0 120 112"><use href="#mk"/></svg>卯很多</span><span>預購</span></div>
+  <div class="txt" style="bottom:260px;gap:30px">
+    <p class="mono" style="color:var(--on-mute)">Pre-order</p>
+    <h1 style="font-size:120px">明日菜單<br>開放預購</h1>
+    <div class="prices"><div><span>截單時間</span><span class="num">＿＿:＿＿</span></div><div><span>取餐時段</span><span class="num">＿＿:＿＿</span></div></div>
+    <p style="font-size:30px;color:var(--on-mute)">預購優先取餐，不用排隊</p>
+  </div>
+</section>
+
+<!-- 限時動態：見習 -->
+<section class="frame story lt" id="s-trial" data-w="1080" data-h="1920" style="padding:220px 72px 260px;gap:44px">
+  <div class="top" style="top:180px;color:var(--ink)"><span class="brand"><svg viewBox="0 0 120 112"><use href="#mk"/></svg>卯很多</span><span>見習</span></div>
+  <p class="mono" style="color:var(--jade);margin-top:80px">Try Before You Sign</p>
+  <h1 style="font-size:130px">本週<br>見習梯次</h1>
+  <div class="rows" style="margin-top:20px">
+    <div style="grid-template-columns:200px 1fr"><span class="mono" style="font-size:22px;color:var(--mute)">日期</span><b>＿＿／＿＿（＿）</b></div>
+    <div style="grid-template-columns:200px 1fr"><span class="mono" style="font-size:22px;color:var(--mute)">地點</span><b>卯食逢甲訓練基地</b></div>
+    <div style="grid-template-columns:200px 1fr"><span class="mono" style="font-size:22px;color:var(--mute)">名額</span><b>＿＿ 位</b></div>
+  </div>
+  <p style="margin-top:auto;font-size:40px;font-family:var(--serif)">不收費，不綁約。LINE：<span class="num">abingo2025</span></p>
+</section>
+
+<!-- 精選動態封面 -->
+<section class="frame story dk hl" id="hl-menu" data-w="1080" data-h="1920" data-hl="菜單|Menu"></section>
+<section class="frame story dk hl" id="hl-sets" data-w="1080" data-h="1920" data-hl="套餐|Sets"></section>
+<section class="frame story dk hl" id="hl-trust" data-w="1080" data-h="1920" data-hl="食安|Trust"></section>
+<section class="frame story dk hl" id="hl-terms" data-w="1080" data-h="1920" data-hl="條件|Terms"></section>
+<section class="frame story dk hl" id="hl-areas" data-w="1080" data-h="1920" data-hl="區域|Regions"></section>
+<section class="frame story dk hl" id="hl-trial" data-w="1080" data-h="1920" data-hl="見習|Trial"></section>
+
+<script>
+document.querySelectorAll('[data-brand]').forEach(function(f){
+  var d = f.dataset.brand.split('|');
+  f.innerHTML = '<div class="photo" style="background-image:url(../img/' + d[3] + '.jpg);background-position:' + (d[3] === 'hero-bento' ? '68% 50%' : '50% 30%') + '"></div>' + '<div style="position:absolute;left:0;right:0;top:0;height:260px;background:linear-gradient(180deg,rgba(22,24,27,.78),rgba(22,24,27,0));z-index:2"></div>' +
+    '<div class="top"><span class="brand"><svg viewBox="0 0 120 112"><use href="#mk"/></svg>卯很多</span><span>' + d[4] + '</span></div>' +
+    (d[5] ? '<span style="position:absolute;right:72px;top:150px;z-index:3;font-family:var(--mono);font-size:20px;padding:6px 16px;border:1px solid rgba(238,234,227,.6);border-radius:999px">' + d[5] + '</span>' : '') +
+    '<div class="txt" style="bottom:120px;gap:18px"><p class="mono" style="color:var(--on-mute)">' + d[0] + '</p><h1 style="font-size:110px">' + d[1] + '</h1><p style="font-size:36px;color:var(--on-mute)">' + d[2] + '</p></div>' +
+    '<div class="bot fine"><span>卯起來六格品牌家族</span><span>示意圖</span></div>';
+});
+document.querySelectorAll('.hl').forEach(function(f){
+  if (!f.dataset.hl) return;
+  var d = f.dataset.hl.split('|');
+  f.innerHTML = '<div style="width:720px;height:720px;border-radius:50%;border:2px solid rgba(238,234,227,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px">' +
+    '<svg viewBox="0 0 120 112" style="width:220px;height:206px;color:var(--on)"><use href="#mk"/></svg>' +
+    '<span style="font-family:var(--serif);font-size:130px;line-height:1">' + d[0] + '</span><span class="mono" style="color:var(--on-mute)">' + d[1] + '</span></div>';
+});
+</script>
+</body>
+</html>

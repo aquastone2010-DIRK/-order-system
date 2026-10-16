@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!--BODY-START-->
+<title>卯很多 MAO MANY</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="卯很多：品富餐飲主導、卯食合夥的封閉市場餐飲品牌平台。招募科學園區、醫院美食街與街邊店經營夥伴。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 瓷白內容頁 × 石墨照片帶交替；資料一律以等寬字標示，像一份可檢查的營運規格書 */
+:root{
+  --bone:#F4F2EE;      /* 頁面底 */
+  --surface:#FFFFFF;   /* 卡片 */
+  --ink:#17181A;       /* 主文字 */
+  --mute:#6A6862;      /* 次要文字 */
+  --line:#DDD8CF;      /* 髮絲線 */
+  --jade:#4F6446;      /* 品牌綠，數據與狀態 */
+  --ember:#B8693F;     /* 品牌橘，只用在價格與蒸氣 */
+  --graphite:#16181B;  /* 照片帶，兩種主題都是深色 */
+  --on-dark:#EEEAE3;
+  --on-dark-mute:#A7A39A;
+  --f-display:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --f-mono:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+  --r:4px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bone:#111214; --surface:#1A1C1F; --ink:#ECE8E1; --mute:#9D998F; --line:#2E3034;
+    --jade:#9DB38C; --ember:#E09A6E; --graphite:#0B0C0D; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bone:#111214; --surface:#1A1C1F; --ink:#ECE8E1; --mute:#9D998F; --line:#2E3034;
+  --jade:#9DB38C; --ember:#E09A6E; --graphite:#0B0C0D; color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bone);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+.in{max-width:1200px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.3;margin:0;text-wrap:balance;letter-spacing:.01em}
+h2{font-size:clamp(1.75rem,3.6vw,2.6rem)}
+h3{font-size:1.2rem}
+p{margin:0}
+a{color:inherit}
+img{max-width:100%;display:block}
+:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+.mono{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;letter-spacing:0}
+.mute{color:var(--mute)}
+.small{font-size:.88rem}
+section{padding-block:96px 0}
+.head{display:grid;gap:14px;margin-bottom:44px;max-width:46em}
+.head .mono{color:var(--jade)}
+.head p{color:var(--mute);font-size:1.02rem}
+.rule{height:1px;background:var(--line);border:0;margin:0}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bone) 88%,transparent);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
+.nav .in{display:flex;align-items:center;gap:28px;height:64px}
+.mark{display:flex;align-items:center;gap:12px;text-decoration:none}
+.mark svg{width:34px;height:32px;color:var(--ink)}
+.mark b{font-family:var(--f-display);font-size:1.15rem;letter-spacing:.06em}
+.mark span{font-family:var(--f-mono);font-size:.62rem;letter-spacing:.24em;color:var(--mute);display:block;line-height:1}
+.nav nav{display:flex;gap:24px;margin-left:auto;font-size:.9rem}
+.nav nav a{text-decoration:none;color:var(--mute)}
+.nav nav a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font:500 .92rem var(--f-body);padding:12px 22px;border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:var(--bone);text-decoration:none;cursor:pointer;transition:background .2s,color .2s}
+.btn:hover{background:transparent;color:var(--ink)}
+.btn.line{background:transparent;color:var(--ink)}
+.btn.line:hover{background:var(--ink);color:var(--bone)}
+.dark .btn{border-color:var(--on-dark);background:var(--on-dark);color:var(--graphite)}
+.dark .btn:hover{background:transparent;color:var(--on-dark)}
+.dark .btn.line{background:transparent;color:var(--on-dark)}
+.dark .btn.line:hover{background:var(--on-dark);color:var(--graphite)}
+@media (max-width:980px){.nav nav{display:none}.nav .btn{margin-left:auto}}
+
+/* dark photo band */
+.dark{background:var(--graphite);color:var(--on-dark)}
+.dark .mute{color:var(--on-dark-mute)}
+
+/* hero */
+.hero{position:relative;overflow:hidden}
+.hero .photo{position:absolute;inset:0;background:url("img/hero-bento.jpg") 72% 50%/cover no-repeat}
+.hero .photo::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--graphite) 0%,color-mix(in srgb,var(--graphite) 70%,transparent) 22%,transparent 46%),linear-gradient(90deg,var(--graphite) 0%,color-mix(in srgb,var(--graphite) 86%,transparent) 34%,color-mix(in srgb,var(--graphite) 10%,transparent) 70%)}
+.hero .in{position:relative;padding-block:120px 56px;display:grid;gap:28px}
+.hero .mono{color:var(--on-dark-mute)}
+.hero h1{font-size:clamp(2.3rem,5.6vw,4.3rem);max-width:12em;font-weight:500}
+.hero h1 em{font-style:normal;color:var(--ember)}
+.hero .lede{max-width:33em;font-size:1.06rem;color:var(--on-dark)}
+.ctas{display:flex;flex-wrap:wrap;gap:12px}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid color-mix(in srgb,var(--on-dark) 22%,transparent);margin-top:48px}
+.metrics div{padding:18px 18px 0 0;display:grid;gap:4px;min-width:0}
+.metrics .num{font-size:clamp(1.5rem,3vw,2.2rem);color:var(--on-dark)}
+.metrics span:last-child{font-size:.84rem;color:var(--on-dark-mute)}
+.caption{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.06em;color:var(--on-dark-mute);text-align:right}
+@media (max-width:760px){
+  .hero .photo{background-position:62% 0;background-size:auto 56%;background-color:var(--graphite)}
+  .hero .photo::after{background:linear-gradient(180deg,transparent 0,transparent 34%,var(--graphite) 52%)}
+  .hero .in{padding-top:min(72vw,330px)}
+  .metrics{grid-template-columns:1fr 1fr}
+}
+
+/* menu spec */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.chip{font:500 .86rem var(--f-body);padding:7px 16px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bone);border-color:var(--ink)}
+.menu{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+@media (max-width:1000px){.menu{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.menu{grid-template-columns:1fr}}
+.spec{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}
+.spec figure{margin:0;aspect-ratio:4/5;overflow:hidden;background:var(--graphite)}
+.spec figure img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.spec:hover figure img{transform:scale(1.04)}
+.spec .body{padding:18px 18px 20px;display:grid;gap:10px;flex:1;align-content:start}
+.spec .code{color:var(--mute)}
+.spec h3{font-size:1.15rem}
+.prices{display:grid;gap:4px;border-top:1px solid var(--line);padding-top:10px}
+.prices div{display:flex;justify-content:space-between;gap:10px;font-size:.92rem}
+.prices .num{color:var(--ember);font-weight:500}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.06em;padding:2px 8px;border:1px solid var(--line);border-radius:999px;color:var(--mute)}
+.note{margin-top:18px;font-size:.84rem;color:var(--mute);max-width:62em}
+
+/* set ladder */
+.ladder{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;align-items:start}
+@media (max-width:900px){.ladder{grid-template-columns:1fr;gap:28px}}
+.sets{display:grid;gap:0;border-top:1px solid var(--line)}
+.set{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:56px 1fr auto;gap:16px;align-items:center;padding:18px 4px;border-bottom:1px solid var(--line)}
+.set .k{font-family:var(--f-display);font-size:1.6rem;color:var(--mute)}
+.set b{display:block;font-weight:500}
+.set small{color:var(--mute);font-size:.86rem}
+.set .p{font-family:var(--f-mono);font-size:1.3rem}
+.set[aria-pressed="true"] .k,.set[aria-pressed="true"] .p{color:var(--ember)}
+.set:focus-visible{outline:2px solid var(--ember);outline-offset:-2px}
+.compare{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:28px;display:grid;gap:22px}
+.bars{display:grid;gap:14px}
+.bar{display:grid;grid-template-columns:96px 1fr 92px;gap:12px;align-items:center;font-size:.9rem}
+.bar .track{height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar .track{display:block}
+.bar .fill{display:block;height:100%;background:var(--ink);border-radius:999px;transition:width .4s ease}
+.bar .fill.ember{background:var(--ember)}
+.bar .num{text-align:right}
+.items{display:grid;gap:6px;font-size:.92rem}
+.items div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed var(--line);padding-bottom:6px}
+
+/* timeline */
+.flow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}
+@media (max-width:900px){.flow{grid-template-columns:1fr;gap:32px}}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:0;position:relative}
+.steps::before{content:"";position:absolute;left:62px;top:8px;bottom:8px;width:1px;background:color-mix(in srgb,var(--on-dark) 22%,transparent)}
+.steps li{display:grid;grid-template-columns:54px 1fr;gap:28px;padding-block:14px;cursor:pointer;position:relative}
+.steps li .t{font-family:var(--f-mono);font-size:.82rem;color:var(--on-dark-mute);padding-top:2px}
+.steps li::after{content:"";position:absolute;left:58px;top:22px;width:9px;height:9px;border-radius:50%;background:var(--graphite);border:1px solid var(--on-dark-mute)}
+.steps li[aria-current="step"]::after{background:var(--ember);border-color:var(--ember)}
+.steps li b{font-weight:500;display:block}
+.steps li span{color:var(--on-dark-mute);font-size:.9rem}
+.steps li[aria-current="step"] b{color:var(--ember)}
+.console{border:1px solid color-mix(in srgb,var(--on-dark) 18%,transparent);border-radius:var(--r);background:color-mix(in srgb,var(--on-dark) 4%,transparent);padding:22px;display:grid;gap:18px;font-family:var(--f-mono);font-size:.82rem}
+.console .row{display:flex;justify-content:space-between;gap:12px;color:var(--on-dark-mute)}
+.console .row b{color:var(--on-dark);font-weight:500}
+.console .meter{height:6px;background:color-mix(in srgb,var(--on-dark) 14%,transparent);border-radius:999px;overflow:hidden}
+.console .meter i{display:block;height:100%;background:var(--ember);transition:width .5s ease}
+.console .log{border-top:1px solid color-mix(in srgb,var(--on-dark) 14%,transparent);padding-top:14px;color:var(--on-dark);min-height:3.4em}
+.console .tagline{color:var(--on-dark-mute);font-size:.7rem}
+
+/* brand family */
+.family{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;background:var(--line);border:1px solid var(--line)}
+@media (max-width:760px){.family{grid-template-columns:1fr 1fr}}
+.family article{position:relative;background:var(--graphite);aspect-ratio:4/5;overflow:hidden;color:var(--on-dark)}
+.family img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.88;transition:opacity .4s,transform .6s}
+.family article:hover img{opacity:1;transform:scale(1.03)}
+.family .cap{position:absolute;left:0;right:0;bottom:0;padding:18px;background:linear-gradient(0deg,rgba(10,11,12,.86),rgba(10,11,12,0));display:grid;gap:2px}
+.family .cap .mono{color:#C9C4BA;font-size:.66rem}
+.family .cap b{font-family:var(--f-display);font-size:1.2rem;font-weight:700;color:#F3EFE8}
+.family .cap span{font-size:.84rem;color:#D8D3CA}
+.family .tm{position:absolute;top:12px;right:12px;font-family:var(--f-mono);font-size:.62rem;padding:2px 8px;border:1px solid rgba(243,239,232,.5);border-radius:999px;color:#F3EFE8;background:rgba(10,11,12,.4)}
+.plus{margin-top:2px;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;padding:22px 24px;background:var(--surface);border:1px solid var(--line)}
+.plus b{font-family:var(--f-display);font-size:1.15rem}
+
+/* trust */
+.trust{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}
+@media (max-width:900px){.trust{grid-template-columns:1fr;gap:32px}}
+.trust figure{margin:0;position:sticky;top:96px;display:grid;gap:8px}
+.trust figure img{border-radius:var(--r);aspect-ratio:16/10;object-fit:cover;width:100%}
+.trust figure figcaption{font-family:var(--f-mono);font-size:.68rem;color:var(--mute)}
+@media (max-width:900px){.trust figure{position:static}}
+.checks{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.checks li{display:grid;grid-template-columns:72px 1fr;gap:18px;padding:16px 0;border-bottom:1px solid var(--line)}
+.checks .code{font-family:var(--f-mono);font-size:.74rem;color:var(--jade);padding-top:3px}
+.checks b{display:block;font-weight:500}
+.checks span{color:var(--mute);font-size:.9rem}
+
+/* model */
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--ink)}
+@media (max-width:860px){.three{grid-template-columns:1fr}}
+.three article{padding:28px 28px 28px 0;display:grid;gap:12px;align-content:start;min-width:0}
+.three article+article{border-left:1px solid var(--line);padding-left:28px}
+@media (max-width:860px){.three article,.three article+article{border-left:0;padding:24px 0;border-bottom:1px solid var(--line)}}
+.three .mono{color:var(--jade)}
+.three ul{margin:0;padding-left:1.1em;display:grid;gap:4px;color:var(--mute);font-size:.94rem}
+.chain{margin-top:36px;overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.chain ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(140px,1fr));min-width:760px}
+.chain li{padding:18px;display:grid;gap:2px;border-right:1px solid var(--line);position:relative}
+.chain li:last-child{border-right:0}
+.chain li .mono{color:var(--mute);font-size:.66rem}
+.chain li.me{background:var(--ink);color:var(--bone)}
+.chain li.me .mono{color:var(--bone);opacity:.7}
+.chain .foot{min-width:760px;padding:12px 18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;font-size:.84rem;color:var(--mute)}
+.chain .foot b{color:var(--ember);font-weight:500}
+
+/* terms & budget */
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px}
+@media (max-width:900px){.cols{grid-template-columns:1fr;gap:40px}}
+.spec-table{width:100%;border-collapse:collapse;font-size:.94rem}
+.spec-table th,.spec-table td{text-align:left;vertical-align:top;padding:14px 0;border-bottom:1px solid var(--line)}
+.spec-table th{width:34%;font-weight:500;padding-right:16px}
+.spec-table td .num{color:var(--ink);font-weight:500}
+.budget{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);background:var(--surface);border-radius:var(--r)}
+.budget div{padding:22px;display:grid;gap:4px;border-bottom:1px solid var(--line)}
+.budget div:nth-child(odd){border-right:1px solid var(--line)}
+.budget div:nth-child(n+3){border-bottom:0}
+.budget .num{font-size:2rem;line-height:1.1}
+.budget .num small{font-size:.5em;color:var(--mute);margin-left:4px}
+.budget .mono{font-size:.66rem;color:var(--jade)}
+.budget .mono.keep{color:var(--ember)}
+.total{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-top:18px}
+.total .num{font-size:2.6rem}
+.calc{margin-top:36px;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:26px;display:grid;gap:20px}
+.calc label{display:flex;justify-content:space-between;gap:12px;font-weight:500}
+.calc output{font-family:var(--f-mono);color:var(--ember)}
+input[type=range]{width:100%;accent-color:var(--ember)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:.94rem;cursor:pointer}
+.check input{width:18px;height:18px;margin-top:4px;accent-color:var(--jade)}
+.calc .big{font-family:var(--f-mono);font-size:clamp(2.2rem,5vw,3rem);line-height:1}
+.calc .big small{font-size:.38em;color:var(--mute);margin-left:6px}
+.stack{display:flex;height:8px;border-radius:999px;overflow:hidden;background:var(--line);gap:2px}
+.stack i{display:block;height:100%;transition:width .4s}
+.lines{display:grid;font-size:.9rem}
+.lines div{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line)}
+.lines div span:last-child{font-family:var(--f-mono);white-space:nowrap}
+.lines i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:8px;vertical-align:middle}
+
+/* regions */
+.regions{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:56px;align-items:start}
+@media (max-width:900px){.regions{grid-template-columns:1fr;gap:32px}}
+.lat{position:relative;border-left:1px solid color-mix(in srgb,var(--on-dark) 25%,transparent);margin-left:84px;height:520px}
+.lat .stop{position:absolute;left:0;transform:translateY(-50%);display:flex;align-items:center;gap:18px;width:calc(100% + 0px)}
+.lat .stop::before{content:"";width:11px;height:11px;border-radius:50%;background:var(--graphite);border:1px solid var(--on-dark);margin-left:-6px;flex:0 0 auto}
+.lat .stop .deg{position:absolute;right:calc(100% + 18px);font-family:var(--f-mono);font-size:.74rem;color:var(--on-dark-mute);white-space:nowrap}
+.lat .stop b{font-weight:500}
+.lat .stop span{font-family:var(--f-mono);font-size:.7rem;color:var(--on-dark-mute)}
+.lat .tick{position:absolute;left:-4px;width:8px;height:1px;background:color-mix(in srgb,var(--on-dark) 25%,transparent)}
+.hosp{margin-top:28px;display:flex;align-items:center;gap:14px;padding:16px 18px;border:1px solid color-mix(in srgb,var(--on-dark) 22%,transparent);border-radius:var(--r)}
+.hosp i{width:11px;height:11px;border-radius:50%;background:var(--ember);flex:0 0 auto}
+.regions figure{margin:0;display:grid;gap:8px}
+.regions figure img{border-radius:var(--r);aspect-ratio:4/3;object-fit:cover;width:100%}
+.regions figcaption{font-family:var(--f-mono);font-size:.68rem;color:var(--on-dark-mute)}
+@media (max-width:520px){.lat{margin-left:64px;height:480px}}
+
+/* street */
+.street{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media (max-width:760px){.street{grid-template-columns:1fr}}
+.store{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);overflow:hidden;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
+.store img{width:100%;height:100%;object-fit:cover;min-height:240px}
+.store div{padding:24px;display:grid;gap:10px;align-content:start}
+.store ul{margin:0;padding-left:1.1em;color:var(--mute);font-size:.92rem;display:grid;gap:4px}
+@media (max-width:520px){.store{grid-template-columns:1fr}.store img{min-height:0;aspect-ratio:16/10}}
+
+/* route */
+.route{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);counter-reset:r}
+@media (max-width:900px){.route{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.route{grid-template-columns:1fr}}
+.route li{counter-increment:r;padding:22px 20px 22px 0;border-bottom:1px solid var(--line);display:grid;gap:6px;align-content:start;min-width:0}
+.route li::before{content:counter(r,decimal-leading-zero);font-family:var(--f-mono);font-size:.78rem;color:var(--jade)}
+.route b{font-weight:500}
+.route span{color:var(--mute);font-size:.88rem}
+
+/* trial */
+.trial{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:420px}
+.trial .ph{background:url("img/breakfast.jpg") center/cover no-repeat}
+.trial .tx{padding:64px max(20px,6vw);display:grid;gap:18px;align-content:center}
+.trial h2{font-weight:500}
+.trial h2 em{font-style:normal;color:var(--ember)}
+@media (max-width:760px){.trial{grid-template-columns:1fr}.trial .ph{min-height:300px}.trial .tx{padding:40px max(20px,env(safe-area-inset-left,0px))}}
+
+/* contact */
+.contact{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:40px}
+@media (max-width:900px){.contact{grid-template-columns:1fr}}
+form{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+form .full{grid-column:1/-1}
+@media (max-width:600px){form{grid-template-columns:1fr}}
+.field{display:grid;gap:6px}
+.field label{font-size:.86rem;color:var(--mute)}
+input[type=text],input[type=tel],input[type=email],select,textarea{width:100%;font:400 1rem var(--f-body);padding:12px 0;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);border-radius:0}
+input:focus,select:focus,textarea:focus{outline:none;border-bottom-color:var(--ink)}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),linear-gradient(135deg,var(--mute) 50%,transparent 50%);background-position:calc(100% - 12px) 50%,calc(100% - 7px) 50%;background-size:5px 5px;background-repeat:no-repeat}
+textarea{min-height:88px;resize:vertical}
+#summary{grid-column:1/-1;white-space:pre-wrap;font-family:var(--f-mono);font-size:.8rem;background:var(--surface);border:1px solid var(--line);padding:16px;margin:0;user-select:all;border-radius:var(--r)}
+.err{color:var(--ember);font-size:.86rem}
+.direct{display:grid;gap:16px;align-content:start}
+.card{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:20px;display:grid;gap:8px}
+.card .v{font-family:var(--f-mono);font-size:1.1rem;user-select:all;overflow-wrap:anywhere}
+.card img{width:160px;height:160px;background:#fff;padding:8px;border:1px solid var(--line)}
+.copy{justify-self:start;font:500 .8rem var(--f-body);padding:5px 14px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);cursor:pointer;text-decoration:none;display:inline-block}
+.copy:hover{border-color:var(--ink)}
+
+footer{margin-top:96px;padding-block:40px 56px;border-top:1px solid var(--line);font-size:.82rem;color:var(--mute)}
+footer .in{display:grid;gap:10px}
+footer b{color:var(--ink);font-weight:500}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="mk" viewBox="0 0 120 112">
+      <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round">
+        <path d="M44 28c-5-5 5-9 0-16"/><path d="M60 26c-5-6 5-10 0-18"/><path d="M76 28c-5-5 5-9 0-16"/>
+        <rect x="10" y="38" width="100" height="66" rx="14"/>
+        <path d="M10 71h100M43.3 38v66M76.6 38v66M54 55h12"/>
+      </g>
+      <text x="60" y="95" text-anchor="middle" font-family="Noto Serif TC, serif" font-weight="700" font-size="19" fill="currentColor">卯</text>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="in">
+    <a class="mark" href="#top" aria-label="卯很多 首頁"><svg aria-hidden="true"><use href="#mk"/></svg><span><b>卯很多</b><span>MAO MANY</span></span></a>
+    <nav aria-label="主要">
+      <a href="#menu">菜單規格</a>
+      <a href="#system">營運系統</a>
+      <a href="#trust">食安</a>
+      <a href="#model">合作模式</a>
+      <a href="#terms">條件與預算</a>
+      <a href="#regions">招募區域</a>
+    </nav>
+    <a class="btn" href="#contact">預約見習</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero dark" style="padding:0">
+    <div class="photo" role="img" aria-label="六格便當：滷肉飯、刈包、煎餃、青菜、滷蛋與紅茶"></div>
+    <div class="in">
+      <p class="mono">MAO MANY · CLOSED-MARKET FOOD PLATFORM</p>
+      <h1>一個窗口，<br>走進科技廠的<em>餐桌</em>。</h1>
+      <p class="lede">卯很多由品富餐飲主導、卯食團隊合夥。品牌、供應鏈、入廠資格與數位營運，平台先準備好；你專心把每一餐做好。</p>
+      <div class="ctas"><a class="btn" href="#contact">預約三天見習</a><a class="btn line" href="#terms">試算準備資金</a></div>
+      <div class="metrics">
+        <div><span class="num">2013</span><span>品富前身紅屋食品創立</span></div>
+        <div><span class="num">14</span><span>處食品業者登錄</span></div>
+        <div><span class="num">4 / 8</span><span>現行場域 / 營運櫃位</span></div>
+        <div><span class="num">7</span><span>個招募區域</span></div>
+      </div>
+      <p class="caption">示意圖</p>
+    </div>
+  </section>
+
+  <section id="menu">
+    <div class="in">
+      <div class="head">
+        <p class="mono">01 · Menu as Spec</p>
+        <h2>菜單就是規格書</h2>
+        <p>七個主力品項，少品項、好備料、一人可營運。每一張卡片都寫清楚售價、時段與所屬品牌，你接手的是一份可以照做的規格。</p>
+      </div>
+      <div class="filters" role="group" aria-label="依時段篩選">
+        <button class="chip" type="button" data-f="all" aria-pressed="true">全部</button>
+        <button class="chip" type="button" data-f="早餐" aria-pressed="false">早餐</button>
+        <button class="chip" type="button" data-f="午餐" aria-pressed="false">午餐</button>
+        <button class="chip" type="button" data-f="下午茶" aria-pressed="false">下午茶</button>
+      </div>
+      <div class="menu" id="menu-grid"></div>
+      <p class="note">售價取自 Partner 365 單店模型；園區櫃位售價依場域另訂，廠內售價可能有折扣。商品照片為示意圖，實際商品以門市供應為準。</p>
+    </div>
+  </section>
+
+  <section id="sets">
+    <div class="in ladder">
+      <div>
+        <div class="head" style="margin-bottom:28px">
+          <p class="mono">02 · Set Ladder</p>
+          <h2>四級套餐，讓客人不用想</h2>
+          <p>套餐固定綁一杯飲品，縮短點餐決策、穩定客單價。點一個套餐，看它和單點的差距。</p>
+        </div>
+        <div class="sets" id="sets-list" role="group" aria-label="套餐"></div>
+      </div>
+      <div class="compare" aria-live="polite">
+        <div><p class="mono mute" id="set-name"></p><h3 id="set-title" style="font-size:1.5rem;margin-top:6px"></h3></div>
+        <div class="items" id="set-items"></div>
+        <div class="bars">
+          <div class="bar"><span>單點合計</span><span class="track"><span class="fill" id="bar-sum"></span></span><span class="num" id="v-sum"></span></div>
+          <div class="bar"><span>套餐價</span><span class="track"><span class="fill ember" id="bar-set"></span></span><span class="num" id="v-set"></span></div>
+        </div>
+        <p class="small mute" id="set-note"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="system" class="dark" style="margin-top:96px;padding-block:96px">
+    <div class="in flow">
+      <div>
+        <div class="head">
+          <p class="mono" style="color:var(--on-dark-mute)">03 · Ordering System</p>
+          <h2>把排隊變成數據</h2>
+          <p class="mute">快取GO 預訂系統把前一天的預購，變成隔天的備料量與人力班表。預訂越多，報廢越少、尖峰越短。</p>
+        </div>
+        <ol class="steps" id="steps"></ol>
+      </div>
+      <div class="console" aria-live="polite">
+        <div class="row"><span>快取GO · 科技廠櫃位</span><span id="c-clock" class="num"></span></div>
+        <div class="row"><span>預訂占比目標</span><b>30–45%</b></div>
+        <div class="meter"><i id="c-meter" style="width:0"></i></div>
+        <div class="row"><span>現場取餐等待目標</span><b>&lt; 3 分鐘</b></div>
+        <div class="row"><span>點餐介面</span><b>中文 / English / Filipino</b></div>
+        <div class="log" id="c-log"></div>
+        <p class="tagline">介面示意。目標值取自品富場域營運規劃，非保證數字。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="brands">
+    <div class="in">
+      <div class="head">
+        <p class="mono">04 · Brand Family</p>
+        <h2>卯起來六格品牌家族</h2>
+        <p>一個便當六格，一格一個品牌。上排品富「一」系列，下排卯食「卯」系列，在輪動櫃與街邊店輪流上場，共用後廚與供應鏈。</p>
+      </div>
+      <div class="family" id="family"></div>
+      <div class="plus"><b>＋ 市場一、二線品牌</b><span class="mute">依場域客群與品類缺口媒合，品類涵蓋水餃鍋貼、麵食、咖啡輕食、烘焙。品牌名單與授權條件於當面洽談時提供。</span></div>
+    </div>
+  </section>
+
+  <section id="trust">
+    <div class="in trust">
+      <figure>
+        <img src="img/kitchen.jpg" alt="不鏽鋼中央廚房，冷藏設備與標準化備料">
+        <figcaption>協力中央廚房 · 示意圖</figcaption>
+      </figure>
+      <div>
+        <div class="head" style="margin-bottom:28px">
+          <p class="mono">05 · Verifiable Trust</p>
+          <h2>信任，來自可以被檢查的東西</h2>
+          <p>封閉場域的業主會稽核，所以品富把每一項食安承諾寫成可以查的紀錄。</p>
+        </div>
+        <ul class="checks">
+          <li><span class="code">REG-14</span><div><b>14 處食品業者登錄</b><span>台中科技廊帶 6 處、新竹科學園區 4 處、中南部策略布點 4 處</span></div></li>
+          <li><span class="code">SGS-M</span><div><b>SGS 月度衛生稽核</b><span>每月稽核並做成品採樣檢驗</span></div></li>
+          <li><span class="code">KEEP-48</span><div><b>留樣 48 小時</b><span>完整追蹤紀錄，可回溯每一批出餐</span></div></li>
+          <li><span class="code">ALERT-24</span><div><b>食安事件 24 小時應報</b><span>追蹤改善直到結案</span></div></li>
+          <li><span class="code">PEST-M</span><div><b>每月病媒防治</b><span>廚房內、外場各一次</span></div></li>
+          <li><span class="code">INS-3</span><div><b>全櫃投保三險</b><span>產品責任險、商業火險、公共意外險</span></div></li>
+          <li><span class="code">HACCP</span><div><b>協力中央廚房</b><span>HACCP 認證、冷鏈配送、半成品標準化供應</span></div></li>
+          <li><span class="code">STAFF</span><div><b>人員資格年度更新</b><span>廚務人員健檢、勞保、衛生講習</span></div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="model">
+    <div class="in">
+      <div class="head">
+        <p class="mono">06 · Partnership</p>
+        <h2>品富主導，卯食合夥，你經營</h2>
+        <p>上游條件原數轉給你，卯很多只加收平台服務費，每一層的責任寫在合約上。</p>
+      </div>
+      <div class="three">
+        <article><span class="mono">Lead · 品富餐飲</span><h3>拿到櫃位，管好合約</h3><ul><li>對接業主與團膳承包商</li><li>代辦入廠資格與人員入廠證</li><li>合約、對帳與背對背撥款</li><li>食安稽核與中央採購</li></ul></article>
+        <article><span class="mono">Partner · 卯食團隊</span><h3>給你品牌，帶你開店</h3><ul><li>卯系列品牌授權與菜單研發</li><li>試菜、SOP 與共用後廚流程</li><li>逢甲訓練基地見習</li><li>開幕後 365 天營運陪跑</li></ul></article>
+        <article><span class="mono">Operator · 你</span><h3>做好每一餐</h3><ul><li>現場人力、排班與出餐</li><li>準備開辦預算與周轉金</li><li>承擔營運盈虧</li><li>表現達標，後續新案優先承接</li></ul></article>
+      </div>
+      <div class="chain" role="region" aria-label="合約鏈" tabindex="0">
+        <ol>
+          <li><span class="mono">Owner</span><b>廠區業主</b><span class="small mute">科技廠 · 醫院</span></li>
+          <li><span class="mono">Contractor</span><b>團膳承包商</b><span class="small mute">員工餐廳經營方</span></li>
+          <li><span class="mono">Brand</span><b>品牌商</b><span class="small mute">部分案件才有</span></li>
+          <li class="me"><span class="mono">Platform</span><b>卯很多</b><span class="small">品富主導 · 接案方</span></li>
+          <li><span class="mono">Operator</span><b>經營夥伴</b><span class="small mute">你</span></li>
+        </ol>
+        <div class="foot"><span>簽約方向 →</span><span>← 款項：卯很多實際收到上游款項後 <b>10</b> 個日曆天內撥付</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="terms">
+    <div class="in">
+      <div class="head">
+        <p class="mono">07 · Terms &amp; Budget</p>
+        <h2>條件與開辦預算，一次攤開</h2>
+        <p>所有費用均為未稅金額，條件以正式合約為準。每個新案只更換「上游條件附表」。</p>
+      </div>
+      <div class="cols">
+        <table class="spec-table">
+          <caption class="mono mute" style="text-align:left;padding-bottom:10px">Standard Terms</caption>
+          <tbody>
+            <tr><th>平台服務費</th><td>上游抽成 <span class="num">＋3%</span>（自有品牌）／<span class="num">＋6%</span>（卯很多品牌品項）</td></tr>
+            <tr><th>月保底</th><td><span class="num">12,000</span>／<span class="num">21,000</span> 元，第 3 個月起算，策略案可豁免</td></tr>
+            <tr><th>撥款</th><td>收到上游款項後 <span class="num">10</span> 個日曆天內，背對背</td></tr>
+            <tr><th>轉嫁費用</th><td>管理費、POS、電子支付手續費等原價轉嫁，附對帳單影本</td></tr>
+            <tr><th>上游押金（個案）</th><td>高於保證金的差額列於該案附表，原數轉付</td></tr>
+            <tr><th>費用稅別</th><td>加盟金、進場服務費、物料費另加 <span class="num">5%</span> 營業稅；保證金不計稅</td></tr>
+            <tr><th>夥伴資格</th><td>可開立統一發票、完成食品業者登錄、員工有勞保或團保</td></tr>
+            <tr><th>加盟揭露</th><td>加盟案簽約前提供加盟資訊揭露書</td></tr>
+          </tbody>
+        </table>
+        <div>
+          <p class="mono mute" style="margin-bottom:10px">Startup Budget · 未稅</p>
+          <div class="budget">
+            <div><span class="mono">Refundable</span><b>保證金</b><span class="num">10<small>萬</small></span><span class="small mute">合約結束後 90 天內退還</span></div>
+            <div><span class="mono keep">Non-refundable</span><b>加盟金</b><span class="num">10<small>萬</small></span><span class="small mute">品牌授權與加盟資格</span></div>
+            <div><span class="mono keep">Non-refundable</span><b>進場服務費</b><span class="num">10<small>萬</small></span><span class="small mute">媒合、入廠代辦、開辦輔導</span></div>
+            <div><span class="mono">Credit</span><b>物料費</b><span class="num">20<small>萬</small></span><span class="small mute">預付，叫貨時扣抵</span></div>
+          </div>
+          <div class="total"><span class="num">50 萬</span><span class="mute small">開辦預算合計（未稅）。另加營業稅 2 萬，含稅 52 萬；其中 30 萬可退或可抵用。</span></div>
+        </div>
+      </div>
+
+      <div class="calc" id="calc">
+        <div style="display:grid;gap:4px"><p class="mono" style="color:var(--jade)">Cash Planner</p><h3>開幕後，要準備多少資金</h3><p class="small mute">上游帳期加上撥款的 10 天，會壓住約一個半月的營業額；資金最緊的一天在第二期款入帳前。</p></div>
+        <div class="cols" style="gap:40px">
+          <div style="display:grid;gap:18px;align-content:start">
+            <div class="field" style="gap:10px"><label for="g-rev">月營業額 <output id="o-rev" for="g-rev"></output></label><input type="range" id="g-rev" min="30" max="80" step="1" value="50"><span class="small mute">試算範圍 30–80 萬，不外推</span></div>
+            <label class="check"><input type="checkbox" id="g-cash"> 食材現金進貨（沒有月結）</label>
+            <p class="small mute">範例案假設：食材 35%、人事 25%、包材雜支 5%、電子支付 1.5%，食材月結、薪資次月 10 日發放。周轉部分依 30／50／80 萬三個情境內插；現金進貨增加額約為月營業額 45%。物料費可抵初期叫貨，實際需求可能較低。僅估資金需求，不代表獲利。</p>
+          </div>
+          <div style="display:grid;gap:16px;align-content:start" aria-live="polite">
+            <p class="small mute">建議準備資金</p>
+            <p class="big" id="g-total"></p>
+            <div class="stack" id="g-stack" aria-hidden="true"></div>
+            <div class="lines" id="g-lines"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="regions" class="dark" style="margin-top:96px;padding-block:96px">
+    <div class="in regions">
+      <div>
+        <div class="head">
+          <p class="mono" style="color:var(--on-dark-mute)">08 · Recruiting Regions</p>
+          <h2>沿著科學園區，由北到南</h2>
+          <p class="mute">依招商規範，公開管道只寫區域與品類；業主名稱與上游條件附表，在當面洽談時提供。</p>
+        </div>
+        <div class="lat" id="lat" role="list" aria-label="招募區域依緯度排列"></div>
+        <div class="hosp"><i></i><div><b style="font-weight:500">醫院體系美食街</b><span class="mute small" style="display:block">全區招募</span></div></div>
+      </div>
+      <figure>
+        <img src="img/cafeteria.jpg" alt="科技廠員工餐廳櫃位與點餐平板">
+        <figcaption>科技廠員工餐廳櫃位 · 示意圖</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="street">
+    <div class="in">
+      <div class="head">
+        <p class="mono">09 · Street Stores</p>
+        <h2>卯起來，也開在街上</h2>
+        <p>卯起來六格品牌家族同步招募街邊店。前台各品牌保持自己的招牌，後台共用人力、設備、倉儲、採購與數位系統。</p>
+      </div>
+      <div class="street">
+        <article class="store"><img src="img/guabao.jpg" alt="刈包"><div><span class="mono" style="color:var(--jade)">Standard</span><h3>標準店</h3><ul><li>一般商圈店面</li><li>早餐、午餐、下午茶三段營收</li><li>少品項，一人可營運</li></ul><p class="small mute">費用另洽</p></div></article>
+        <article class="store"><img src="img/lurou.jpg" alt="滷肉飯"><div><span class="mono" style="color:var(--ember)">Flagship</span><h3>旗艦店</h3><ul><li>大坪數、品牌展示</li><li>六格品牌完整呈現</li><li>新品與快閃的測試場</li></ul><p class="small mute">費用另洽</p></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="route">
+    <div class="in">
+      <div class="head">
+        <p class="mono">10 · Route to Opening</p>
+        <h2>從洽談到開幕</h2>
+        <p>每一案走同一套流程。中情境的夥伴營業利益率低於 8% 的案件，卯很多不拿出來招商。</p>
+      </div>
+      <ol class="route">
+        <li><b>收上游條件</b><span>缺一項不進入試算</span></li>
+        <li><b>三情境試算</b><span>低、中、高營業額與資金最深點</span></li>
+        <li><b>門檻篩選</b><span>&lt;8% 不接，8～12% 重談，&gt;12% 可接</span></li>
+        <li><b>定費率</b><span>＋3%、＋6% 或供貨價差</span></li>
+        <li><b>當面洽談</b><span>提供業主名稱與附表</span></li>
+        <li><b>資格審核</b><span>發票、登錄、勞保團保、資金</span></li>
+        <li><b>揭露書與簽約</b><span>加盟案先給揭露書</span></li>
+        <li><b>入廠與開幕</b><span>代辦入廠、試菜、開幕</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="dark trial" style="margin-top:96px;padding:0">
+    <div class="ph" role="img" aria-label="早晨的刈包與熱茶"></div>
+    <div class="tx">
+      <p class="mono mute">Try before you sign</p>
+      <h2>先吃再加入：<br><em>三天見習</em>，不收費不綁約</h2>
+      <p class="mute">到卯食逢甲訓練基地實際出餐三天：站位、尖峰出餐、日結與盤點、共用後廚動線，和現任經營者面對面。覺得適合，再談櫃位。</p>
+      <div class="ctas"><a class="btn" href="#contact">預約見習</a><a class="btn line" href="https://line.me/ti/p/ufL_knmKC9" target="_blank" rel="noopener">LINE 洽談</a></div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="in">
+      <div class="head">
+        <p class="mono">11 · Contact</p>
+        <h2>預約洽談或見習</h2>
+        <p>填好後產生一份洽談摘要，複製後傳 LINE 或寄信給我們。</p>
+      </div>
+      <div class="contact">
+        <form id="lead" novalidate>
+          <div class="field"><label for="l-name">聯絡人</label><input type="text" id="l-name" autocomplete="name"></div>
+          <div class="field"><label for="l-tel">手機</label><input type="tel" id="l-tel" autocomplete="tel" inputmode="tel" placeholder="09xx-xxx-xxx"></div>
+          <div class="field"><label for="l-co">公司或行號</label><input type="text" id="l-co" autocomplete="organization"></div>
+          <div class="field"><label for="l-mail">Email</label><input type="email" id="l-mail" autocomplete="email"></div>
+          <div class="field"><label for="l-type">想了解</label><select id="l-type"><option>園區櫃位（六格品牌）</option><option>園區櫃位（一、二線品牌）</option><option>街邊店：標準店</option><option>街邊店：旗艦店</option><option>三天見習</option></select></div>
+          <div class="field"><label for="l-area">意向區域</label><select id="l-area"><option>新竹科學園區</option><option>新竹科學園區銅鑼園區</option><option selected>台中科學園區</option><option>台中精密園區</option><option>南部科學園區嘉義園區</option><option>南部科學園區</option><option>醫院體系美食街</option><option>街邊店（自選地點）</option></select></div>
+          <div class="field full"><label for="l-exp">餐飲經營經驗</label><textarea id="l-exp" placeholder="例如：經營麵店 3 年，目前 2 名正職"></textarea></div>
+          <div class="full" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap"><button class="btn" type="submit">產生洽談摘要</button><span class="err" id="l-err" role="alert"></span></div>
+          <pre id="summary" hidden></pre>
+          <button class="copy full" type="button" id="copy-sum" hidden>複製摘要</button>
+        </form>
+        <div class="direct">
+          <div class="card"><span class="mono mute">LINE</span><img src="img/qr-line.png" alt="LINE 加好友 QR Code" width="160" height="160"><span class="v" id="v-line">abingo2025</span><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="copy" type="button" data-copy="v-line">複製 ID</button><a class="copy" href="https://line.me/ti/p/ufL_knmKC9" target="_blank" rel="noopener">開啟 LINE</a></span></div>
+          <div class="card"><span class="mono mute">Phone · 楊進德 Dirk</span><span class="v" id="v-tel">0989-470806</span><button class="copy" type="button" data-copy="v-tel">複製</button></div>
+          <div class="card"><span class="mono mute">Email</span><span class="v" id="v-mail">contact@pinfu.tw</span><button class="copy" type="button" data-copy="v-mail">複製</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="in">
+    <p><b>卯很多 MAO MANY</b> · 品富餐飲服務股份有限公司主導 · 卯食團隊合夥</p>
+    <p>本頁商品與場景照片為示意圖，實際商品以門市供應為準。所有費用為未稅金額，條件以正式合約與加盟資訊揭露書為準。試算僅估資金需求，不構成獲利保證；經營夥伴承擔營運盈虧與資金風險。</p>
+    <p>LINE abingo2025 · 0989-470806 · contact@pinfu.tw · © 2026 品富餐飲服務</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var esc = function(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+
+  /* 01 菜單規格：售價取自 Partner 365 爆款 7 品 */
+  var MENU = [
+    {code:'SKU 01–03', name:'刈包三味', brand:'卯食', img:'guabao', slots:['早餐','午餐'], prices:[['滷肉刈包',55],['控肉刈包',65],['雞腿刈包',75]]},
+    {code:'SKU 04–05', name:'麵線', brand:'卯食', img:'mianxian', slots:['午餐'], prices:[['大腸麵線',70],['綜合麵線',85]]},
+    {code:'SKU 06', name:'滷味拼盤', brand:'卯食', img:'luwei', slots:['午餐','下午茶'], prices:[['滷味拼盤',60]]},
+    {code:'SKU 07', name:'一杯紅飲品', brand:'一杯紅', img:'tea', slots:['早餐','午餐','下午茶'], prices:[['天然茶底飲品','35 起']]}
+  ];
+  function renderMenu(f){
+    $('menu-grid').innerHTML = MENU.filter(function(m){ return f === 'all' || m.slots.indexOf(f) > -1; }).map(function(m){
+      return '<article class="spec"><figure><img src="img/' + m.img + '.jpg" alt="' + esc(m.name) + '"></figure><div class="body">' +
+        '<span class="mono code">' + m.code + ' · ' + esc(m.brand) + '</span><h3>' + esc(m.name) + '</h3>' +
+        '<div class="tags">' + m.slots.map(function(s){ return '<span class="tag">' + s + '</span>'; }).join('') + '</div>' +
+        '<div class="prices">' + m.prices.map(function(p){ return '<div><span>' + esc(p[0]) + '</span><span class="num">$' + p[1] + '</span></div>'; }).join('') + '</div></div></article>';
+    }).join('');
+  }
+  document.querySelectorAll('.filters .chip').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.filters .chip').forEach(function(x){ x.setAttribute('aria-pressed', x === b); });
+      renderMenu(b.dataset.f);
+    });
+  });
+  renderMenu('all');
+
+  /* 02 套餐階梯：一杯紅以最低價 35 元計，單點合計為「起」 */
+  var P = {'滷肉刈包':55,'控肉刈包':65,'雞腿刈包':75,'大腸麵線':70,'綜合麵線':85,'滷味拼盤':60,'紅茶':35};
+  var SETS = [
+    {k:'A', name:'經典', price:89, items:['滷肉刈包','紅茶'], role:'低門檻轉換'},
+    {k:'B', name:'人氣', price:99, items:['控肉刈包','紅茶'], role:'招牌組合'},
+    {k:'C', name:'飽足', price:129, items:['大腸麵線','滷味拼盤','紅茶'], role:'主食加購'},
+    {k:'D', name:'豪華', price:149, items:['雞腿刈包','綜合麵線','紅茶'], role:'高客單滿足'}
+  ];
+  var MAX = Math.max.apply(null, SETS.map(function(s){ return s.items.reduce(function(t,i){ return t + P[i]; }, 0); }));
+  $('sets-list').innerHTML = SETS.map(function(s, i){
+    return '<button type="button" class="set" data-i="' + i + '" aria-pressed="' + (i === 2) + '"><span class="k">' + s.k + '</span><span><b>' + s.name + '套餐</b><small>' + s.items.join('＋') + '</small></span><span class="p">$' + s.price + '</span></button>';
+  }).join('');
+  function pickSet(i){
+    var s = SETS[i], sum = s.items.reduce(function(t,x){ return t + P[x]; }, 0);
+    document.querySelectorAll('.set').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.i === String(i)); });
+    $('set-name').textContent = 'SET ' + s.k + ' · ' + s.role;
+    $('set-title').textContent = s.name + '套餐 $' + s.price;
+    $('set-items').innerHTML = s.items.map(function(x){ return '<div><span>' + x + (x === '紅茶' ? '（一杯紅）' : '') + '</span><span class="num">$' + P[x] + (x === '紅茶' ? ' 起' : '') + '</span></div>'; }).join('');
+    $('bar-sum').style.width = (sum / MAX * 100) + '%';
+    $('bar-set').style.width = (s.price / MAX * 100) + '%';
+    $('v-sum').textContent = '$' + sum + ' 起';
+    $('v-set').textContent = '$' + s.price;
+    $('set-note').textContent = '套餐比單點至少少 ' + (sum - s.price) + ' 元。飲品以一杯紅最低售價 35 元計算。';
+  }
+  $('sets-list').addEventListener('click', function(e){ var b = e.target.closest('.set'); if (b) pickSet(+b.dataset.i); });
+  pickSet(2);
+
+  /* 03 快取GO 一日流程 */
+  var FLOW = [
+    {t:'前日 15:00', b:'推播隔日菜單', s:'會員收到明天的菜單與預購入口', clock:'15:00', m:0, log:'› 推播已送出：明日菜單'},
+    {t:'09:30', b:'預訂截止', s:'預購單鎖定，換算成備料量', clock:'09:30', m:38, log:'› 預訂截止，預購單轉為備料清單'},
+    {t:'10:00', b:'備餐分區', s:'10:00–11:00 依預訂量分區備餐', clock:'10:00', m:38, log:'› 依預訂量分區備餐，現場量另備'},
+    {t:'尖峰', b:'快取優先，現場雙線', s:'預訂單走快取區，現場排隊走另一線', clock:'12:00', m:38, log:'› 預訂取餐區開放，現場雙線出餐'},
+    {t:'收班後', b:'銷售日報', s:'品項、時段、報廢回饋到隔天菜單', clock:'14:00', m:38, log:'› 日報產出：品項銷量、時段分布、報廢'}
+  ];
+  $('steps').innerHTML = FLOW.map(function(f, i){ return '<li data-i="' + i + '" tabindex="0"><span class="t">' + f.t + '</span><div><b>' + f.b + '</b><span>' + f.s + '</span></div></li>'; }).join('');
+  var cur = 0, timer = null;
+  function step(i){
+    cur = i; var f = FLOW[i];
+    document.querySelectorAll('#steps li').forEach(function(li){ if (li.dataset.i === String(i)) li.setAttribute('aria-current','step'); else li.removeAttribute('aria-current'); });
+    $('c-clock').textContent = f.clock; $('c-meter').style.width = f.m + '%'; $('c-log').textContent = f.log;
+  }
+  function auto(){ if (timer) clearInterval(timer); if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; timer = setInterval(function(){ step((cur + 1) % FLOW.length); }, 3200); }
+  $('steps').addEventListener('click', function(e){ var li = e.target.closest('li'); if (li){ step(+li.dataset.i); auto(); } });
+  $('steps').addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ var li = e.target.closest('li'); if (li){ e.preventDefault(); step(+li.dataset.i); auto(); } } });
+  step(0); auto();
+
+  /* 04 六格品牌 */
+  var FAM = [
+    ['一系列 · 品富','楊家一鍋滷','滷肉飯、便當、自助取餐','lurou',''],
+    ['一系列 · 品富','一杯紅','天然茶底，午後主力','tea',''],
+    ['一系列 · 品富','餃一局','亞洲餃：羽根煎餃、紅油拌餃','dumplings','商標檢索中'],
+    ['卯系列 · 卯食','卯食早午餐','刈包配茶，早上就卯到','breakfast',''],
+    ['卯系列 · 卯食','卯起來吃飯','科技廠飯類主力','hero-bento',''],
+    ['卯系列 · 卯食','卯剛好','標示熱量、蛋白質、鈉的輕食','healthy','商標檢索中']
+  ];
+  $('family').innerHTML = FAM.map(function(f){
+    return '<article><img src="img/' + f[3] + '.jpg" alt="' + esc(f[1]) + '" style="' + (f[3] === 'hero-bento' ? 'object-position:68% 50%' : '') + '">' + (f[4] ? '<span class="tm">' + f[4] + '</span>' : '') +
+      '<div class="cap"><span class="mono">' + f[0] + '</span><b>' + f[1] + '</b><span>' + f[2] + '</span></div></article>';
+  }).join('');
+
+  /* 07 資金試算：同第一版模型 */
+  var SRC = [[30,72.0],[50,96.0],[80,132.1]], SRC_DEP = 30, SRC_ENTRY = 5, CASH = 0.45;
+  var OPS = SRC.map(function(a){ return [a[0], Math.round((a[1] - SRC_DEP - SRC_ENTRY) * 10) / 10]; });
+  var BUD = [['保證金（可退）',10,'var(--jade)'],['加盟金',10,'var(--ink)'],['進場服務費',10,'var(--mute)'],['物料費（抵叫貨）',20,'color-mix(in srgb,var(--jade) 55%,var(--line))'],['營業稅 5%',2,'var(--line)']];
+  function op(r){ for (var i = 0; i < OPS.length - 1; i++){ var a = OPS[i], b = OPS[i+1]; if (r <= b[0]) return a[1] + (b[1] - a[1]) * (r - a[0]) / (b[0] - a[0]); } return OPS[OPS.length-1][1]; }
+  var wan = function(n){ return (Math.round(n * 10) / 10).toFixed(1) + ' 萬'; };
+  var lastGap = 0;
+  function gap(){
+    var r = +$('g-rev').value, o = op(r), c = $('g-cash').checked ? r * CASH : 0;
+    var parts = BUD.concat([['營運周轉',o,'var(--ember)']]).concat(c ? [['現金進貨增加',c,'color-mix(in srgb,var(--ember) 45%,var(--line))']] : []);
+    var total = parts.reduce(function(t,p){ return t + p[1]; }, 0); lastGap = total;
+    $('o-rev').textContent = r + ' 萬';
+    $('g-total').innerHTML = (Math.round(total * 10) / 10).toFixed(1) + '<small>萬元</small>';
+    $('g-stack').innerHTML = parts.map(function(p){ return '<i style="width:' + (p[1] / total * 100) + '%;background:' + p[2] + '"></i>'; }).join('');
+    $('g-lines').innerHTML = parts.map(function(p){ return '<div><span><i style="background:' + p[2] + '"></i>' + p[0] + '</span><span>' + wan(p[1]) + '</span></div>'; }).join('');
+  }
+  $('g-rev').addEventListener('input', gap); $('g-cash').addEventListener('change', gap); gap();
+
+  /* 08 緯度軌：約略緯度，24.9°N 到 23.0°N */
+  var AREAS = [['新竹科學園區',24.8,'新竹'],['新竹科學園區銅鑼園區',24.5,'苗栗銅鑼'],['台中科學園區',24.2,'台中'],['台中精密園區',24.1,'台中南屯'],['南部科學園區嘉義園區',23.5,'嘉義'],['南部科學園區',23.1,'台南']];
+  var TOP = 24.9, BOT = 23.0;
+  var pos = function(lat){ return (TOP - lat) / (TOP - BOT) * 100; };
+  var html = '';
+  [24.5, 24.0, 23.5].forEach(function(l){ html += '<span class="tick" style="top:' + pos(l) + '%"></span>'; });
+  AREAS.forEach(function(a, i){
+    var top = pos(a[1]);
+    html += '<div class="stop" role="listitem" style="top:' + top + '%"><span class="deg">' + a[1].toFixed(1) + '°N</span><b>' + a[0] + '</b><span>' + a[2] + '</span></div>';
+  });
+  $('lat').innerHTML = html;
+
+  /* 複製與洽談摘要 */
+  function copyText(text, btn, el){
+    var o = btn.textContent;
+    var ok = function(){ btn.textContent = '已複製'; setTimeout(function(){ btn.textContent = o; }, 1500); };
+    var fb = function(){ if (!el) return; var r = document.createRange(); r.selectNodeContents(el); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = '已選取，請按複製'; };
+    try { navigator.clipboard.writeText(text).then(ok, fb); } catch (e) { fb(); }
+  }
+  document.querySelectorAll('[data-copy]').forEach(function(b){ b.addEventListener('click', function(){ var el = $(b.dataset.copy); copyText(el.textContent, b, el); }); });
+  $('lead').addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = $('l-name').value.trim(), tel = $('l-tel').value.replace(/\s/g,'');
+    if (!name){ $('l-err').textContent = '請填寫聯絡人姓名。'; $('l-name').focus(); return; }
+    if (!/^09\d{2}-?\d{3}-?\d{3}$/.test(tel)){ $('l-err').textContent = '手機格式應為 09 開頭共 10 碼，例如 0912-345-678。'; $('l-tel').focus(); return; }
+    $('l-err').textContent = '';
+    $('summary').textContent = ['【卯很多 經營夥伴洽談】','聯絡人：' + name,'手機：' + tel,'公司／行號：' + ($('l-co').value.trim() || '未填'),'Email：' + ($('l-mail').value.trim() || '未填'),'想了解：' + $('l-type').value,'意向區域：' + $('l-area').value,'資金試算：' + wan(lastGap) + '（月營業額 ' + $('g-rev').value + ' 萬情境）','經驗：' + ($('l-exp').value.trim() || '未填'),'請傳 LINE（ID：abingo2025）或寄至 contact@pinfu.tw'].join('\n');
+    $('summary').hidden = false; $('copy-sum').hidden = false;
+  });
+  $('copy-sum').addEventListener('click', function(){ copyText($('summary').textContent, $('copy-sum'), $('summary')); });
+})();
+</script>
+<!--BODY-END-->
+</body>
+</html>
