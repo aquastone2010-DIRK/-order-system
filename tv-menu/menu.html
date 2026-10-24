@@ -5,16 +5,19 @@
 <title>楊家一鍋滷 電視菜單</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
 <style>
-  /* 畫布固定 1920x1080（Full HD），左 2/3 菜單 1280px，右 1/3 影片 640px */
+  /* 畫布固定 1920x1080（Full HD）
+     左 2/3（1280px）：單點價目，常駐不輪播
+     右 1/3（640px）：上方輪播影片 640x560、下方超值套餐，常駐
+     資料來源：單色點餐菜單 A4 版 20261009 */
   :root {
     --brand: #7a2418;
     --brand-dark: #4e140c;
     --cream: #fbf5ea;
-    --card: #ffffff;
     --line: #e6d6bf;
     --ink: #2b1a12;
     --sub: #6b5545;
     --price: #c0291b;
+    --tag: #f3e3cf;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { width: 1920px; height: 1080px; overflow: hidden; background: var(--cream);
@@ -22,59 +25,68 @@
 
   .menu { width: 1280px; height: 1080px; display: flex; flex-direction: column; }
 
-  header { height: 128px; background: var(--brand); color: #fff; display: flex; align-items: center;
-           padding: 0 36px; gap: 24px; }
-  .logo { width: 92px; height: 92px; border-radius: 50%; background: #fff; color: var(--brand);
-          font: 900 56px/92px "Noto Serif TC", serif; text-align: center; flex: none; }
-  .brand h1 { font: 900 64px/1.1 "Noto Serif TC", serif; letter-spacing: 6px; }
-  .brand p { font-size: 30px; margin-top: 8px; opacity: .92; letter-spacing: 4px; }
+  header { height: 112px; background: var(--brand); color: #fff; display: flex; align-items: center;
+           padding: 0 32px; gap: 20px; flex: none; }
+  .logo { width: 84px; height: 84px; border-radius: 50%; background: #fff; color: var(--brand);
+          font: 900 52px/84px "Noto Serif TC", serif; text-align: center; flex: none; }
+  .brand h1 { font: 900 60px/1.1 "Noto Serif TC", serif; letter-spacing: 6px; }
+  .brand p { font-size: 26px; margin-top: 4px; opacity: .92; letter-spacing: 4px; }
   .tip { margin-left: auto; background: #fff; color: var(--brand); border-radius: 14px;
-         padding: 10px 22px; font-size: 32px; font-weight: 900; line-height: 1.25; text-align: center; }
+         padding: 8px 20px; font-size: 30px; font-weight: 900; line-height: 1.3; text-align: center; }
 
-  .body { flex: 1; display: flex; gap: 24px; padding: 20px 28px 0; }
+  .body { flex: 1; display: flex; gap: 28px; padding: 16px 28px 0; min-height: 0; }
   .col { display: flex; flex-direction: column; min-width: 0; }
-  .col.main { flex: 0 0 604px; }
+  .col.main { flex: 0 0 600px; }
   .col.side { flex: 1; }
-  h2 { font: 900 40px/1 "Noto Serif TC", serif; color: var(--brand); letter-spacing: 6px;
-       border-bottom: 4px solid var(--brand); padding-bottom: 10px; margin-bottom: 10px; }
-  h2 small { font: 700 26px "Noto Sans TC"; letter-spacing: 1px; color: var(--sub); margin-left: 10px; }
+  h2 { font: 900 38px/1 "Noto Serif TC", serif; color: var(--brand); letter-spacing: 6px;
+       border-bottom: 4px solid var(--brand); padding-bottom: 10px; margin-bottom: 4px; flex: none; }
 
   .row { display: flex; align-items: center; gap: 14px; border-bottom: 2px dashed var(--line); }
   .row:last-child { border-bottom: 0; }
-  .no { width: 50px; height: 50px; border-radius: 50%; background: var(--brand); color: #fff;
-        font: 900 32px/50px "Noto Sans TC"; text-align: center; flex: none; }
+  .no { width: 46px; height: 46px; border-radius: 50%; background: var(--brand); color: #fff;
+        font: 900 28px/46px "Noto Sans TC"; text-align: center; flex: none; }
   .name { flex: 1; min-width: 0; }
   .name b { display: block; font-weight: 900; white-space: nowrap; }
+  .name b small { font-size: .62em; color: var(--sub); font-weight: 700; margin-left: 8px; }
   .name i { display: block; font-style: normal; color: var(--sub); white-space: nowrap; }
   .price { color: var(--price); font-weight: 900; white-space: nowrap; flex: none; }
-  .price span { font-size: 30px; margin-left: 2px; }
+  .price span { font-size: 28px; margin-left: 2px; }
 
   /* 主食：字最大 */
   .main .row { flex: 1; }
-  .main .name b { font-size: 54px; line-height: 1.15; }
-  .main .name i { font-size: 32px; margin-top: 4px; }
-  .main .name i em { font-style: normal; background: #f3e3cf; color: var(--brand-dark);
+  .main .name b { font-size: 52px; line-height: 1.15; }
+  .main .name i { font-size: 30px; margin-top: 4px; }
+  .main .name i em { font-style: normal; background: var(--tag); color: var(--brand-dark);
                      padding: 0 10px; border-radius: 8px; margin-right: 8px; font-weight: 700; }
-  .main .price { font-size: 76px; }
+  .main .price { font-size: 72px; }
+  .star { color: var(--price); }
 
-  .side .row { height: 86px; }
-  .side .name b { font-size: 44px; }
-  .side .price { font-size: 56px; }
-  .new { display: inline-block; background: var(--price); color: #fff; font-size: 22px;
-         padding: 2px 8px; border-radius: 8px; margin-left: 6px; vertical-align: 10px; font-weight: 900; }
-  .gap { height: 18px; }
+  .side .row { height: 80px; }
+  .side .name b { font-size: 42px; }
+  .side .price { font-size: 54px; }
+  .gap { height: 14px; flex: none; }
 
-  footer { height: 64px; background: var(--brand-dark); color: #fff; font-size: 30px; font-weight: 700;
-           display: flex; align-items: center; justify-content: center; letter-spacing: 2px; }
+  footer { height: 56px; background: var(--brand-dark); color: #fff; font-size: 28px; font-weight: 700;
+           display: flex; align-items: center; justify-content: center; letter-spacing: 2px; flex: none; }
 
-  /* 右 1/3：輪播影片區（示意） */
-  .video { width: 640px; height: 1080px; background: #1d1310; color: #f3e3cf; position: relative;
+  /* 右 1/3 */
+  .right { width: 640px; height: 1080px; display: flex; flex-direction: column; background: var(--brand-dark); }
+  .video { height: 560px; background: #1d1310; color: #f3e3cf; position: relative; flex: none;
            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-  .video .safe { position: absolute; inset: 40px; border: 3px dashed rgba(243,227,207,.35); border-radius: 12px; }
-  .video h3 { font-size: 48px; font-weight: 900; }
-  .video p { font-size: 28px; margin-top: 16px; line-height: 1.6; opacity: .85; }
-  .video .cap { position: absolute; bottom: 70px; left: 40px; right: 40px; background: rgba(122,36,24,.92);
-                color: #fff; font-size: 36px; font-weight: 900; padding: 18px; border-radius: 12px; }
+  .video .safe { position: absolute; inset: 24px; border: 3px dashed rgba(243,227,207,.35); border-radius: 12px; }
+  .video h3 { font-size: 44px; font-weight: 900; }
+  .video p { font-size: 26px; margin-top: 12px; line-height: 1.6; opacity: .85; }
+
+  .combo { flex: 1; background: #fff8ee; padding: 14px 24px 10px; display: flex; flex-direction: column; }
+  .combo h2 { font-size: 36px; margin-bottom: 2px; }
+  .combo .row { flex: 1; gap: 12px; }
+  .combo .no { width: 44px; height: 44px; font-size: 28px; line-height: 44px; border-radius: 10px; background: var(--price); }
+  .combo .name b { font-size: 34px; line-height: 1.15; }
+  .combo .name i { font-size: 24px; }
+  .combo .price { font-size: 48px; text-align: right; line-height: 1; }
+  .combo .price span { font-size: 24px; }
+  .combo .save { display: block; font-size: 22px; font-style: normal; color: #fff; background: var(--price);
+                 border-radius: 6px; padding: 1px 6px; margin-top: 4px; text-align: center; }
 </style>
 </head>
 <body>
@@ -85,56 +97,72 @@
       <h1>楊家一鍋滷</h1>
       <p>一鍋慢滷，飯麵都香。</p>
     </div>
-    <div class="tip">主食可選<br>白飯 或 乾拌麵</div>
+    <div class="tip"><span class="star">★</span> 每碗含<br>半份青菜＋開胃小食</div>
   </header>
 
   <div class="body">
     <div class="col main">
-      <h2>飯麵主食</h2>
+      <h2>經典主食</h2>
       <div class="row">
         <div class="no">1</div>
-        <div class="name"><b>一鍋傳香滷肉</b><i><em>飯／拌麵</em>滷肉足足 90g</i></div>
+        <div class="name"><b>傳香滷肉<span class="star">★</span></b><i><em>飯／拌麵</em>滷肉足足 90g</i></div>
         <div class="price">65<span>元</span></div>
       </div>
       <div class="row">
         <div class="no">2</div>
+        <div class="name"><b>蔥香雞絲<span class="star">★</span></b><i><em>飯／拌麵</em>手撕雞肉絲</i></div>
+        <div class="price">65<span>元</span></div>
+      </div>
+      <div class="row">
+        <div class="no">3</div>
+        <div class="name"><b>雞魯<span class="star">★</span></b><i><em>飯／拌麵</em></i></div>
+        <div class="price">70<span>元</span></div>
+      </div>
+      <div class="row">
+        <div class="no">4</div>
         <div class="name"><b>台式酥香燒肉</b><i><em>飯／拌麵</em>現炸三層肉</i></div>
         <div class="price">110<span>元</span></div>
       </div>
       <div class="row">
-        <div class="no">3</div>
-        <div class="name"><b>楊家蔥香雞絲</b><i><em>飯／拌麵</em>手撕雞肉絲</i></div>
-        <div class="price">65<span>元</span></div>
-      </div>
-      <div class="row">
-        <div class="no">4</div>
-        <div class="name"><b>土魠魚羹</b><i><em>麵／飯</em>現炸土魠魚 5 塊</i></div>
+        <div class="no">5</div>
+        <div class="name"><b>土魠魚羹</b><i><em>麵／羹飯</em>現炸土魠魚 5 塊</i></div>
         <div class="price">95<span>元</span></div>
       </div>
     </div>
 
     <div class="col side">
-      <h2>單點羹湯</h2>
-      <div class="row"><div class="no">5</div><div class="name"><b>酥香土魠魚羹</b></div><div class="price">80<span>元</span></div></div>
-      <div class="row"><div class="no">6</div><div class="name"><b>蒜香鮮雞腿湯<span class="new">新品</span></b></div><div class="price">120<span>元</span></div></div>
-      <div class="row"><div class="no">7</div><div class="name"><b>百菇鮮雞腿湯<span class="new">新品</span></b></div><div class="price">120<span>元</span></div></div>
+      <h2>羹湯・燉湯</h2>
+      <div class="row"><div class="no">6</div><div class="name"><b>酥香土魠魚羹</b></div><div class="price">80<span>元</span></div></div>
+      <div class="row"><div class="no">7</div><div class="name"><b>蒜香鮮雞腿湯</b></div><div class="price">120<span>元</span></div></div>
+      <div class="row"><div class="no">8</div><div class="name"><b>百菇鮮雞腿湯</b></div><div class="price">120<span>元</span></div></div>
+      <div class="row"><div class="no">9</div><div class="name"><b>清燉豬腳湯</b></div><div class="price">130<span>元</span></div></div>
       <div class="gap"></div>
       <h2>暖心小菜</h2>
-      <div class="row"><div class="no">8</div><div class="name"><b>古早味豆干絲</b></div><div class="price">40<span>元</span></div></div>
-      <div class="row"><div class="no">9</div><div class="name"><b>養生黑木耳</b></div><div class="price">40<span>元</span></div></div>
-      <div class="row"><div class="no">10</div><div class="name"><b>滷香油豆腐</b></div><div class="price">30<span>元</span></div></div>
-      <div class="row"><div class="no">11</div><div class="name"><b>鮮燙時蔬</b></div><div class="price">40<span>元</span></div></div>
+      <div class="row"><div class="no">10</div><div class="name"><b>滷香油豆腐<small>3塊</small></b></div><div class="price">40<span>元</span></div></div>
+      <div class="row"><div class="no">11</div><div class="name"><b>古早味豆干絲</b></div><div class="price">40<span>元</span></div></div>
+      <div class="row"><div class="no">12</div><div class="name"><b>養生黑木耳</b></div><div class="price">40<span>元</span></div></div>
+      <div class="row"><div class="no">13</div><div class="name"><b>鮮燙時蔬<small>淋肉燥</small></b></div><div class="price">40<span>元</span></div></div>
+      <div class="row"><div class="no">14</div><div class="name"><b>清燉豬腳盤</b></div><div class="price">120<span>元</span></div></div>
     </div>
   </div>
 
   <footer>本店餐點不額外添加　味精・色素・醬色・小蘇打</footer>
 </section>
 
-<section class="video">
-  <div class="safe"></div>
-  <h3>輪播影片區</h3>
-  <p>640 × 1080<br>手機直拍 9:16 影片放這裡<br>（上下各裁掉約 29px）</p>
-  <div class="cap">雞高湯 300cc 慢燉・新品上市</div>
+<section class="right">
+  <div class="video">
+    <div class="safe"></div>
+    <h3>輪播影片區</h3>
+    <p>640 × 560<br>建議拍 1:1 方形影片（1080×1080）<br>上下各裁約 40px</p>
+  </div>
+  <div class="combo">
+    <h2>超值套餐</h2>
+    <div class="row"><div class="no">A</div><div class="name"><b>傳香滷肉雙寶</b><i>滷肉飯／麵＋土魠魚羹</i></div><div class="price">130<span>元</span><em class="save">省15</em></div></div>
+    <div class="row"><div class="no">B</div><div class="name"><b>蔥香雞絲雙寶</b><i>雞絲飯／麵＋土魠魚羹</i></div><div class="price">130<span>元</span><em class="save">省15</em></div></div>
+    <div class="row"><div class="no">C</div><div class="name"><b>酥香燒肉雙寶</b><i>燒肉飯／麵＋土魠魚羹</i></div><div class="price">170<span>元</span><em class="save">省20</em></div></div>
+    <div class="row"><div class="no">D</div><div class="name"><b>清燉豬腳定食</b><i>豬腳＋拌飯／麵＋時蔬＋油豆腐</i></div><div class="price">190<span>元</span><em class="save">省35</em></div></div>
+    <div class="row"><div class="no">E</div><div class="name"><b>酥香燒肉定食</b><i>燒肉飯／麵＋時蔬＋油豆腐</i></div><div class="price">155<span>元</span><em class="save">省35</em></div></div>
+  </div>
 </section>
 </body>
 </html>
