@@ -59,3 +59,7 @@ if __name__ == '__main__':
     crop_fill('ai_lurou.jpg', (860, 220, 1500, 780), 'build/c_home.jpg')
     crop_fill('poster_soups.jpg', (70, 560, 910, 1295), 'build/c_soup1.jpg')
     crop_fill('poster_soups.jpg', (1090, 390, 1970, 1160), 'build/c_soup2.jpg')
+    # 2400x1792 情境照，裁成 8:7
+    crop_fill('ai_bowls.jpg', (176, 0, 2224, 1792), 'build/c_bowls.jpg')
+    crop_fill('ai_counter.jpg', (60, 0, 2108, 1792), 'build/c_counter.jpg')
+    crop_fill('ai_trotter.jpg', (0, 0, 2048, 1792), 'build/c_trotter.jpg')

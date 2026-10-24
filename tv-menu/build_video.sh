@@ -15,15 +15,22 @@ TOYUV="scale=out_color_matrix=bt709:out_range=tv,format=yuv420p"
 TORGB="scale=in_color_matrix=bt709:in_range=tv,format=rgb24"
 COLOR=(-colorspace bt709 -color_primaries bt709 -color_trc bt709 -color_range tv)
 
-# 輪播順序：名稱 類型（photo＝照片＋字帶，card＝文字卡） 秒數
+# 輪播順序：名稱 類型 秒數 [起點]
+#   photo＝照片畫布＋字卡，card＝文字卡，clip＝從 assets/src/brand_reel.mp4 擷取（起點秒數）
+#   brand_reel 原片其他段落含「蔥香雞絲」等舊文字或品富企業介紹，只取前兩段
 SEQ=(
   "home photo 5"
+  "story clip 5.6 0"
+  "braise clip 5.6 6.0"
+  "bowls photo 5"
   "lurou photo 5"
   "chicken photo 5"
   "pork photo 5"
   "meal card 5"
+  "counter photo 5"
   "soup1 photo 5"
   "soup2 photo 5"
+  "trotter photo 5"
   "tofu photo 5"
   "combo card 5"
   "qr card 7"
@@ -35,9 +42,12 @@ node render.js "file://$PWD/menu.html?prod" build/menu-bg.png 1920 1080
 
 i=0; durs=(); inputs=()
 for row in "${SEQ[@]}"; do
-  read -r name kind sec <<<"$row"
-  i=$((i + 1)); n=$((sec * FPS)); durs+=("$sec")
-  if [ "$kind" = photo ]; then
+  read -r name kind sec start <<<"$row"
+  i=$((i + 1)); n=$(awk "BEGIN{print int($sec * $FPS + 0.5)}"); durs+=("$sec")
+  if [ "$kind" = clip ]; then
+    ffmpeg -loglevel error -y -ss "$start" -t "$sec" -i assets/src/brand_reel.mp4 \
+      -vf "scale=640:560,fps=$FPS,$TORGB,$TOYUV" -frames:v $n -an -c:v libx264 -crf 16 "${COLOR[@]}" "build/s$i.mp4"
+  elif [ "$kind" = photo ]; then
     node render.js "file://$PWD/slides.html?card=$name" "build/ov_$name.png" 640 560 transparent
     # 2. 照片緩慢推近（Ken Burns），再疊上字帶
     ffmpeg -loglevel error -y -i "build/c_$name.jpg" -loop 1 -i "build/ov_$name.png" -filter_complex \
@@ -55,7 +65,7 @@ fc=""; prev="[0:v]"; acc=${durs[0]}
 for ((k = 1; k < ${#durs[@]}; k++)); do
   off=$(awk "BEGIN{print $acc - $XF * $k}")
   fc+="${prev}[$k:v]xfade=transition=fade:duration=$XF:offset=$off[x$k];"
-  prev="[x$k]"; acc=$((acc + durs[k]))
+  prev="[x$k]"; acc=$(awk "BEGIN{print $acc + ${durs[k]}}")
 done
 ffmpeg -loglevel error -y "${inputs[@]}" -filter_complex "${fc%;}" -map "$prev" -c:v libx264 -crf 16 "${COLOR[@]}" build/loop.mp4
 
