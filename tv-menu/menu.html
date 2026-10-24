@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>楊家一鍋滷 電視菜單</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  /* 畫布固定 1920x1080（Full HD），左 2/3 菜單 1280px，右 1/3 影片 640px */
+  :root {
+    --brand: #7a2418;
+    --brand-dark: #4e140c;
+    --cream: #fbf5ea;
+    --card: #ffffff;
+    --line: #e6d6bf;
+    --ink: #2b1a12;
+    --sub: #6b5545;
+    --price: #c0291b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1920px; height: 1080px; overflow: hidden; background: var(--cream);
+         font-family: "Noto Sans TC", sans-serif; color: var(--ink); display: flex; }
+
+  .menu { width: 1280px; height: 1080px; display: flex; flex-direction: column; }
+
+  header { height: 128px; background: var(--brand); color: #fff; display: flex; align-items: center;
+           padding: 0 36px; gap: 24px; }
+  .logo { width: 92px; height: 92px; border-radius: 50%; background: #fff; color: var(--brand);
+          font: 900 56px/92px "Noto Serif TC", serif; text-align: center; flex: none; }
+  .brand h1 { font: 900 64px/1.1 "Noto Serif TC", serif; letter-spacing: 6px; }
+  .brand p { font-size: 30px; margin-top: 8px; opacity: .92; letter-spacing: 4px; }
+  .tip { margin-left: auto; background: #fff; color: var(--brand); border-radius: 14px;
+         padding: 10px 22px; font-size: 32px; font-weight: 900; line-height: 1.25; text-align: center; }
+
+  .body { flex: 1; display: flex; gap: 24px; padding: 20px 28px 0; }
+  .col { display: flex; flex-direction: column; min-width: 0; }
+  .col.main { flex: 0 0 604px; }
+  .col.side { flex: 1; }
+  h2 { font: 900 40px/1 "Noto Serif TC", serif; color: var(--brand); letter-spacing: 6px;
+       border-bottom: 4px solid var(--brand); padding-bottom: 10px; margin-bottom: 10px; }
+  h2 small { font: 700 26px "Noto Sans TC"; letter-spacing: 1px; color: var(--sub); margin-left: 10px; }
+
+  .row { display: flex; align-items: center; gap: 14px; border-bottom: 2px dashed var(--line); }
+  .row:last-child { border-bottom: 0; }
+  .no { width: 50px; height: 50px; border-radius: 50%; background: var(--brand); color: #fff;
+        font: 900 32px/50px "Noto Sans TC"; text-align: center; flex: none; }
+  .name { flex: 1; min-width: 0; }
+  .name b { display: block; font-weight: 900; white-space: nowrap; }
+  .name i { display: block; font-style: normal; color: var(--sub); white-space: nowrap; }
+  .price { color: var(--price); font-weight: 900; white-space: nowrap; flex: none; }
+  .price span { font-size: 30px; margin-left: 2px; }
+
+  /* 主食：字最大 */
+  .main .row { flex: 1; }
+  .main .name b { font-size: 54px; line-height: 1.15; }
+  .main .name i { font-size: 32px; margin-top: 4px; }
+  .main .name i em { font-style: normal; background: #f3e3cf; color: var(--brand-dark);
+                     padding: 0 10px; border-radius: 8px; margin-right: 8px; font-weight: 700; }
+  .main .price { font-size: 76px; }
+
+  .side .row { height: 86px; }
+  .side .name b { font-size: 44px; }
+  .side .price { font-size: 56px; }
+  .new { display: inline-block; background: var(--price); color: #fff; font-size: 22px;
+         padding: 2px 8px; border-radius: 8px; margin-left: 6px; vertical-align: 10px; font-weight: 900; }
+  .gap { height: 18px; }
+
+  footer { height: 64px; background: var(--brand-dark); color: #fff; font-size: 30px; font-weight: 700;
+           display: flex; align-items: center; justify-content: center; letter-spacing: 2px; }
+
+  /* 右 1/3：輪播影片區（示意） */
+  .video { width: 640px; height: 1080px; background: #1d1310; color: #f3e3cf; position: relative;
+           display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .video .safe { position: absolute; inset: 40px; border: 3px dashed rgba(243,227,207,.35); border-radius: 12px; }
+  .video h3 { font-size: 48px; font-weight: 900; }
+  .video p { font-size: 28px; margin-top: 16px; line-height: 1.6; opacity: .85; }
+  .video .cap { position: absolute; bottom: 70px; left: 40px; right: 40px; background: rgba(122,36,24,.92);
+                color: #fff; font-size: 36px; font-weight: 900; padding: 18px; border-radius: 12px; }
+</style>
+</head>
+<body>
+<section class="menu">
+  <header>
+    <div class="logo">楊</div>
+    <div class="brand">
+      <h1>楊家一鍋滷</h1>
+      <p>一鍋慢滷，飯麵都香。</p>
+    </div>
+    <div class="tip">主食可選<br>白飯 或 乾拌麵</div>
+  </header>
+
+  <div class="body">
+    <div class="col main">
+      <h2>飯麵主食</h2>
+      <div class="row">
+        <div class="no">1</div>
+        <div class="name"><b>一鍋傳香滷肉</b><i><em>飯／拌麵</em>滷肉足足 90g</i></div>
+        <div class="price">65<span>元</span></div>
+      </div>
+      <div class="row">
+        <div class="no">2</div>
+        <div class="name"><b>台式酥香燒肉</b><i><em>飯／拌麵</em>現炸三層肉</i></div>
+        <div class="price">110<span>元</span></div>
+      </div>
+      <div class="row">
+        <div class="no">3</div>
+        <div class="name"><b>楊家蔥香雞絲</b><i><em>飯／拌麵</em>手撕雞肉絲</i></div>
+        <div class="price">65<span>元</span></div>
+      </div>
+      <div class="row">
+        <div class="no">4</div>
+        <div class="name"><b>土魠魚羹</b><i><em>麵／飯</em>現炸土魠魚 5 塊</i></div>
+        <div class="price">95<span>元</span></div>
+      </div>
+    </div>
+
+    <div class="col side">
+      <h2>單點羹湯</h2>
+      <div class="row"><div class="no">5</div><div class="name"><b>酥香土魠魚羹</b></div><div class="price">80<span>元</span></div></div>
+      <div class="row"><div class="no">6</div><div class="name"><b>蒜香鮮雞腿湯<span class="new">新品</span></b></div><div class="price">120<span>元</span></div></div>
+      <div class="row"><div class="no">7</div><div class="name"><b>百菇鮮雞腿湯<span class="new">新品</span></b></div><div class="price">120<span>元</span></div></div>
+      <div class="gap"></div>
+      <h2>暖心小菜</h2>
+      <div class="row"><div class="no">8</div><div class="name"><b>古早味豆干絲</b></div><div class="price">40<span>元</span></div></div>
+      <div class="row"><div class="no">9</div><div class="name"><b>養生黑木耳</b></div><div class="price">40<span>元</span></div></div>
+      <div class="row"><div class="no">10</div><div class="name"><b>滷香油豆腐</b></div><div class="price">30<span>元</span></div></div>
+      <div class="row"><div class="no">11</div><div class="name"><b>鮮燙時蔬</b></div><div class="price">40<span>元</span></div></div>
+    </div>
+  </div>
+
+  <footer>本店餐點不額外添加　味精・色素・醬色・小蘇打</footer>
+</section>
+
+<section class="video">
+  <div class="safe"></div>
+  <h3>輪播影片區</h3>
+  <p>640 × 1080<br>手機直拍 9:16 影片放這裡<br>（上下各裁掉約 29px）</p>
+  <div class="cap">雞高湯 300cc 慢燉・新品上市</div>
+</section>
+</body>
+</html>
