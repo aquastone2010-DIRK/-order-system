@@ -8,7 +8,7 @@
   /* 畫布固定 1920x1080（Full HD）
      左 2/3（1280px）：單點價目，常駐不輪播
      右 1/3（640px）：上方輪播影片 640x560、下方超值套餐，常駐
-     資料來源：單色點餐菜單 A4 版 20261009 */
+     資料來源：單色點餐菜單 A4 版 20261009（文字、價格、省額皆依此版，不自行更動） */
   :root {
     /* 品牌標準色：深滷棕 #4A2A16、朱砂紅 #B42318（品牌標誌設計稿） */
     --brand: #B42318;
@@ -66,6 +66,10 @@
   .side .name b { font-size: 42px; }
   .side .price { font-size: 54px; }
   .gap { height: 14px; flex: none; }
+  .launch { display: inline-block; font-size: 22px; font-weight: 900; color: var(--brand); border: 2px solid var(--brand);
+            border-radius: 6px; padding: 0 6px; margin-left: 8px; vertical-align: middle; line-height: 1.3; }
+  .main .launch { font-size: 26px; }
+  .combo .name i.wrap { white-space: normal; font-size: 22px; line-height: 1.2; }
 
   footer { height: 56px; background: var(--brand-dark); color: #fff; font-size: 28px; font-weight: 700;
            display: flex; align-items: center; justify-content: center; letter-spacing: 2px; flex: none; }
@@ -108,12 +112,12 @@
       <h2>經典主食</h2>
       <div class="row">
         <div class="no">1</div>
-        <div class="name"><b>傳香滷肉<span class="star">★</span></b><i><em>飯／拌麵</em>滷肉足足 90g</i></div>
+        <div class="name"><b>傳香滷肉<span class="star">★</span></b><i><em>飯／拌麵</em></i></div>
         <div class="price">65<span>元</span></div>
       </div>
       <div class="row">
         <div class="no">2</div>
-        <div class="name"><b>蔥香雞絲<span class="star">★</span></b><i><em>飯／拌麵</em>手撕雞肉絲</i></div>
+        <div class="name"><b>蔥香雞絲<span class="star">★</span></b><i><em>飯／拌麵</em></i></div>
         <div class="price">65<span>元</span></div>
       </div>
       <div class="row">
@@ -123,12 +127,12 @@
       </div>
       <div class="row">
         <div class="no">4</div>
-        <div class="name"><b>台式酥香燒肉</b><i><em>飯／拌麵</em>現炸三層肉</i></div>
+        <div class="name"><b>台式酥香燒肉</b><i><em>飯／拌麵</em><span class="launch">10/5上市</span></i></div>
         <div class="price">110<span>元</span></div>
       </div>
       <div class="row">
         <div class="no">5</div>
-        <div class="name"><b>土魠魚羹</b><i><em>麵／羹飯</em>現炸土魠魚 5 塊</i></div>
+        <div class="name"><b>土魠魚羹</b><i><em>麵／羹飯</em></i></div>
         <div class="price">95<span>元</span></div>
       </div>
     </div>
@@ -136,20 +140,20 @@
     <div class="col side">
       <h2>羹湯・燉湯</h2>
       <div class="row"><div class="no">6</div><div class="name"><b>酥香土魠魚羹</b></div><div class="price">80<span>元</span></div></div>
-      <div class="row"><div class="no">7</div><div class="name"><b>蒜香鮮雞腿湯</b></div><div class="price">120<span>元</span></div></div>
-      <div class="row"><div class="no">8</div><div class="name"><b>百菇鮮雞腿湯</b></div><div class="price">120<span>元</span></div></div>
-      <div class="row"><div class="no">9</div><div class="name"><b>清燉豬腳湯</b></div><div class="price">130<span>元</span></div></div>
+      <div class="row"><div class="no">7</div><div class="name"><b>蒜香鮮雞腿湯<span class="launch">10/1上市</span></b></div><div class="price">120<span>元</span></div></div>
+      <div class="row"><div class="no">8</div><div class="name"><b>百菇鮮雞腿湯<span class="launch">10/1上市</span></b></div><div class="price">120<span>元</span></div></div>
+      <div class="row"><div class="no">9</div><div class="name"><b>清燉豬腳湯<span class="launch">10/15上市</span></b></div><div class="price">130<span>元</span></div></div>
       <div class="gap"></div>
       <h2>暖心小菜</h2>
       <div class="row"><div class="no">10</div><div class="name"><b>滷香油豆腐<small>3塊</small></b></div><div class="price">40<span>元</span></div></div>
       <div class="row"><div class="no">11</div><div class="name"><b>古早味豆干絲</b></div><div class="price">40<span>元</span></div></div>
       <div class="row"><div class="no">12</div><div class="name"><b>養生黑木耳</b></div><div class="price">40<span>元</span></div></div>
       <div class="row"><div class="no">13</div><div class="name"><b>鮮燙時蔬<small>淋肉燥</small></b></div><div class="price">40<span>元</span></div></div>
-      <div class="row"><div class="no">14</div><div class="name"><b>清燉豬腳盤</b></div><div class="price">120<span>元</span></div></div>
+      <div class="row"><div class="no">14</div><div class="name"><b>清燉豬腳盤<span class="launch">10/15上市</span></b></div><div class="price">120<span>元</span></div></div>
     </div>
   </div>
 
-  <footer>本店餐點不額外添加　味精・色素・醬色・小蘇打</footer>
+  <footer>加購　+30 鮮燙時蔬／滷香油豆腐　　+75 土魠魚羹</footer>
 </section>
 
 <section class="right">
@@ -163,8 +167,8 @@
     <div class="row"><div class="no">A</div><div class="name"><b>傳香滷肉雙寶</b><i>滷肉飯／麵＋土魠魚羹</i></div><div class="price">130<span>元</span><em class="save">省15</em></div></div>
     <div class="row"><div class="no">B</div><div class="name"><b>蔥香雞絲雙寶</b><i>雞絲飯／麵＋土魠魚羹</i></div><div class="price">130<span>元</span><em class="save">省15</em></div></div>
     <div class="row"><div class="no">C</div><div class="name"><b>酥香燒肉雙寶</b><i>燒肉飯／麵＋土魠魚羹</i></div><div class="price">170<span>元</span><em class="save">省20</em></div></div>
-    <div class="row"><div class="no">D</div><div class="name"><b>清燉豬腳定食</b><i>豬腳＋拌飯／麵＋時蔬＋油豆腐</i></div><div class="price">190<span>元</span><em class="save">省35</em></div></div>
-    <div class="row"><div class="no">E</div><div class="name"><b>酥香燒肉定食</b><i>燒肉飯／麵＋時蔬＋油豆腐</i></div><div class="price">155<span>元</span><em class="save">省35</em></div></div>
+    <div class="row"><div class="no">D</div><div class="name"><b>招牌清燉豬腳定食<span class="launch">10/15上市</span></b><i class="wrap">清燉豬腳＋拌飯／拌麵＋<br>鮮燙時蔬＋滷香油豆腐</i></div><div class="price">190<span>元</span><em class="save">省35</em></div></div>
+    <div class="row"><div class="no">E</div><div class="name"><b>酥香燒肉定食</b><i>燒肉飯／麵＋時蔬＋油豆腐</i></div><div class="price">155<span>元</span><em class="save">省30</em></div></div>
   </div>
 </section>
 <script>
