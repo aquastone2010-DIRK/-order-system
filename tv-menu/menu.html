@@ -3,130 +3,138 @@
 <head>
 <meta charset="utf-8">
 <title>楊家一鍋滷 電視菜單</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
 <style>
   /* 畫布固定 1920x1080（Full HD）
-     左 2/3（1280px）：單點價目，常駐不輪播
+     左 2/3（1280px）：上半招牌實拍大盤＋紅色價格章，下半完整價目三欄，常駐不輪播
      右 1/3（640px）：上方輪播影片 640x560、下方超值套餐，常駐
      資料來源：單色點餐菜單 A4 版 20261009（文字、價格、省額皆依此版，不自行更動）
-     視覺：品牌視覺規範 v3「精緻老店」— 白瓷底、細金線、留白，紅色只用於價格與小標示 */
+     視覺：深色聚光＋實拍去背盤＋朱砂紅價格章（參考使用者提供的數位菜單範例） */
   :root {
-    --porcelain: #FBF8F3;  /* 白瓷：底色 */
-    --brown: #4A2A16;      /* 滷棕：品名、標題 */
-    --red: #B42318;        /* 朱砂紅：價格、標示 */
-    --gold: #B8935A;       /* 古銅金：細線、裝飾 */
-    --gold-ink: #8A6A3C;   /* 深古銅：英文小標、省額文字 */
-    --ink: #2B1810;
-    --sub: #7C6553;
-    --hair: #E6DCCB;       /* 品項分隔細線 */
+    --night: #140C07;     /* 背景最深處 */
+    --lamp: #3A2215;      /* 聚光中心 */
+    --panel: #1E120B;     /* 右側套餐底 */
+    --cream: #FBF3E6;     /* 品名 */
+    --gold: #E2B666;      /* 價格（深底上對比約 9） */
+    --red: #B42318;       /* 價格章、分區標籤、底部色帶 */
+    --mute: #C9B7A2;      /* 選項、說明 */
+    --line: rgba(251,243,230,.14);
     --serif: "Noto Serif TC", serif;
     --sans: "Noto Sans TC", sans-serif;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { width: 1920px; height: 1080px; overflow: hidden; display: flex; background: var(--porcelain);
-         color: var(--ink); font-family: var(--sans); }
-  .price { flex: none; color: var(--red); font: 700 1em/1 var(--serif); white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; }
-  .price small { font-size: .4em; font-weight: 600; margin-left: 4px; }
-  .launch { display: inline-block; font: 500 19px/1 var(--sans); color: var(--red); border: 1.5px solid var(--red);
-            border-radius: 4px; padding: 5px 7px; margin-left: 12px; vertical-align: middle; letter-spacing: 1px; }
-  .no { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--gold); color: var(--gold-ink);
-        display: grid; place-items: center; font: 600 18px/1 var(--serif); }
-
-  /* 區塊標題：中文 ＋ 英文小標 ＋ 金色細線 */
-  .title { flex: none; display: flex; align-items: baseline; gap: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--gold); }
-  .title b { font: 600 36px/1 var(--serif); color: var(--brown); letter-spacing: .32em; }
-  .title span { font: 500 20px/1 var(--sans); color: var(--gold-ink); letter-spacing: .28em; }
+  body { width: 1920px; height: 1080px; overflow: hidden; display: flex; color: var(--cream); font-family: var(--sans);
+         background: radial-gradient(ellipse 900px 640px at 640px 300px, var(--lamp) 0%, #24150C 55%, var(--night) 100%); }
+  .price { flex: none; white-space: nowrap; font: 900 1em/1 var(--serif); color: var(--gold); font-variant-numeric: lining-nums tabular-nums; }
+  .price small { font-size: .42em; margin-left: 3px; }
+  .launch { display: inline-block; background: var(--red); color: #fff; font: 700 17px/1 var(--sans); padding: 5px 8px;
+            border-radius: 999px; margin-left: 8px; vertical-align: middle; letter-spacing: .5px; }
 
   /* ── 左 2/3 ── */
-  .menu { width: 1280px; height: 1080px; display: flex; flex-direction: column; padding: 0 44px; }
-  header { height: 176px; flex: none; display: flex; align-items: center; justify-content: space-between;
-           border-bottom: 2px solid var(--brown); position: relative; }
-  header::after { content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 1px; background: var(--gold); }
-  .wordmark { height: 124px; margin-left: -8px; }
-  .tip { text-align: right; }
-  .tip b { display: block; font: 600 28px/1.3 var(--serif); color: var(--red); letter-spacing: .12em; }
-  .tip span { display: block; font: 500 26px/1.4 var(--sans); color: var(--brown); letter-spacing: .06em; }
+  .menu { width: 1280px; height: 1080px; display: flex; flex-direction: column; }
 
-  .body { flex: 1; min-height: 0; display: grid; grid-template-columns: 560px 1px 1fr; column-gap: 40px; padding: 34px 0 18px; }
-  .rule { background: var(--hair); }
+  .hero { height: 556px; flex: none; position: relative; }
+  .plaque { position: absolute; left: 30px; top: 24px; background: #FBF8F3; border-radius: 18px; padding: 10px 20px 8px 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+  .plaque img { height: 92px; display: block; }
+  .tip { position: absolute; right: 30px; top: 30px; background: var(--red); color: #fff; border-radius: 16px; padding: 12px 22px;
+         text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+  .tip b { display: block; font: 900 26px/1.25 var(--serif); letter-spacing: .06em; }
+  .tip span { display: block; font: 700 24px/1.35 var(--sans); }
+
+  .stars { position: absolute; left: 0; right: 0; bottom: 18px; display: flex; justify-content: space-around; padding: 0 24px; }
+  .star { width: 380px; display: flex; flex-direction: column; align-items: center; position: relative; }
+  .star img { width: 318px; height: 318px; filter: drop-shadow(0 26px 30px rgba(0,0,0,.65)); }
+  .seal { position: absolute; top: -6px; right: 8px; width: 124px; height: 124px; border-radius: 50%; background: var(--red);
+          display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 8px 20px rgba(0,0,0,.5);
+          outline: 3px solid rgba(255,255,255,.85); outline-offset: -9px; }
+  .seal b { font: 900 52px/1 var(--serif); font-variant-numeric: lining-nums; }
+  .seal small { font: 700 22px/1 var(--sans); margin-left: 2px; align-self: flex-end; margin-bottom: 38px; }
+  .seal.w b { font-size: 44px; }
+  .seal.w small { font-size: 19px; margin-bottom: 42px; }
+  .star h3 { margin-top: 14px; font: 900 38px/1.1 var(--serif); letter-spacing: .04em; text-shadow: 0 3px 10px rgba(0,0,0,.6); white-space: nowrap; }
+  .star h3 span { font: 700 24px var(--sans); color: var(--gold); margin-left: 8px; letter-spacing: .08em; }
+
+  .list { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; padding: 4px 30px 14px; }
   .col { display: flex; flex-direction: column; min-width: 0; }
+  .tab { align-self: flex-start; background: var(--red); color: #fff; font: 900 28px/1 var(--serif); letter-spacing: .24em;
+         padding: 10px 14px 10px 20px; border-radius: 8px; margin-bottom: 4px; }
+  .row { flex: 1; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--line); min-height: 0; }
+  .row:last-child { border-bottom: 0; }
+  .no { flex: none; width: 28px; font: 900 22px/1 var(--serif); color: var(--gold); opacity: .9; }
+  .row .name { flex: 1; min-width: 0; }
+  .row b { display: block; font: 900 31px/1.15 var(--serif); white-space: nowrap; letter-spacing: .02em; }
+  .row b small { font: 700 19px var(--sans); color: var(--mute); margin-left: 6px; }
+  .row i { display: block; font: 500 19px/1.3 var(--sans); font-style: normal; color: var(--mute); white-space: nowrap; margin-top: 2px; }
+  .row i .launch { margin-left: 6px; font-size: 15px; padding: 3px 7px; }
+  .row .price { font-size: 40px; }
 
-  .dish { flex: 1; display: flex; align-items: center; gap: 18px; border-bottom: 1px solid var(--hair); }
-  .dish:last-child { border-bottom: 0; }
-  .dish .name { flex: 1; min-width: 0; }
-  .dish b { display: block; font: 700 48px/1.15 var(--serif); color: var(--brown); white-space: nowrap; letter-spacing: .06em; }
-  .dish b i { font-style: normal; color: var(--red); font-size: .5em; vertical-align: .9em; margin-left: 4px; }
-  .dish .opt { display: block; margin-top: 8px; font: 500 26px/1.2 var(--sans); color: var(--sub); letter-spacing: .16em; white-space: nowrap; }
-  .dish .price { font-size: 66px; }
-
-  .item { flex: 1; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid var(--hair); min-height: 0; }
-  .item:last-child, .item.end { border-bottom: 0; }
-  .item b { flex: 1; min-width: 0; font: 700 38px/1 var(--serif); color: var(--brown); white-space: nowrap; letter-spacing: .04em; }
-  .item b small { font: 500 22px var(--sans); color: var(--sub); margin-left: 8px; letter-spacing: .08em; }
-  .item .price { font-size: 48px; }
-  .gap { height: 26px; flex: none; }
-
-  footer { height: 64px; flex: none; display: flex; align-items: center; justify-content: center; gap: 44px;
-           border-top: 1px solid var(--gold); font: 500 26px var(--serif); color: var(--brown); letter-spacing: .08em; }
-  footer b { font: 600 24px var(--serif); color: var(--gold-ink); letter-spacing: .3em; }
-  footer em { font-style: normal; font-weight: 700; color: var(--red); margin-right: 10px; }
+  footer { height: 62px; flex: none; background: var(--red); display: flex; align-items: center; justify-content: center; gap: 40px;
+           font: 700 27px var(--sans); color: #fff; }
+  footer b { font: 900 26px/1 var(--serif); letter-spacing: .3em; border: 2px solid #fff; border-radius: 6px; padding: 5px 6px 5px 12px; }
+  footer em { font-style: normal; font-weight: 900; color: #FFE1A3; margin-right: 8px; }
 
   /* ── 右 1/3 ── */
-  .right { width: 640px; height: 1080px; display: flex; flex-direction: column; border-left: 1px solid var(--gold); }
-  .video { height: 560px; flex: none; background: #1d1310; color: #f3e3cf; position: relative;
-           display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .right { width: 640px; height: 1080px; display: flex; flex-direction: column; background: var(--panel); border-left: 2px solid #3A2417; }
+  .video { height: 560px; flex: none; background: #0d0805; position: relative; display: flex; flex-direction: column;
+           align-items: center; justify-content: center; text-align: center; color: #f3e3cf; }
   .video .safe { position: absolute; inset: 24px; border: 3px dashed rgba(243,227,207,.35); border-radius: 12px; }
-  .video h3 { font-size: 44px; font-weight: 700; }
-  .video p { font-size: 26px; margin-top: 12px; line-height: 1.6; opacity: .85; }
+  .video h3 { font-size: 44px; font-weight: 900; }
+  .video p { font-size: 26px; margin-top: 12px; opacity: .85; }
   /* ?prod：輸出影片用的底圖，影片區留空 */
   .prod .video > * { display: none; }
 
-  .combo { flex: 1; display: flex; flex-direction: column; padding: 26px 34px 14px; }
-  .combo .title { margin-bottom: 2px; }
-  .combo .title b { font-size: 32px; }
-  .combo .title span { font-size: 18px; }
-  .set { flex: 1; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--hair); }
+  .combo { flex: 1; display: flex; flex-direction: column; padding: 18px 28px 12px; }
+  .combo .tab { margin-bottom: 6px; }
+  .set { flex: 1; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--line); }
   .set:last-child { border-bottom: 0; }
-  .set .no { width: 36px; height: 36px; font-size: 19px; border-color: var(--red); color: var(--red); }
+  .set .l { flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--red); color: #fff;
+            display: grid; place-items: center; font: 900 22px/1 var(--serif); }
   .set .name { flex: 1; min-width: 0; }
-  .set b { display: block; font: 700 29px/1.2 var(--serif); color: var(--brown); white-space: nowrap; letter-spacing: .04em; }
-  .set b .launch { font-size: 15px; padding: 3px 5px; margin-left: 8px; vertical-align: 3px; }
-  .set i { display: block; font: 400 20px/1.35 var(--sans); font-style: normal; color: var(--sub); margin-top: 3px; }
+  .set b { display: block; font: 900 28px/1.2 var(--serif); white-space: nowrap; }
+  .set b .launch { font-size: 14px; padding: 3px 6px; vertical-align: 3px; }
+  .set i { display: block; font: 500 19px/1.3 var(--sans); font-style: normal; color: var(--mute); margin-top: 2px; }
   .set .pr { flex: none; text-align: right; }
   .set .price { font-size: 42px; }
-  .set .save { display: block; margin-top: 6px; font: 500 19px/1 var(--sans); color: var(--gold-ink); letter-spacing: .12em; }
+  .set .save { display: inline-block; margin-top: 5px; background: var(--red); color: #fff; font: 700 17px/1 var(--sans);
+               padding: 4px 9px; border-radius: 999px; }
 </style>
 </head>
 <body>
 <section class="menu">
-  <header>
-    <img class="wordmark" src="assets/wordmark.png" alt="楊家一鍋滷 50年不斷火">
+  <div class="hero">
+    <div class="plaque"><img src="assets/wordmark.png" alt="楊家一鍋滷 50年不斷火"></div>
     <div class="tip"><b>★ 主食每碗含</b><span>半份青菜＋開胃小食</span></div>
-  </header>
-
-  <div class="body">
-    <div class="col">
-      <div class="title"><b>經典主食</b><span>RICE ＆ NOODLES</span></div>
-      <div class="dish"><div class="no">1</div><div class="name"><b>傳香滷肉<i>★</i></b><span class="opt">飯／拌麵</span></div><div class="price">65<small>元</small></div></div>
-      <div class="dish"><div class="no">2</div><div class="name"><b>蔥香雞絲<i>★</i></b><span class="opt">飯／拌麵</span></div><div class="price">65<small>元</small></div></div>
-      <div class="dish"><div class="no">3</div><div class="name"><b>雞魯<i>★</i></b><span class="opt">飯／拌麵</span></div><div class="price">70<small>元</small></div></div>
-      <div class="dish"><div class="no">4</div><div class="name"><b>台式酥香燒肉</b><span class="opt">飯／拌麵<span class="launch">10/5上市</span></span></div><div class="price">110<small>元</small></div></div>
-      <div class="dish"><div class="no">5</div><div class="name"><b>土魠魚羹</b><span class="opt">麵／羹飯</span></div><div class="price">95<small>元</small></div></div>
+    <div class="stars">
+      <div class="star"><img src="assets/plate_lurou.png" alt="傳香滷肉拌麵"><div class="seal"><b>65</b><small>元</small></div><h3>傳香滷肉<span>飯／拌麵</span></h3></div>
+      <div class="star"><img src="assets/plate_chicken.png" alt="蔥香雞絲飯"><div class="seal"><b>65</b><small>元</small></div><h3>蔥香雞絲<span>飯／拌麵</span></h3></div>
+      <div class="star"><img src="assets/plate_pork.png" alt="台式酥香燒肉拌麵"><div class="seal w"><b>110</b><small>元</small></div><h3>台式酥香燒肉<span>飯／拌麵</span></h3></div>
     </div>
-    <div class="rule"></div>
+  </div>
+
+  <div class="list">
     <div class="col">
-      <div class="title"><b>羹湯・燉湯</b><span>SOUPS</span></div>
-      <div class="item"><div class="no">6</div><b>酥香土魠魚羹</b><div class="price">80<small>元</small></div></div>
-      <div class="item"><div class="no">7</div><b>蒜香鮮雞腿湯<span class="launch">10/1上市</span></b><div class="price">120<small>元</small></div></div>
-      <div class="item"><div class="no">8</div><b>百菇鮮雞腿湯<span class="launch">10/1上市</span></b><div class="price">120<small>元</small></div></div>
-      <div class="item end"><div class="no">9</div><b>清燉豬腳湯<span class="launch">10/15上市</span></b><div class="price">130<small>元</small></div></div>
-      <div class="gap"></div>
-      <div class="title"><b>暖心小菜</b><span>SIDES</span></div>
-      <div class="item"><div class="no">10</div><b>滷香油豆腐<small>3塊</small></b><div class="price">40<small>元</small></div></div>
-      <div class="item"><div class="no">11</div><b>古早味豆干絲</b><div class="price">40<small>元</small></div></div>
-      <div class="item"><div class="no">12</div><b>養生黑木耳</b><div class="price">40<small>元</small></div></div>
-      <div class="item"><div class="no">13</div><b>鮮燙時蔬<small>淋肉燥</small></b><div class="price">40<small>元</small></div></div>
-      <div class="item"><div class="no">14</div><b>清燉豬腳盤<span class="launch">10/15上市</span></b><div class="price">120<small>元</small></div></div>
+      <div class="tab">經典主食</div>
+      <div class="row"><span class="no">1</span><div class="name"><b>傳香滷肉 ★</b><i>飯／拌麵</i></div><span class="price">65<small>元</small></span></div>
+      <div class="row"><span class="no">2</span><div class="name"><b>蔥香雞絲 ★</b><i>飯／拌麵</i></div><span class="price">65<small>元</small></span></div>
+      <div class="row"><span class="no">3</span><div class="name"><b>雞魯 ★</b><i>飯／拌麵</i></div><span class="price">70<small>元</small></span></div>
+      <div class="row"><span class="no">4</span><div class="name"><b>台式酥香燒肉</b><i>飯／拌麵<span class="launch">10/5上市</span></i></div><span class="price">110<small>元</small></span></div>
+      <div class="row"><span class="no">5</span><div class="name"><b>土魠魚羹</b><i>麵／羹飯</i></div><span class="price">95<small>元</small></span></div>
+    </div>
+    <div class="col">
+      <div class="tab">羹湯燉湯</div>
+      <div class="row"><span class="no">6</span><div class="name"><b>酥香土魠魚羹</b></div><span class="price">80<small>元</small></span></div>
+      <div class="row"><span class="no">7</span><div class="name"><b>蒜香鮮雞腿湯</b><i><span class="launch" style="margin-left:0">10/1上市</span></i></div><span class="price">120<small>元</small></span></div>
+      <div class="row"><span class="no">8</span><div class="name"><b>百菇鮮雞腿湯</b><i><span class="launch" style="margin-left:0">10/1上市</span></i></div><span class="price">120<small>元</small></span></div>
+      <div class="row"><span class="no">9</span><div class="name"><b>清燉豬腳湯</b><i><span class="launch" style="margin-left:0">10/15上市</span></i></div><span class="price">130<small>元</small></span></div>
+    </div>
+    <div class="col">
+      <div class="tab">暖心小菜</div>
+      <div class="row"><span class="no">10</span><div class="name"><b>滷香油豆腐<small>3塊</small></b></div><span class="price">40<small>元</small></span></div>
+      <div class="row"><span class="no">11</span><div class="name"><b>古早味豆干絲</b></div><span class="price">40<small>元</small></span></div>
+      <div class="row"><span class="no">12</span><div class="name"><b>養生黑木耳</b></div><span class="price">40<small>元</small></span></div>
+      <div class="row"><span class="no">13</span><div class="name"><b>鮮燙時蔬<small>淋肉燥</small></b></div><span class="price">40<small>元</small></span></div>
+      <div class="row"><span class="no">14</span><div class="name"><b>清燉豬腳盤</b><i><span class="launch" style="margin-left:0">10/15上市</span></i></div><span class="price">120<small>元</small></span></div>
     </div>
   </div>
 
@@ -140,12 +148,12 @@
     <p>640 × 560</p>
   </div>
   <div class="combo">
-    <div class="title"><b>超值套餐</b><span>SET MEALS</span></div>
-    <div class="set"><div class="no">A</div><div class="name"><b>傳香滷肉雙寶</b><i>滷肉飯／麵＋土魠魚羹</i></div><div class="pr"><div class="price">130<small>元</small></div><span class="save">省 15</span></div></div>
-    <div class="set"><div class="no">B</div><div class="name"><b>蔥香雞絲雙寶</b><i>雞絲飯／麵＋土魠魚羹</i></div><div class="pr"><div class="price">130<small>元</small></div><span class="save">省 15</span></div></div>
-    <div class="set"><div class="no">C</div><div class="name"><b>酥香燒肉雙寶</b><i>燒肉飯／麵＋土魠魚羹</i></div><div class="pr"><div class="price">170<small>元</small></div><span class="save">省 20</span></div></div>
-    <div class="set"><div class="no">D</div><div class="name"><b>招牌清燉豬腳定食<span class="launch">10/15上市</span></b><i>清燉豬腳＋拌飯／拌麵＋<br>鮮燙時蔬＋滷香油豆腐</i></div><div class="pr"><div class="price">190<small>元</small></div><span class="save">省 35</span></div></div>
-    <div class="set"><div class="no">E</div><div class="name"><b>酥香燒肉定食</b><i>燒肉飯／麵＋時蔬＋油豆腐</i></div><div class="pr"><div class="price">155<small>元</small></div><span class="save">省 30</span></div></div>
+    <div class="tab">超值套餐</div>
+    <div class="set"><span class="l">A</span><div class="name"><b>傳香滷肉雙寶</b><i>滷肉飯／麵＋土魠魚羹</i></div><div class="pr"><div class="price">130<small>元</small></div><span class="save">省 15</span></div></div>
+    <div class="set"><span class="l">B</span><div class="name"><b>蔥香雞絲雙寶</b><i>雞絲飯／麵＋土魠魚羹</i></div><div class="pr"><div class="price">130<small>元</small></div><span class="save">省 15</span></div></div>
+    <div class="set"><span class="l">C</span><div class="name"><b>酥香燒肉雙寶</b><i>燒肉飯／麵＋土魠魚羹</i></div><div class="pr"><div class="price">170<small>元</small></div><span class="save">省 20</span></div></div>
+    <div class="set"><span class="l">D</span><div class="name"><b>招牌清燉豬腳定食<span class="launch">10/15上市</span></b><i>清燉豬腳＋拌飯／拌麵＋<br>鮮燙時蔬＋滷香油豆腐</i></div><div class="pr"><div class="price">190<small>元</small></div><span class="save">省 35</span></div></div>
+    <div class="set"><span class="l">E</span><div class="name"><b>酥香燒肉定食</b><i>燒肉飯／麵＋時蔬＋油豆腐</i></div><div class="pr"><div class="price">155<small>元</small></div><span class="save">省 30</span></div></div>
   </div>
 </section>
 <script>

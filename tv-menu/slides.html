@@ -3,81 +3,95 @@
 <head>
 <meta charset="utf-8">
 <title>楊家一鍋滷 輪播字卡</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
 <style>
-  /* 每張字卡 640x560，對應電視菜單右上影片區。
-     ?card=名稱 只顯示該張。照片卡上方 640x420 透明（照片從底下透出），下方 140px 為白瓷字帶。
-     視覺：品牌視覺規範 v3「精緻老店」；字卡只寫品名與價格 */
-  :root { --porcelain: #FBF8F3; --brown: #4A2A16; --red: #B42318; --gold: #B8935A; --gold-ink: #8A6A3C;
-          --sub: #7C6553; --serif: "Noto Serif TC", serif; --sans: "Noto Sans TC", sans-serif; }
+  /* 每張字卡 640x560，對應電視菜單右上影片區。?card=名稱 只顯示該張。
+     overlay 類別為透明字卡，疊在照片畫布（build/c_*.jpg）上；字卡只寫品名與價格。
+     視覺：深色聚光＋朱砂紅價格章，與電視菜單一致 */
+  :root { --night: #140C07; --lamp: #3A2215; --cream: #FBF3E6; --gold: #E2B666; --red: #B42318; --mute: #C9B7A2;
+          --serif: "Noto Serif TC", serif; --sans: "Noto Sans TC", sans-serif; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { background: transparent; }
-  body { font-family: var(--sans); color: var(--brown); }
+  body { font-family: var(--sans); color: var(--cream); }
   .card { width: 640px; height: 560px; position: relative; overflow: hidden; display: none; }
   .card.on { display: block; }
-  .price { color: var(--red); font: 700 1em/1 var(--serif); white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; }
-  .price small { font-size: .4em; font-weight: 600; margin-left: 4px; }
 
-  /* 照片卡字帶 */
-  .cap { position: absolute; left: 0; right: 0; bottom: 0; height: 140px; background: var(--porcelain);
-         border-top: 1px solid var(--gold); display: flex; align-items: center; justify-content: space-between; padding: 0 34px; gap: 16px; }
-  .cap b { font: 700 40px/1.15 var(--serif); letter-spacing: .06em; white-space: nowrap; }
-  .cap .price { font-size: 60px; }
-  .cap.brand { justify-content: center; }
-  .cap.brand img { height: 112px; }
-  .note { position: absolute; right: 12px; top: 10px; font-size: 16px; color: #fff; text-shadow: 0 1px 3px #000; opacity: .85; }
+  .seal { position: absolute; width: 132px; height: 132px; border-radius: 50%; background: var(--red); color: #fff;
+          display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 22px rgba(0,0,0,.55);
+          outline: 3px solid rgba(255,255,255,.85); outline-offset: -9px; }
+  .seal b { font: 900 54px/1 var(--serif); font-variant-numeric: lining-nums; }
+  .seal small { font: 700 22px/1 var(--sans); margin-left: 2px; align-self: flex-end; margin-bottom: 40px; }
+  .seal.w b { font-size: 46px; }
+  .seal.w small { margin-bottom: 43px; }
+
+  /* 盤子卡：盤子在畫布上方，品名在下 */
+  .plate .seal { top: 34px; right: 74px; }
+  .plate h3 { position: absolute; left: 0; right: 0; bottom: 26px; text-align: center; font: 900 46px/1.1 var(--serif);
+              letter-spacing: .06em; text-shadow: 0 3px 12px rgba(0,0,0,.7); }
+  .plate h3 span { font: 700 28px var(--sans); color: var(--gold); margin-left: 10px; letter-spacing: .1em; }
+
+  /* 滿版照片卡：底部漸層壓字 */
+  .photo::before { content: ""; position: absolute; inset: auto 0 0 0; height: 220px;
+                   background: linear-gradient(to top, rgba(20,12,7,.95) 30%, rgba(20,12,7,0)); }
+  .photo .seal { top: 28px; right: 28px; }
+  .photo h3 { position: absolute; left: 32px; bottom: 30px; font: 900 48px/1.1 var(--serif); letter-spacing: .06em; }
+  .note { position: absolute; left: 14px; top: 12px; font-size: 16px; color: #fff; text-shadow: 0 1px 3px #000; opacity: .85; }
+  #home::before { height: 260px; }
+  #home .plaque { position: absolute; left: 50%; bottom: 34px; transform: translateX(-50%); background: #FBF8F3; border-radius: 18px;
+                  padding: 10px 22px 8px 16px; box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+  #home .plaque img { height: 104px; display: block; }
 
   /* 文字卡 */
-  .solid { background: var(--porcelain); }
+  .solid { background: radial-gradient(ellipse 520px 420px at 50% 42%, var(--lamp) 0%, #24150C 60%, var(--night) 100%); }
   .solid.on { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-  .solid::after { content: ""; position: absolute; inset: 18px; border: 1px solid var(--gold); pointer-events: none; }
-  .eyebrow { display: flex; align-items: center; gap: 16px; font: 600 30px/1 var(--serif); letter-spacing: .3em; color: var(--brown); }
-  .eyebrow::before, .eyebrow::after { content: ""; width: 56px; height: 1px; background: var(--gold); }
-  .eyebrow span { font: 500 17px var(--sans); color: var(--gold-ink); letter-spacing: .28em; display: block; margin-top: 10px; }
-  .solid h2 { font: 700 50px/1.25 var(--serif); letter-spacing: .08em; margin-top: 26px; }
-  .solid p { font: 500 26px/1.5 var(--sans); color: var(--sub); letter-spacing: .08em; margin-top: 12px; }
-  .solid .price.big { font-size: 112px; margin-top: 22px; }
-  .solid .save { font: 500 26px var(--sans); color: var(--gold-ink); letter-spacing: .2em; margin-top: 14px; }
+  .tab { background: var(--red); color: #fff; font: 900 30px/1 var(--serif); letter-spacing: .24em; padding: 12px 16px 12px 24px; border-radius: 8px; }
+  .solid h2 { font: 900 50px/1.25 var(--serif); letter-spacing: .06em; margin-top: 22px; }
+  .solid p { font: 500 26px/1.5 var(--sans); color: var(--mute); margin-top: 10px; }
+  .big { font: 900 120px/1 var(--serif); color: var(--gold); margin-top: 18px; font-variant-numeric: lining-nums; }
+  .big small { font-size: .38em; margin-left: 4px; }
+  .pill { display: inline-block; background: var(--red); color: #fff; font: 700 26px/1 var(--sans); padding: 8px 20px; border-radius: 999px; margin-top: 14px; }
 
-  #meal img { width: 92px; }
-  #meal h2 { font-size: 44px; margin-top: 18px; }
-  #meal .eq { display: flex; align-items: center; gap: 12px; margin-top: 18px; font: 600 28px/1 var(--serif); color: var(--gold-ink); }
-  #meal .eq span { color: var(--brown); border-bottom: 1px solid var(--gold); padding-bottom: 6px; letter-spacing: .06em; }
-  #meal .price.big { font-size: 86px; margin-top: 18px; }
+  #meal .badge { width: 104px; height: 104px; border-radius: 50%; background: #FBF8F3; display: grid; place-items: center; }
+  #meal .badge img { width: 88px; }
+  #meal h2 { font-size: 44px; margin-top: 16px; }
+  #meal .eq { display: flex; align-items: center; gap: 10px; margin-top: 18px; font: 900 26px/1 var(--sans); color: var(--gold); }
+  #meal .eq span { border: 2px solid rgba(251,243,230,.45); color: var(--cream); border-radius: 10px; padding: 9px 13px; }
+  #meal .big { font-size: 88px; margin-top: 14px; }
 
-  #qr img { width: 340px; height: 340px; margin-top: 20px; }
-  #qr h2 { font-size: 36px; margin-top: 16px; }
-  #qr h2 em { font-style: normal; color: #06C755; font-family: var(--sans); font-weight: 700; margin-right: 10px; }
+  #qr img { width: 340px; height: 340px; background: #fff; padding: 10px; border-radius: 16px; margin-top: 18px; }
+  #qr h2 { font-size: 36px; margin-top: 18px; }
+  #qr h2 em { font-style: normal; background: #06C755; color: #fff; font: 900 26px/1 var(--sans); padding: 6px 12px; border-radius: 8px;
+              margin-right: 12px; vertical-align: 6px; }
 </style>
 </head>
 <body>
 
-<section class="card overlay" id="home">
+<section class="card overlay photo" id="home">
   <span class="note">圖片僅供參考</span>
-  <div class="cap brand"><img src="assets/wordmark.png" alt="楊家一鍋滷 50年不斷火"></div>
+  <div class="plaque"><img src="assets/wordmark.png" alt="楊家一鍋滷 50年不斷火"></div>
 </section>
 
-<section class="card overlay" id="lurou"><div class="cap"><b>傳香滷肉飯／拌麵</b><span class="price">65<small>元</small></span></div></section>
-<section class="card overlay" id="chicken"><div class="cap"><b>蔥香雞絲飯／拌麵</b><span class="price">65<small>元</small></span></div></section>
-<section class="card overlay" id="pork"><div class="cap"><b>台式酥香燒肉飯／拌麵</b><span class="price">110<small>元</small></span></div></section>
-<section class="card overlay" id="soup1"><span class="note">圖片僅供參考</span><div class="cap"><b>蒜香鮮雞腿湯</b><span class="price">120<small>元</small></span></div></section>
-<section class="card overlay" id="soup2"><span class="note">圖片僅供參考</span><div class="cap"><b>百菇鮮雞腿湯</b><span class="price">120<small>元</small></span></div></section>
-<section class="card overlay" id="tofu"><div class="cap"><b>古早味豆干絲</b><span class="price">40<small>元</small></span></div></section>
+<section class="card overlay plate" id="lurou"><div class="seal"><b>65</b><small>元</small></div><h3>傳香滷肉飯<span>／拌麵</span></h3></section>
+<section class="card overlay plate" id="chicken"><div class="seal"><b>65</b><small>元</small></div><h3>蔥香雞絲飯<span>／拌麵</span></h3></section>
+<section class="card overlay plate" id="pork"><div class="seal w"><b>110</b><small>元</small></div><h3>台式酥香燒肉飯<span>／拌麵</span></h3></section>
+<section class="card overlay plate" id="tofu"><div class="seal"><b>40</b><small>元</small></div><h3>古早味豆干絲</h3></section>
+<section class="card overlay photo" id="soup1"><span class="note">圖片僅供參考</span><div class="seal w"><b>120</b><small>元</small></div><h3>蒜香鮮雞腿湯</h3></section>
+<section class="card overlay photo" id="soup2"><span class="note">圖片僅供參考</span><div class="seal w"><b>120</b><small>元</small></div><h3>百菇鮮雞腿湯</h3></section>
 
 <section class="card solid" id="meal">
-  <img src="assets/logo.png" alt="">
+  <div class="badge"><img src="assets/logo.png" alt=""></div>
   <h2>一碗有肉・有菜・有小食</h2>
   <div class="eq"><span>滷肉飯</span>＋<span>半份青菜</span>＋<span>開胃小食</span></div>
   <p>滷肉・雞絲・雞魯｜飯、拌麵都含</p>
-  <div class="price big">65<small>起</small></div>
+  <div class="big">65<small>起</small></div>
 </section>
 
 <section class="card solid" id="combo">
-  <div class="eyebrow"><div>超值套餐<span>SET MEALS</span></div></div>
+  <div class="tab">超值套餐</div>
   <h2>傳香滷肉雙寶</h2>
   <p>滷肉飯／麵＋土魠魚羹</p>
-  <div class="price big">130<small>元</small></div>
-  <div class="save">省 15</div>
+  <div class="big">130<small>元</small></div>
+  <span class="pill">省 15</span>
 </section>
 
 <section class="card solid" id="qr">

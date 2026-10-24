@@ -9,7 +9,7 @@ mkdir -p build
 
 FPS=30
 XF=0.5     # 轉場秒數
-FOCUS=0.375  # 推近中心點的高度比例（照片窗 420px 的中央 = 210/560）
+FOCUS=0.4    # 推近中心點的高度比例（盤子卡的盤心約在畫面 40% 高度）
 # 色彩：一律在 RGB 合成，輸出時明確轉成 BT.709 電視範圍並標記，避免轉檔時偏灰、偏黃
 TOYUV="scale=out_color_matrix=bt709:out_range=tv,format=yuv420p"
 TORGB="scale=in_color_matrix=bt709:in_range=tv,format=rgb24"
