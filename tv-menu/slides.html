@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>楊家一鍋滷 輪播字卡</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  /* 每張字卡 640x560，對應電視菜單右上影片區。
+     ?card=名稱 只顯示該張；帶 overlay 類別的是疊在照片上的透明字卡 */
+  :root { --brown: #4A2A16; --red: #B42318; --gold: #D4A353; --paper: #F7F0E3; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: transparent; }
+  body { font-family: "Noto Sans TC", sans-serif; color: var(--brown); }
+  .card { width: 640px; height: 560px; position: relative; overflow: hidden; display: none; }
+  .card.on { display: block; }
+  .solid { background: var(--paper); display: none; flex-direction: column; align-items: center;
+           justify-content: center; text-align: center; padding: 36px; }
+  .solid.on { display: flex; }
+
+  /* 照片上的下方字帶 */
+  .band { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 28px 22px;
+          background: linear-gradient(to top, rgba(40,20,10,.92) 70%, rgba(40,20,10,0)); color: #fff; }
+  .band .tag { display: inline-block; background: var(--red); font-size: 26px; font-weight: 900;
+               padding: 2px 14px; border-radius: 8px; margin-bottom: 8px; }
+  .band h3 { font: 900 48px/1.15 "Noto Serif TC", serif; }
+  .band h3 em { font-style: normal; color: #ffd28a; margin-left: 12px; }
+  .band p { font-size: 28px; font-weight: 700; margin-top: 6px; opacity: .95; }
+  .note { position: absolute; right: 12px; top: 10px; font-size: 16px; color: #fff;
+          text-shadow: 0 1px 3px #000; opacity: .8; }
+
+  .solid img.logo { width: 120px; }
+  .solid h2 { font: 900 50px/1.25 "Noto Serif TC", serif; margin-top: 10px; }
+  .solid .brush { background: var(--red); color: #fff; font: 900 34px/1.3 "Noto Serif TC", serif;
+                  padding: 8px 26px; border-radius: 10px; margin-top: 16px; }
+  .solid p { font-size: 30px; font-weight: 700; margin-top: 16px; line-height: 1.45; }
+  .solid .big { font-size: 96px; font-weight: 900; color: var(--red); line-height: 1; margin-top: 14px; }
+  .solid .big span { font-size: 40px; }
+  .solid .save { display: inline-block; background: var(--gold); color: var(--brown); font-size: 30px;
+                 font-weight: 900; padding: 4px 18px; border-radius: 8px; margin-top: 12px; }
+
+  #qr { padding: 24px; }
+  #qr img.code { width: 380px; height: 380px; background: #fff; padding: 8px; border-radius: 12px; }
+  #qr h2 { font-size: 44px; margin-top: 4px; }
+  #qr h2 b { color: var(--red); }
+</style>
+</head>
+<body>
+
+<section class="card overlay" id="lurou">
+  <span class="note">圖片僅供參考</span>
+  <div class="band">
+    <span class="tag">一鍋老滷・50年不斷火</span>
+    <h3>傳香滷肉飯<em>65元</em></h3>
+    <p>滷肉足足 90g・飯／拌麵都可選</p>
+  </div>
+</section>
+
+<section class="card overlay" id="soup1">
+  <span class="note">圖片僅供參考</span>
+  <div class="band">
+    <span class="tag">暖心湯品・新上市</span>
+    <h3>蒜香鮮雞腿湯<em>120元</em></h3>
+    <p>雞高湯 300cc・雞腿肉 3 塊・蒜仁紅棗</p>
+  </div>
+</section>
+
+<section class="card overlay" id="soup2">
+  <span class="note">圖片僅供參考</span>
+  <div class="band">
+    <span class="tag">暖心湯品・新上市</span>
+    <h3>百菇鮮雞腿湯<em>120元</em></h3>
+    <p>袖珍菇・杏鮑菇・金針菇＋雞腿肉 3 塊</p>
+  </div>
+</section>
+
+<section class="card solid" id="meal">
+  <img class="logo" src="assets/logo.png" alt="">
+  <h2>一碗有肉・有菜・有小食</h2>
+  <div class="brush">每一碗都是完整一餐</div>
+  <p>滷肉・雞絲・雞魯　飯／拌麵<br>★ 每碗含 半份青菜＋開胃小食</p>
+  <div class="big">65<span>元起</span></div>
+</section>
+
+<section class="card solid" id="combo">
+  <div class="brush" style="margin-top:0">超值套餐</div>
+  <h2>傳香滷肉雙寶</h2>
+  <p>滷肉飯／麵 ＋ 酥香土魠魚羹</p>
+  <div class="big">130<span>元</span></div>
+  <span class="save">單點合計 145 元，省 15 元</span>
+</section>
+
+<section class="card solid" id="qr">
+  <img class="code" src="assets/qr.png" alt="">
+  <h2><b>LINE</b> 掃碼線上點餐・免排隊</h2>
+</section>
+
+<script>
+  const id = new URLSearchParams(location.search).get('card') || 'lurou';
+  document.getElementById(id).classList.add('on');
+</script>
+</body>
+</html>

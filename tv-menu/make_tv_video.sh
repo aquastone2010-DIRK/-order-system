@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# 把菜單圖（1920x1080）與多支直式短片合成一支電視可 USB 播放的 MP4。
+# 把菜單圖（1920x1080）與多支影片片段合成（疊在右上 640x560 影片區）一支電視可 USB 播放的 MP4。
 # 用法：./make_tv_video.sh menu.png 輸出.mp4 片段1.mp4 [片段2.mp4 ...]
-# 片段建議手機直拍 9:16（1080x1920），每支 6–10 秒，不需要聲音。
+# 片段建議拍 1:1 方形（1080x1080），每支 6–10 秒，不需要聲音。
 set -euo pipefail
 
 if [ $# -lt 3 ]; then
@@ -17,8 +17,8 @@ labels=""
 i=1
 for clip in "$@"; do
   inputs+=(-i "$clip")
-  # 等比縮到寬 640，再裁成 640x1080（9:16 上下各裁約 29px）
-  filters+="[$i:v]scale=640:1080:force_original_aspect_ratio=increase,crop=640:1080,setsar=1,fps=30[c$i];"
+  # 等比縮放後置中裁成 640x560
+  filters+="[$i:v]scale=640:560:force_original_aspect_ratio=increase,crop=640:560,setsar=1,fps=30[c$i];"
   labels+="[c$i]"
   i=$((i + 1))
 done

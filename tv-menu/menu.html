@@ -10,14 +10,15 @@
      右 1/3（640px）：上方輪播影片 640x560、下方超值套餐，常駐
      資料來源：單色點餐菜單 A4 版 20261009 */
   :root {
-    --brand: #7a2418;
-    --brand-dark: #4e140c;
-    --cream: #fbf5ea;
-    --line: #e6d6bf;
-    --ink: #2b1a12;
-    --sub: #6b5545;
-    --price: #c0291b;
-    --tag: #f3e3cf;
+    /* 品牌標準色：深滷棕 #4A2A16、朱砂紅 #B42318（品牌標誌設計稿） */
+    --brand: #B42318;
+    --brand-dark: #4A2A16;
+    --cream: #F7F0E3;
+    --line: #e2d2b8;
+    --ink: #4A2A16;
+    --sub: #7a5a43;
+    --price: #B42318;
+    --tag: #efdfc6;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { width: 1920px; height: 1080px; overflow: hidden; background: var(--cream);
@@ -25,13 +26,12 @@
 
   .menu { width: 1280px; height: 1080px; display: flex; flex-direction: column; }
 
-  header { height: 112px; background: var(--brand); color: #fff; display: flex; align-items: center;
-           padding: 0 32px; gap: 20px; flex: none; }
-  .logo { width: 84px; height: 84px; border-radius: 50%; background: #fff; color: var(--brand);
-          font: 900 52px/84px "Noto Serif TC", serif; text-align: center; flex: none; }
+  header { height: 112px; background: #FBF6EC; color: var(--brand-dark); display: flex; align-items: center;
+           padding: 0 32px; gap: 20px; flex: none; border-bottom: 6px solid var(--brand); }
+  .logo { width: 92px; height: 92px; flex: none; }
   .brand h1 { font: 900 60px/1.1 "Noto Serif TC", serif; letter-spacing: 6px; }
-  .brand p { font-size: 26px; margin-top: 4px; opacity: .92; letter-spacing: 4px; }
-  .tip { margin-left: auto; background: #fff; color: var(--brand); border-radius: 14px;
+  .brand p { font: 900 26px "Noto Serif TC", serif; margin-top: 4px; color: var(--brand); letter-spacing: 4px; }
+  .tip { margin-left: auto; background: var(--brand); color: #fff; border-radius: 14px;
          padding: 8px 20px; font-size: 30px; font-weight: 900; line-height: 1.3; text-align: center; }
 
   .body { flex: 1; display: flex; gap: 28px; padding: 16px 28px 0; min-height: 0; }
@@ -60,6 +60,7 @@
                      padding: 0 10px; border-radius: 8px; margin-right: 8px; font-weight: 700; }
   .main .price { font-size: 72px; }
   .star { color: var(--price); }
+  .tip .star { color: #ffd28a; }
 
   .side .row { height: 80px; }
   .side .name b { font-size: 42px; }
@@ -76,6 +77,8 @@
   .video .safe { position: absolute; inset: 24px; border: 3px dashed rgba(243,227,207,.35); border-radius: 12px; }
   .video h3 { font-size: 44px; font-weight: 900; }
   .video p { font-size: 26px; margin-top: 12px; line-height: 1.6; opacity: .85; }
+  /* ?prod：輸出影片用的底圖，影片區留空 */
+  .prod .video > * { display: none; }
 
   .combo { flex: 1; background: #fff8ee; padding: 14px 24px 10px; display: flex; flex-direction: column; }
   .combo h2 { font-size: 36px; margin-bottom: 2px; }
@@ -92,10 +95,10 @@
 <body>
 <section class="menu">
   <header>
-    <div class="logo">楊</div>
+    <img class="logo" src="assets/logo.png" alt="">
     <div class="brand">
       <h1>楊家一鍋滷</h1>
-      <p>一鍋慢滷，飯麵都香。</p>
+      <p>一鍋老滷，50年不斷火</p>
     </div>
     <div class="tip"><span class="star">★</span> 每碗含<br>半份青菜＋開胃小食</div>
   </header>
@@ -164,5 +167,8 @@
     <div class="row"><div class="no">E</div><div class="name"><b>酥香燒肉定食</b><i>燒肉飯／麵＋時蔬＋油豆腐</i></div><div class="price">155<span>元</span><em class="save">省35</em></div></div>
   </div>
 </section>
+<script>
+  if (new URLSearchParams(location.search).has('prod')) document.body.classList.add('prod');
+</script>
 </body>
 </html>
