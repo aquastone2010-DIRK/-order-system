@@ -1,153 +1,151 @@
 <title>楊家一鍋滷 品牌視覺規範</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* 版面概念：一本攤開的品牌手冊，左側章節標記、右側內容；
+  /* 版面概念：像一本精裝菜譜，白瓷底、細金線分章，左側章名、右側內容；
      單一淺色主題（品牌色彩需在固定底色上判讀，故不做深色模式） */
   :root {
+    --porcelain: #FBF8F3;
+    --paper: #FFFFFF;
     --brown: #4A2A16;
     --red: #B42318;
-    --gold: #D4A353;
-    --rice: #F7F2E8;
+    --gold: #B8935A;
+    --gold-ink: #8A6A3C;
     --ink: #2B1810;
-    --line: #E3D7C3;
-    --sub: #6F5442;
-    --paper: #FFFDF8;
+    --sub: #7C6553;
+    --hair: #E6DCCB;
     --serif: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
     --sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
     color-scheme: light;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--rice); color: var(--ink); font: 400 16px/1.75 var(--sans);
+  body { margin: 0; background: var(--porcelain); color: var(--ink); font: 400 16px/1.8 var(--sans);
          padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-  .wrap { max-width: 1080px; margin: 0 auto; padding-block: 40px 80px; display: flex; flex-direction: column; gap: 72px; }
-  h1, h2, h3 { font-family: var(--serif); font-weight: 900; color: var(--brown); margin: 0; text-wrap: balance; }
-  h2 { font-size: clamp(26px, 4vw, 36px); line-height: 1.25; letter-spacing: 2px; }
-  h3 { font-size: 20px; line-height: 1.4; }
+  .wrap { max-width: 1060px; margin: 0 auto; padding-block: 48px 88px; display: flex; flex-direction: column; gap: 80px; }
+  h1, h2, h3 { font-family: var(--serif); color: var(--brown); margin: 0; text-wrap: balance; }
+  h3 { font-size: 20px; font-weight: 700; letter-spacing: .08em; line-height: 1.4; }
   p { margin: 0; max-width: 64ch; }
   .muted { color: var(--sub); }
   img { max-width: 100%; display: block; }
+  .en { font: 500 12px/1 var(--sans); letter-spacing: .3em; color: var(--gold-ink); text-transform: uppercase; }
 
   /* 封面 */
-  .cover { background: var(--paper); border-radius: 28px; padding: clamp(24px, 5vw, 56px); display: grid;
-           grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 32px; align-items: end; }
+  .cover { border-top: 2px solid var(--brown); border-bottom: 1px solid var(--gold); padding-block: 48px;
+           display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; align-items: center; position: relative; }
+  .cover::before { content: ""; position: absolute; left: 0; right: 0; top: 5px; height: 1px; background: var(--gold); }
   .cover .mark { width: min(520px, 100%); }
-  .cover .meta { border-left: 10px solid var(--brown); padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
-  .cover .meta b { font: 900 clamp(28px, 4vw, 40px)/1.2 var(--serif); color: var(--brown); }
-  .cover .meta span { font-weight: 700; color: var(--red); letter-spacing: 3px; }
-  .cover .meta small { color: var(--sub); font-size: 14px; }
+  .cover .meta { display: flex; flex-direction: column; gap: 10px; }
+  .cover .meta b { font: 700 clamp(30px, 4.4vw, 44px)/1.2 var(--serif); color: var(--brown); letter-spacing: .14em; }
+  .cover .meta small { color: var(--sub); font-size: 14px; line-height: 1.7; }
 
   /* 章節 */
-  section.ch { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 32px; }
-  .ch-label { display: flex; flex-direction: column; gap: 8px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); align-self: start; }
-  .ch-label i { font: 900 14px/1 var(--sans); font-style: normal; color: var(--red); letter-spacing: 3px; }
-  .ch-label::before { content: ""; width: 10px; height: 36px; border-radius: 3px; background: var(--red); }
-  .ch-body { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
-
-  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-  .panel { background: var(--paper); border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  section.ch { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 36px; }
+  .ch-label { display: flex; flex-direction: column; gap: 10px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); align-self: start;
+              border-top: 1px solid var(--gold); padding-top: 14px; }
+  .ch-label h2 { font-size: 22px; font-weight: 700; letter-spacing: .2em; line-height: 1.4; }
+  .ch-body { display: flex; flex-direction: column; gap: 26px; min-width: 0; }
+  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .panel { background: var(--paper); border: 1px solid var(--hair); padding: 26px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 
   /* 核心 */
-  .thesis { background: var(--brown); color: var(--rice); border-radius: 24px; padding: clamp(24px, 4vw, 40px);
-            display: flex; flex-direction: column; gap: 14px; }
-  .thesis b { font: 900 clamp(30px, 5vw, 52px)/1.2 var(--serif); color: var(--rice); }
-  .thesis p { color: rgba(247,242,232,.85); }
-  .kw { display: flex; flex-wrap: wrap; gap: 10px; }
-  .kw span { border: 2px solid var(--gold); color: var(--gold); border-radius: 999px; padding: 4px 16px; font-weight: 700; }
-  .shift { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 16px; align-items: stretch; }
-  .shift .arrow { align-self: center; font: 900 28px var(--sans); color: var(--red); }
-  .shift ul { margin: 0; padding-left: 1.2em; }
+  .thesis { text-align: center; padding: clamp(32px, 6vw, 64px) 20px; background: var(--paper); border: 1px solid var(--hair);
+            display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .thesis b { font: 700 clamp(30px, 5vw, 50px)/1.3 var(--serif); color: var(--brown); letter-spacing: .14em; }
+  .thesis .orn { display: flex; align-items: center; gap: 16px; }
+  .thesis .orn::before, .thesis .orn::after { content: ""; width: 64px; height: 1px; background: var(--gold); }
+  .thesis p { color: var(--sub); }
+  .kw { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 28px; font: 600 18px var(--serif); color: var(--brown); letter-spacing: .14em; }
+  .kw span::before { content: "・"; color: var(--red); }
+  .refs { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
+  .refs .panel b { font: 700 18px var(--serif); color: var(--brown); letter-spacing: .08em; }
 
   /* 標誌 */
-  .logo-stage { border-radius: 18px; padding: 32px; display: grid; place-items: center; min-height: 200px; }
-  .on-rice { background: var(--rice); outline: 1px solid var(--line); }
-  .on-white { background: #fff; outline: 1px solid var(--line); }
-  .on-brown { background: var(--brown); }
-  .badge { width: 150px; height: 150px; border-radius: 50%; background: var(--rice); display: grid; place-items: center; }
+  .logo-stage { padding: 32px; display: grid; place-items: center; min-height: 200px; border: 1px solid var(--hair); }
+  .on-porcelain { background: var(--porcelain); }
+  .on-white { background: #fff; }
+  .on-photo { background: #2a1d14; }
+  .badge { width: 150px; height: 150px; border-radius: 50%; background: var(--porcelain); display: grid; place-items: center; }
   .badge img { width: 124px; }
-  .clear { position: relative; padding: 28px; outline: 2px dashed var(--red); outline-offset: -2px; }
-  .rules { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px 24px; margin: 0; padding: 0; list-style: none; }
-  .rules li { padding-left: 28px; position: relative; }
-  .rules li::before { position: absolute; left: 0; top: 0; font-weight: 900; }
+  .clear { padding: 28px; outline: 1.5px dashed var(--red); outline-offset: -2px; background: var(--porcelain); }
+  .rules { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px 24px; margin: 0; padding: 0; list-style: none; }
+  .rules li { padding-left: 26px; position: relative; }
+  .rules li::before { position: absolute; left: 0; top: 0; font-weight: 700; }
   .rules.do li::before { content: "✓"; color: #2E7D4F; }
   .rules.dont li::before { content: "✕"; color: var(--red); }
 
   /* 色彩 */
-  .swatches { display: grid; grid-template-columns: 2fr 1.5fr 1.3fr 1fr 1fr; gap: 10px; }
-  .sw { border-radius: 18px; min-height: 190px; padding: 18px; display: flex; flex-direction: column; justify-content: flex-end;
-        gap: 2px; font-size: 13px; line-height: 1.5; min-width: 0; overflow-wrap: anywhere; }
-  .sw b { font: 900 18px/1.3 var(--serif); }
+  .swatches { display: grid; grid-template-columns: 2.2fr 1.4fr 1.1fr 1fr 1fr; gap: 12px; }
+  .sw { min-height: 200px; padding: 18px; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px;
+        font-size: 13px; line-height: 1.55; min-width: 0; overflow-wrap: anywhere; border: 1px solid var(--hair); }
+  .sw b { font: 700 18px/1.3 var(--serif); letter-spacing: .08em; }
   .sw code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px; }
-  .tbl { overflow-x: auto; background: var(--paper); border-radius: 18px; }
-  table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: 15px; }
-  th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
-  th { font-weight: 900; color: var(--brown); background: #F3EBDD; }
+  .tbl { overflow-x: auto; background: var(--paper); border: 1px solid var(--hair); }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 15px; }
+  th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--hair); vertical-align: middle; }
+  th { font: 600 14px var(--sans); color: var(--gold-ink); letter-spacing: .12em; background: var(--porcelain); }
+  tr:last-child td { border-bottom: 0; }
   td.num { font-variant-numeric: tabular-nums; font-weight: 700; }
-  .chip { display: inline-block; border-radius: 8px; padding: 2px 12px; font-weight: 900; }
-  .ok { color: #2E7D4F; font-weight: 900; }
-  .ng { color: var(--red); font-weight: 900; }
+  .chip { display: inline-block; padding: 2px 12px; font-family: var(--serif); font-weight: 700; border: 1px solid var(--hair); }
+  .ok { color: #2E7D4F; font-weight: 700; }
+  .ng { color: var(--red); font-weight: 700; }
 
   /* 字體 */
-  .spec { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 16px; }
-  .spec .big { font-size: clamp(40px, 7vw, 64px); line-height: 1.1; color: var(--brown); }
-  .serif { font-family: var(--serif); font-weight: 900; }
-  .sans900 { font-family: var(--sans); font-weight: 900; font-variant-numeric: tabular-nums; }
+  .spec .big { font-size: clamp(42px, 7vw, 66px); line-height: 1.1; color: var(--brown); }
+  .serif7 { font-family: var(--serif); font-weight: 700; letter-spacing: .08em; }
 
   /* 圖形元素 */
-  .el { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; min-height: 60px; }
-  .bar-mark { display: flex; align-items: center; gap: 12px; font: 900 28px var(--serif); color: var(--brown); letter-spacing: 4px; }
-  .bar-mark::before { content: ""; width: 10px; height: 34px; border-radius: 3px; background: var(--red); }
-  .numc { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font: 900 20px var(--sans); }
-  .pill { border-radius: 999px; padding: 6px 14px; font: 700 15px/1 var(--sans); display: inline-block; }
-  .block-demo { display: grid; grid-template-columns: 1fr 1fr; border-radius: 14px; overflow: hidden; height: 120px; }
-  .block-demo div { padding: 14px; font-weight: 900; display: flex; align-items: flex-end; }
+  .el { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; min-height: 64px; }
+  .tdemo { display: flex; align-items: baseline; gap: 14px; border-bottom: 1px solid var(--gold); padding-bottom: 10px; width: 100%; }
+  .tdemo b { font: 600 26px/1 var(--serif); color: var(--brown); letter-spacing: .3em; }
+  .numc { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--gold); color: var(--gold-ink); display: grid; place-items: center; font: 600 16px var(--serif); }
+  .tag { border: 1.5px solid var(--red); color: var(--red); border-radius: 4px; padding: 3px 7px; font: 500 14px/1.2 var(--sans); letter-spacing: 1px; }
+  .dbl { width: 100%; border-top: 2px solid var(--brown); position: relative; height: 12px; }
+  .dbl::after { content: ""; position: absolute; left: 0; right: 0; top: 5px; height: 1px; background: var(--gold); }
   .hair { display: flex; flex-direction: column; width: 100%; }
-  .hair div { display: flex; justify-content: space-between; padding: 10px 0; border-top: 2px solid var(--line);
-              font: 900 20px var(--serif); color: var(--brown); }
+  .hair div { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--hair);
+              font: 700 20px var(--serif); color: var(--brown); letter-spacing: .06em; }
   .hair div:first-child { border-top: 0; }
-  .hair span { font: 900 24px var(--sans); color: var(--red); font-variant-numeric: tabular-nums; }
+  .hair span { font: 700 26px var(--serif); color: var(--red); font-variant-numeric: lining-nums tabular-nums; }
+  .hair span small { font-size: .45em; margin-left: 2px; }
 
   /* 應用 */
   figure { margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
   figcaption { font-size: 14px; color: var(--sub); }
-  .shot { border-radius: 14px; overflow: hidden; outline: 1px solid var(--line); }
-  .mock-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
-  .stand { aspect-ratio: 148 / 210; max-width: 100%; background: var(--rice); border-radius: 10px; outline: 1px solid var(--line);
-           display: flex; flex-direction: column; overflow: hidden; container-type: inline-size; }
-  .stand .top { padding: 7cqw 7cqw 4cqw; }
-  .stand .top img { width: 72cqw; }
-  .stand .blk { background: var(--brown); color: var(--rice); margin: 0 0 0 0; padding: 6cqw 7cqw; flex: 1;
-                display: flex; flex-direction: column; gap: 3cqw; border-top-right-radius: 6cqw; margin-right: 7cqw; }
-  .stand .blk .t { font: 900 4cqw/1 var(--sans); color: #fff; background: var(--red); border-radius: 999px; padding: 1.6cqw 3cqw; align-self: flex-start; }
-  .stand .blk .row { display: flex; justify-content: space-between; align-items: baseline; border-top: 2px solid rgba(247,242,232,.15); padding-top: 3cqw; }
-  .stand .blk .row:first-of-type { border-top: 0; }
-  .stand .blk b { font: 900 7.2cqw/1.2 var(--serif); }
-  .stand .blk span { font: 900 8.5cqw/1 var(--sans); color: var(--gold); font-variant-numeric: tabular-nums; }
-  .stand .blk span small { font-size: .45em; margin-left: 2px; }
-  .stand .foot { background: var(--red); color: #fff; padding: 4cqw 7cqw; font: 900 5cqw/1.3 var(--serif); text-align: center; }
-  .sticker { aspect-ratio: 1; max-width: 100%; border-radius: 50%; background: var(--brown); display: grid; place-items: center; container-type: inline-size; }
-  .sticker .in { width: 84%; aspect-ratio: 1; border-radius: 50%; background: var(--rice); display: flex; flex-direction: column;
+  .shot { border: 1px solid var(--hair); }
+  .mock-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+  .stand { aspect-ratio: 148 / 210; max-width: 100%; background: var(--porcelain); border: 1px solid var(--hair);
+           display: flex; flex-direction: column; container-type: inline-size; padding: 7cqw; gap: 4cqw; }
+  .stand img.w { width: 74cqw; align-self: center; }
+  .stand .t { display: flex; align-items: baseline; gap: 3cqw; border-bottom: 1px solid var(--gold); padding-bottom: 2.4cqw; margin-top: 4cqw; }
+  .stand .t b { font: 600 6cqw/1 var(--serif); color: var(--brown); letter-spacing: .3em; }
+  .stand .t span { font: 500 2.8cqw/1 var(--sans); color: var(--gold-ink); letter-spacing: .3em; }
+  .stand .row { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--hair); padding: 3cqw 0; }
+  .stand .row b { font: 700 6.4cqw/1.2 var(--serif); color: var(--brown); letter-spacing: .04em; }
+  .stand .row span { font: 700 7.6cqw/1 var(--serif); color: var(--red); }
+  .stand .row span small { font-size: .45em; margin-left: 2px; }
+  .stand .foot { margin-top: auto; text-align: center; font: 600 4.4cqw/1.4 var(--serif); color: var(--brown); letter-spacing: .1em;
+                 border-top: 1px solid var(--gold); padding-top: 3cqw; }
+  .sticker { aspect-ratio: 1; max-width: 100%; border-radius: 50%; background: var(--porcelain); border: 1px solid var(--hair);
+             display: grid; place-items: center; container-type: inline-size; }
+  .sticker .in { width: 86%; aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--gold); display: flex; flex-direction: column;
                  align-items: center; justify-content: center; gap: 3cqw; }
-  .sticker img { width: 64%; }
-  .sticker b { font: 900 6cqw/1 var(--serif); color: var(--red); letter-spacing: 1cqw; }
+  .sticker img { width: 58%; }
+  .sticker b { font: 600 5.4cqw/1 var(--serif); color: var(--brown); letter-spacing: .4em; }
 
-  .voice { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 16px; }
-  .voice .panel p { font-weight: 700; }
-  .voice .panel p + p { margin-top: 6px; }
+  .voice { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 18px; }
+  .voice .panel p { font-family: var(--serif); font-weight: 600; letter-spacing: .04em; }
 
-  footer { border-top: 2px solid var(--line); padding-top: 20px; font-size: 14px; color: var(--sub); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+  footer { border-top: 1px solid var(--gold); padding-top: 20px; font-size: 14px; color: var(--sub); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
 
   @media (max-width: 760px) {
-    section.ch { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-    .ch-label { position: static; flex-direction: row; align-items: center; }
-    .cover, .grid2, .grid3, .spec, .mock-row, .voice { grid-template-columns: minmax(0, 1fr); }
+    section.ch { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+    .ch-label { position: static; }
+    .cover, .grid2, .grid3, .mock-row, .voice, .refs { grid-template-columns: minmax(0, 1fr); }
     .swatches { grid-template-columns: 1fr 1fr; }
     .swatches .sw:first-child { grid-column: 1 / -1; }
     .rules { grid-template-columns: minmax(0, 1fr); }
-    .shift { grid-template-columns: minmax(0, 1fr); }
-    .shift .arrow { transform: rotate(90deg); justify-self: center; }
   }
 </style>
 
@@ -156,163 +154,161 @@
   <header class="cover">
     <img class="mark" src="{{WORDMARK}}" alt="楊家一鍋滷 標準字與標誌">
     <div class="meta">
-      <span>品牌視覺規範</span>
-      <b>現代老店</b>
-      <small>版本 2.0｜2026 年 10 月｜品富食品旗下品牌<br>適用：電視菜單、點餐單、櫃檯立牌、外帶包材、社群貼文</small>
+      <span class="en">Brand Identity Guidelines</span>
+      <b>精緻老店</b>
+      <small>品牌視覺規範 3.0｜2026 年 10 月｜品富食品旗下品牌<br>適用：電視菜單、點餐單、櫃檯立牌、外帶包材、社群貼文</small>
     </div>
   </header>
 
   <section class="ch">
-    <div class="ch-label"><i>01</i><h3>品牌核心</h3></div>
+    <div class="ch-label"><span class="en">01 Essence</span><h2>品牌核心</h2></div>
     <div class="ch-body">
       <div class="thesis">
+        <div class="orn"><span class="en">Dali, Taichung · Three Generations</span></div>
         <b>一鍋老滷，50年不斷火</b>
-        <p>台中大里麵攤起家，三代傳承。用一鍋細火慢燉的滷肉，延伸到飯、麵、湯品與滷味。</p>
-        <div class="kw"><span>老味道</span><span>乾淨俐落</span><span>一碗完整一餐</span><span>說得出份量</span></div>
+        <p>台中大里麵攤起家，三代傳承。把懷舊小吃做得像名店一樣講究：每一碗的份量、擺盤、出餐都一致。</p>
+        <div class="kw"><span>懷舊的味道</span><span>名店的講究</span><span>一碗完整一餐</span></div>
       </div>
-      <div class="shift">
-        <div class="panel"><h3>舊版做法</h3><ul><li>仿舊紙紋、毛筆刷色帶</li><li>復古插畫、麵攤舊照當背景</li><li>裝飾多，資訊層級不清</li></ul></div>
-        <div class="arrow">→</div>
-        <div class="panel"><h3>現代老店</h3><ul><li>大面積滷棕色塊，留白充足</li><li>細線分隔、膠囊標籤、圓形編號</li><li>老味道靠標準字與色彩傳達，版面本身保持乾淨</li></ul></div>
+      <p>定位是<strong>懷舊小吃界的鼎泰豐</strong>：味道是老的，呈現是精緻的。視覺上用三件事做到：</p>
+      <div class="refs">
+        <div class="panel"><b>留白</b><p class="muted">畫面不塞滿。品項之間用細線分隔，不加框、不加底色。</p></div>
+        <div class="panel"><b>克制</b><p class="muted">紅色只出現在價格與小標示；金色只用在細線與裝飾。</p></div>
+        <div class="panel"><b>照片說話</b><p class="muted">實拍、俯拍、統一背景。用照片呈現品質，不靠形容詞。</p></div>
       </div>
     </div>
   </section>
 
   <section class="ch">
-    <div class="ch-label"><i>02</i><h3>標準字與標誌</h3></div>
+    <div class="ch-label"><span class="en">02 Logo</span><h2>標準字與標誌</h2></div>
     <div class="ch-body">
-      <p>標準字與標誌沿用現行版本，<strong>不更動字形、比例與顏色</strong>。新規範只規定它們放在哪裡、怎麼放。</p>
+      <p>標準字與標誌沿用現行版本，<strong>不更動字形、比例與顏色</strong>。本章只規定它放在哪裡、怎麼放。</p>
       <div class="grid3">
-        <figure><div class="logo-stage on-rice"><img src="{{WORDMARK}}" alt="橫式標準字於米白底" style="width:100%"></div><figcaption>橫式組合｜米白底（首選）</figcaption></figure>
+        <figure><div class="logo-stage on-porcelain"><img src="{{WORDMARK}}" alt="橫式組合於白瓷底" style="width:100%"></div><figcaption>橫式組合｜白瓷底（首選）</figcaption></figure>
         <figure><div class="logo-stage on-white"><img src="{{LOGO}}" alt="圓形標誌於白底" style="width:130px"></div><figcaption>圓形標誌｜白底</figcaption></figure>
-        <figure><div class="logo-stage on-brown"><div class="badge"><img src="{{LOGO}}" alt="圓形標誌加米白底座於滷棕底"></div></div><figcaption>深色底｜一律加米白圓形底座</figcaption></figure>
+        <figure><div class="logo-stage on-photo"><div class="badge"><img src="{{LOGO}}" alt="圓形標誌加白瓷底座於深色底"></div></div><figcaption>深色底或照片上｜一律加白瓷圓形底座</figcaption></figure>
       </div>
       <div class="grid2">
         <div class="panel">
           <h3>留白與最小尺寸</h3>
-          <div class="clear on-rice" style="border-radius:12px"><img src="{{WORDMARK}}" alt="" style="width:100%"></div>
+          <div class="clear"><img src="{{WORDMARK}}" alt="" style="width:100%"></div>
           <p class="muted">四周留白至少為標誌圓高度的 1/4（紅色虛線範圍內不放其他元素）。橫式組合最小寬度：印刷 30mm、螢幕 160px；圓形標誌最小直徑：印刷 12mm、螢幕 48px。</p>
         </div>
         <div class="panel">
           <h3>使用守則</h3>
-          <ul class="rules do"><li>放在米白或白底</li><li>深色底加米白圓形底座</li><li>照片上使用時先墊米白色塊</li><li>依原比例等比縮放</li></ul>
-          <ul class="rules dont"><li>拉長、壓扁、旋轉</li><li>改色或換成單一白色</li><li>加陰影、外框、漸層</li><li>直接壓在照片或滷棕底上</li></ul>
+          <ul class="rules do"><li>放在白瓷或白底</li><li>深色底加白瓷圓形底座</li><li>依原比例等比縮放</li><li>四周保留足夠留白</li></ul>
+          <ul class="rules dont"><li>拉長、壓扁、旋轉</li><li>改色或換成單一白色</li><li>加陰影、外框、漸層</li><li>直接壓在照片上</li></ul>
         </div>
       </div>
     </div>
   </section>
 
   <section class="ch">
-    <div class="ch-label"><i>03</i><h3>色彩</h3></div>
+    <div class="ch-label"><span class="en">03 Color</span><h2>色彩</h2></div>
     <div class="ch-body">
-      <p>五個顏色，依使用面積排列。滷棕、朱砂紅來自標誌本身；米白是所有版面的底；油蔥金只用在深色底上的價格與點綴。</p>
+      <p>以白瓷為底、滷棕為字，朱砂紅與古銅金都是少量點綴。依使用面積排列：</p>
       <div class="swatches">
-        <div class="sw" style="background:var(--rice);outline:1px solid var(--line)"><b>米白</b><code>#F7F2E8</code><code>RGB 247 242 232</code><code>CMYK 0 2 6 3</code><span>約 50%｜底色</span></div>
-        <div class="sw" style="background:var(--brown);color:var(--rice)"><b>滷棕</b><code>#4A2A16</code><code>RGB 74 42 22</code><code>CMYK 0 43 70 71</code><span>約 30%｜主色塊、標題</span></div>
-        <div class="sw" style="background:var(--red);color:#fff"><b>朱砂紅</b><code>#B42318</code><code>RGB 180 35 24</code><code>CMYK 0 81 87 29</code><span>約 12%｜價格、重點</span></div>
-        <div class="sw" style="background:var(--gold);color:var(--brown)"><b>油蔥金</b><code>#D4A353</code><span>約 5%</span></div>
-        <div class="sw" style="background:var(--ink);color:var(--rice)"><b>墨</b><code>#2B1810</code><span>內文</span></div>
+        <div class="sw" style="background:var(--porcelain)"><b>白瓷</b><code>#FBF8F3</code><code>RGB 251 248 243</code><code>CMYK 0 1 3 2</code><span>約 70%｜底色</span></div>
+        <div class="sw" style="background:var(--brown);color:var(--porcelain);border-color:var(--brown)"><b>滷棕</b><code>#4A2A16</code><code>RGB 74 42 22</code><code>CMYK 0 43 70 71</code><span>約 20%｜品名、標題</span></div>
+        <div class="sw" style="background:var(--red);color:#fff;border-color:var(--red)"><b>朱砂紅</b><code>#B42318</code><code>CMYK 0 81 87 29</code><span>約 6%｜價格</span></div>
+        <div class="sw" style="background:var(--gold);color:var(--brown);border-color:var(--gold)"><b>古銅金</b><code>#B8935A</code><code>CMYK 0 20 51 28</code><span>約 3%｜細線</span></div>
+        <div class="sw" style="background:var(--gold-ink);color:#fff;border-color:var(--gold-ink)"><b>深古銅</b><code>#8A6A3C</code><code>CMYK 0 23 57 46</code><span>英文小標</span></div>
       </div>
       <div class="tbl">
         <table>
-          <thead><tr><th>文字 ／ 底色</th><th>範例</th><th>對比度</th><th>判定</th><th>用途</th></tr></thead>
+          <thead><tr><th>文字 ／ 白瓷底</th><th>範例</th><th>對比度</th><th>判定</th><th>用途</th></tr></thead>
           <tbody>
-            <tr><td>墨 ／ 米白</td><td><span class="chip" style="background:var(--rice);color:var(--ink);outline:1px solid var(--line)">蒜香鮮雞腿湯</span></td><td class="num">15.17</td><td class="ok">可用</td><td>內文、說明</td></tr>
-            <tr><td>滷棕 ／ 米白</td><td><span class="chip" style="background:var(--rice);color:var(--brown);outline:1px solid var(--line)">古早味豆干絲</span></td><td class="num">11.52</td><td class="ok">可用</td><td>品名、標題</td></tr>
-            <tr><td>米白 ／ 滷棕</td><td><span class="chip" style="background:var(--brown);color:var(--rice)">傳香滷肉</span></td><td class="num">11.52</td><td class="ok">可用</td><td>深色塊上的品名</td></tr>
-            <tr><td>白 ／ 朱砂紅</td><td><span class="chip" style="background:var(--red);color:#fff">10/1上市</span></td><td class="num">6.57</td><td class="ok">可用</td><td>標籤、底部色帶</td></tr>
-            <tr><td>朱砂紅 ／ 米白</td><td><span class="chip" style="background:var(--rice);color:var(--red);outline:1px solid var(--line)">120 元</span></td><td class="num">5.89</td><td class="ok">可用</td><td>淺底上的價格</td></tr>
-            <tr><td>油蔥金 ／ 滷棕</td><td><span class="chip" style="background:var(--brown);color:var(--gold)">65 元</span></td><td class="num">5.61</td><td class="ok">可用</td><td>深底上的價格</td></tr>
-            <tr><td>朱砂紅 ／ 滷棕</td><td><span class="chip" style="background:var(--brown);color:var(--red)">65 元</span></td><td class="num">1.95</td><td class="ng">禁用</td><td>看不清楚，深底價格改用油蔥金</td></tr>
+            <tr><td>滷棕</td><td><span class="chip" style="color:var(--brown)">古早味豆干絲</span></td><td class="num">12.13</td><td class="ok">可用</td><td>品名、標題</td></tr>
+            <tr><td>朱砂紅</td><td><span class="chip" style="color:var(--red)">120 元</span></td><td class="num">6.21</td><td class="ok">可用</td><td>價格、上市標示</td></tr>
+            <tr><td>輔助棕 #7C6553</td><td><span class="chip" style="color:var(--sub)">飯／拌麵</span></td><td class="num">5.16</td><td class="ok">可用</td><td>選項、說明</td></tr>
+            <tr><td>深古銅</td><td><span class="chip" style="color:var(--gold-ink)">SOUPS</span></td><td class="num">4.71</td><td class="ok">可用</td><td>英文小標、省額</td></tr>
+            <tr><td>古銅金</td><td><span class="chip" style="color:var(--gold)">SOUPS</span></td><td class="num">2.69</td><td class="ng">文字禁用</td><td>只用於細線、圓形編號外框</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="muted">對比度依 WCAG 公式計算，4.5 以上為一般文字可讀標準。CMYK 為螢幕色換算參考值，印刷前請以實際紙材打樣校色。不使用漸層與仿舊紋理。</p>
+      <p class="muted">對比度依 WCAG 公式計算，4.5 以上為一般文字可讀標準。CMYK 為螢幕色換算參考值，印刷前請以實際紙材打樣。不使用漸層、仿舊紋理與大面積色塊。</p>
     </div>
   </section>
 
   <section class="ch">
-    <div class="ch-label"><i>04</i><h3>字體</h3></div>
+    <div class="ch-label"><span class="en">04 Type</span><h2>字體</h2></div>
     <div class="ch-body">
-      <div class="spec">
-        <div class="panel"><span class="muted">標題、品名｜思源宋體 Noto Serif TC Black</span><span class="big serif">滷肉飯</span><p class="muted">有筆畫粗細變化，接得上毛筆標準字的老店氣味。只用在標題與品名，不用於長段內文。</p></div>
-        <div class="panel"><span class="muted">價格、內文、標籤｜思源黑體 Noto Sans TC</span><span class="big sans900">65<small style="font-size:.4em">元</small></span><p class="muted">價格用 Black 900 並開啟等寬數字，上下對齊；內文用 Regular 400 至 Bold 700。兩套字體皆可免費商用。</p></div>
+      <div class="grid2 spec">
+        <div class="panel"><span class="en">Noto Serif TC 600 / 700</span><span class="big serif7">滷肉飯</span><p class="muted">思源宋體。品名、標題、價格數字都用宋體，字重 600 至 700，字距加寬 0.04 至 0.3 em，呈現名店菜單的沉穩感。</p></div>
+        <div class="panel"><span class="en">Noto Sans TC 400 / 500</span><span class="big" style="font-family:var(--sans);font-weight:500;letter-spacing:.16em">飯／拌麵</span><p class="muted">思源黑體。選項、說明、英文小標用黑體，字重 400 至 500。兩套字體皆可免費商用。</p></div>
       </div>
       <div class="tbl">
         <table>
           <thead><tr><th>層級</th><th>字體</th><th>電視 1080p</th><th>42 吋實際字高</th><th>A4 點餐單</th></tr></thead>
           <tbody>
-            <tr><td>主食價格</td><td>黑體 900</td><td class="num">72 px</td><td class="num">約 35 mm</td><td class="num">16 pt</td></tr>
-            <tr><td>主食品名</td><td>宋體 900</td><td class="num">50 px</td><td class="num">約 24 mm</td><td class="num">13 pt</td></tr>
-            <tr><td>湯品、小菜品名</td><td>宋體 900</td><td class="num">40 px</td><td class="num">約 19 mm</td><td class="num">11 pt</td></tr>
-            <tr><td>分區標題</td><td>宋體 900</td><td class="num">38 px</td><td class="num">約 18 mm</td><td class="num">12 pt</td></tr>
-            <tr><td>標籤、說明</td><td>黑體 700</td><td class="num">26 px</td><td class="num">約 13 mm</td><td class="num">9 pt</td></tr>
-            <tr><td>最小字級</td><td>黑體 500</td><td class="num">20 px</td><td class="num">約 10 mm</td><td class="num">7 pt</td></tr>
+            <tr><td>主食價格</td><td>宋體 700</td><td class="num">66 px</td><td class="num">約 32 mm</td><td class="num">16 pt</td></tr>
+            <tr><td>主食品名</td><td>宋體 700</td><td class="num">48 px</td><td class="num">約 23 mm</td><td class="num">13 pt</td></tr>
+            <tr><td>湯品、小菜品名</td><td>宋體 700</td><td class="num">38 px</td><td class="num">約 18 mm</td><td class="num">11 pt</td></tr>
+            <tr><td>分區標題</td><td>宋體 600，字距 0.32 em</td><td class="num">36 px</td><td class="num">約 17 mm</td><td class="num">12 pt</td></tr>
+            <tr><td>選項、說明</td><td>黑體 500</td><td class="num">26 px</td><td class="num">約 13 mm</td><td class="num">9 pt</td></tr>
+            <tr><td>英文小標、最小字級</td><td>黑體 500，字距 0.28 em</td><td class="num">20 px</td><td class="num">約 10 mm</td><td class="num">7 pt</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="muted">電視以 42 吋 Full HD 計算（每像素約 0.484 mm），觀看距離 150 cm。品名不小於 19 mm，排隊客人抬頭即可辨識。</p>
+      <p class="muted">電視以 42 吋 Full HD 計算（每像素約 0.484 mm），觀看距離 150 cm。</p>
     </div>
   </section>
 
   <section class="ch">
-    <div class="ch-label"><i>05</i><h3>圖形元素</h3></div>
+    <div class="ch-label"><span class="en">05 Elements</span><h2>圖形元素</h2></div>
     <div class="ch-body">
       <div class="grid2">
-        <div class="panel"><h3>滷棕大色塊</h3><div class="block-demo"><div style="background:var(--brown);color:var(--gold)">主力區</div><div style="background:var(--rice);color:var(--brown);outline:1px solid var(--line)">一般區</div></div><p class="muted">每個版面只有一塊主色塊，放最想賣的品項。右上角做大圓角，左下保持直角。</p></div>
-        <div class="panel"><h3>分區標記</h3><div class="el"><span class="bar-mark">暖心小菜</span></div><p class="muted">朱砂紅短條（寬：高約 1：3.6）＋宋體標題，取代舊版毛筆色帶。</p></div>
-        <div class="panel"><h3>編號與標籤</h3><div class="el"><span class="numc" style="border:2px solid var(--gold);color:var(--gold);background:var(--brown)">1</span><span class="numc" style="background:var(--brown);color:var(--rice)">6</span><span class="numc" style="background:var(--red);color:#fff">A</span><span class="pill" style="background:var(--red);color:#fff">10/15上市</span><span class="pill" style="background:var(--gold);color:var(--brown)">省 15</span></div><p class="muted">圓形編號：深底用金框、淺底用滷棕實心、套餐用朱砂紅。膠囊標籤：紅底標示上市日期，金底標示省多少。</p></div>
-        <div class="panel"><h3>細線分隔</h3><div class="hair"><div>養生黑木耳<span>40</span></div><div>鮮燙時蔬<span>40</span></div></div><p class="muted">2 px 細線取代點線與框線。品項之間只用細線，不另外加卡片。</p></div>
+        <div class="panel"><h3>分區標題</h3><div class="el"><div class="tdemo"><b>暖心小菜</b><span class="en">Sides</span></div></div><p class="muted">中文宋體＋英文小標，下方一條古銅金細線。不用色塊或筆刷。</p></div>
+        <div class="panel"><h3>雙線</h3><div class="el"><div class="dbl"></div></div><p class="muted">滷棕 2 px 粗線＋古銅金 1 px 細線，用在頁首下緣，像精裝書的書口。</p></div>
+        <div class="panel"><h3>編號與標示</h3><div class="el"><span class="numc">1</span><span class="numc" style="border-color:var(--red);color:var(--red)">A</span><span class="tag">10/15上市</span><span class="en" style="font-size:14px">省 15</span></div><p class="muted">單品用古銅金細框圓、套餐用朱砂紅細框圓；上市日期用紅色細框小標，不用實心色塊。</p></div>
+        <div class="panel"><h3>細線分隔</h3><div class="hair"><div>養生黑木耳<span>40<small>元</small></span></div><div>鮮燙時蔬<span>40<small>元</small></span></div></div><p class="muted">品項之間只用 1 px 淺色細線，不加卡片、不用點線。</p></div>
       </div>
     </div>
   </section>
 
   <section class="ch">
-    <div class="ch-label"><i>06</i><h3>版面原則</h3></div>
+    <div class="ch-label"><span class="en">06 Principles</span><h2>版面與攝影</h2></div>
     <div class="ch-body">
       <div class="grid2">
-        <div class="panel"><h3>價格永遠不輪播</h3><p class="muted">價目與套餐固定顯示。輪播只放照片、故事與 QR code，排隊的人才有時間看完菜單。</p></div>
-        <div class="panel"><h3>文字以正式菜單為準</h3><p class="muted">品名、價格、省額一律照當期 A4 點餐單（目前為 20261009 版），電視與立牌不自行改寫。</p></div>
-        <div class="panel"><h3>一區一個重點</h3><p class="muted">主色塊裡只放主食。新品、促銷用紅色膠囊標籤標示，不另外加爆炸框或星星貼圖。</p></div>
-        <div class="panel"><h3>照片用實拍</h3><p class="muted">深色碗、自然暖光、45 度或正上方俯拍，份量與實際出餐一致。示意圖或 AI 生成圖須標示「圖片僅供參考」，並逐步換成實拍。</p></div>
+        <div class="panel"><h3>價格永遠不輪播</h3><p class="muted">價目與套餐固定顯示。輪播只放照片、品牌與 QR code，排隊的人才有時間看完菜單。</p></div>
+        <div class="panel"><h3>文字以正式菜單為準</h3><p class="muted">品名、價格、省額一律照當期 A4 點餐單（目前為 20261009 版）。輪播字卡只寫品名與價格。</p></div>
+        <div class="panel"><h3>攝影：統一規格</h3><p class="muted">正上方俯拍、米白背景、白瓷盤碗、自然光。每道菜同一角度、同一背景，像名店菜單一樣整齊。</p></div>
+        <div class="panel"><h3>攝影：份量真實</h3><p class="muted">照片內容與實際出餐一致，不去背、不 AI 修圖。示意圖須標示「圖片僅供參考」，並逐步換成實拍。</p></div>
       </div>
     </div>
   </section>
 
   <section class="ch">
-    <div class="ch-label"><i>07</i><h3>應用範例</h3></div>
+    <div class="ch-label"><span class="en">07 Applications</span><h2>應用範例</h2></div>
     <div class="ch-body">
       <figure><div class="shot"><img src="{{TV}}" alt="電視菜單：左側價目、右上輪播、右下套餐"></div><figcaption>電視菜單 1920×1080｜左 2/3 價目常駐、右上 1/3 輪播、右下套餐</figcaption></figure>
-      <figure><div class="shot"><img src="{{CARDS}}" alt="六張輪播字卡"></div><figcaption>輪播字卡 640×560｜照片卡用滷棕底色帶，文字卡用滷棕或米白滿版</figcaption></figure>
+      <figure><div class="shot"><img src="{{CARDS}}" alt="十張輪播字卡"></div><figcaption>輪播字卡 640×560｜照片在上、白瓷字帶在下，只寫品名與價格</figcaption></figure>
       <div class="mock-row">
         <figure>
           <div class="stand">
-            <div class="top"><img src="{{WORDMARK}}" alt=""></div>
-            <div class="blk">
-              <span class="t">暖心湯品・10/1上市</span>
-              <div class="row"><b>蒜香鮮雞腿湯</b><span>120<small>元</small></span></div>
-              <div class="row"><b>百菇鮮雞腿湯</b><span>120<small>元</small></span></div>
-              <div class="row"><b>清燉豬腳湯</b><span>130<small>元</small></span></div>
-            </div>
+            <img class="w" src="{{WORDMARK}}" alt="">
+            <div class="t"><b>暖心湯品</b><span>Soups</span></div>
+            <div class="row"><b>蒜香鮮雞腿湯</b><span>120<small>元</small></span></div>
+            <div class="row"><b>百菇鮮雞腿湯</b><span>120<small>元</small></span></div>
+            <div class="row"><b>清燉豬腳湯</b><span>130<small>元</small></span></div>
             <div class="foot">LINE 掃碼線上點餐・免排隊</div>
           </div>
           <figcaption>櫃檯立牌 A5 直式｜示意</figcaption>
         </figure>
         <figure>
           <div class="sticker"><div class="in"><img src="{{LOGO}}" alt=""><b>一鍋老滷</b></div></div>
-          <figcaption>外帶封口貼 直徑 60 mm｜滷棕外環、米白內圓、標誌置中</figcaption>
+          <figcaption>外帶封口貼 直徑 60 mm｜白瓷底、古銅金細圈、標誌置中</figcaption>
         </figure>
       </div>
     </div>
   </section>
 
   <section class="ch">
-    <div class="ch-label"><i>08</i><h3>文案語氣</h3></div>
+    <div class="ch-label"><span class="en">08 Voice</span><h2>文案語氣</h2></div>
     <div class="ch-body">
-      <p>像老闆站在櫃檯跟熟客說話：直白、具體、說得出份量。</p>
+      <p>像名店的菜單：用字少、說得準，不喊口號。</p>
       <div class="voice">
-        <div class="panel"><h3 class="ok">這樣寫</h3><p>滷肉足足 90g</p><p>雞高湯 300cc・雞腿肉 3 塊</p><p>主食每碗含半份青菜＋開胃小食</p></div>
-        <div class="panel"><h3 class="ng">不要這樣寫</h3><p>超級無敵好吃</p><p>補血養顏、增強免疫力（食品不得宣稱療效）</p><p>零添加（醬油、醋等調味料本身可能含添加物）</p></div>
+        <div class="panel"><h3 class="ok">這樣寫</h3><p>傳香滷肉飯／拌麵　65 元</p><p>主食每碗含半份青菜＋開胃小食</p><p>一鍋老滷，50年不斷火</p></div>
+        <div class="panel"><h3 class="ng">不要這樣寫</h3><p>超級無敵好吃、銷售第一</p><p>補血養顏、增強免疫力（食品不得宣稱療效）</p><p>零添加（醬油、醋等調味料本身可能含添加物）</p></div>
       </div>
     </div>
   </section>
