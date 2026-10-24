@@ -6,96 +6,107 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
 <style>
   /* 每張字卡 640x560，對應電視菜單右上影片區。
-     ?card=名稱 只顯示該張；帶 overlay 類別的是疊在照片上的透明字卡 */
-  :root { --brown: #4A2A16; --red: #B42318; --gold: #D4A353; --paper: #F6EEDF;
-    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .29 0 0 0 0 .16 0 0 0 0 .09 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    --brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 60' preserveAspectRatio='none'%3E%3Cpath fill='%23B42318' d='M10 9 L60 5 L140 8 L230 4 L320 7 L384 5 L396 14 L391 27 L398 41 L388 55 L300 52 L210 56 L120 52 L40 56 L6 51 L12 38 L3 26 Z'/%3E%3C/svg%3E"); }
+     ?card=名稱 只顯示該張；overlay 類別是疊在照片上的透明字卡
+     視覺：品牌視覺規範「現代老店」 */
+  :root { --brown: #4A2A16; --red: #B42318; --gold: #D4A353; --rice: #F7F2E8; --ink: #2B1810; --sub: #8A6E58;
+          --serif: "Noto Serif TC", serif; --sans: "Noto Sans TC", sans-serif; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { background: transparent; }
-  body { font-family: "Noto Sans TC", sans-serif; color: var(--brown); }
+  body { font-family: var(--sans); color: var(--ink); }
   .card { width: 640px; height: 560px; position: relative; overflow: hidden; display: none; }
   .card.on { display: block; }
-  .solid { background: var(--grain), radial-gradient(ellipse at 50% 40%, #FBF5EA 0%, var(--paper) 65%, #EEE1C9 100%);
-           box-shadow: inset 0 0 0 10px var(--paper), inset 0 0 0 13px var(--red), inset 0 0 0 17px var(--paper), inset 0 0 0 19px var(--red); display: none; flex-direction: column; align-items: center;
-           justify-content: center; text-align: center; padding: 36px; }
-  .solid.on { display: flex; }
+  .solid.on { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .pill { display: inline-block; border-radius: 999px; font: 900 26px/1 var(--sans); padding: 9px 18px; }
+  .price { font: 900 1em/1 var(--sans); font-variant-numeric: tabular-nums; }
+  .price small { font-size: .38em; font-weight: 700; margin-left: 4px; }
 
-  /* 照片上的下方字帶 */
-  .band { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 28px 22px;
-          background: linear-gradient(to top, rgba(40,20,10,.92) 70%, rgba(40,20,10,0)); color: #fff; }
-  .band .tag { display: inline-block; background: var(--brush) center / 100% 100% no-repeat; font: 900 26px/1.6 "Noto Serif TC", serif;
-               padding: 0 22px; margin-bottom: 8px; letter-spacing: 2px; }
-  .band h3 { font: 900 48px/1.15 "Noto Serif TC", serif; }
-  .band h3 em { font-style: normal; color: #ffd28a; margin-left: 12px; }
-  .band p { font-size: 28px; font-weight: 700; margin-top: 6px; opacity: .95; }
-  .note { position: absolute; right: 12px; top: 10px; font-size: 16px; color: #fff;
-          text-shadow: 0 1px 3px #000; opacity: .8; }
+  /* 照片字卡：底部滷棕色塊 */
+  .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 176px; background: var(--brown); color: var(--rice);
+         padding: 0 30px; display: flex; flex-direction: column; justify-content: center; }
+  .bar .pill { position: absolute; top: -22px; left: 30px; background: var(--red); color: #fff; font-size: 24px; }
+  .bar .row { display: flex; align-items: baseline; justify-content: space-between; margin-top: 10px; }
+  .bar h3 { font: 900 46px/1.1 var(--serif); }
+  .bar .price { font-size: 60px; color: var(--gold); }
+  .bar p { font: 700 25px/1.3 var(--sans); margin-top: 10px; opacity: .9; }
+  .note { position: absolute; right: 12px; top: 10px; font-size: 16px; color: #fff; text-shadow: 0 1px 3px #000; opacity: .85; }
 
-  .solid img.logo { width: 96px; }
-  .solid h2 { font: 900 48px/1.2 "Noto Serif TC", serif; margin-top: 6px; }
-  .solid .brush { background: var(--brush) center / 100% 100% no-repeat; color: #FFF6E6; font: 900 34px/1.3 "Noto Serif TC", serif;
-                  padding: 10px 36px; margin-top: 16px; letter-spacing: 4px; }
-  .solid p { font-size: 30px; font-weight: 700; margin-top: 16px; line-height: 1.45; }
-  .solid .big { font: 900 100px/1 "Noto Serif TC", serif; color: var(--red); margin-top: 14px; }
-  .solid .big span { font-size: 40px; }
-  .solid .save { display: inline-block; background: var(--gold); color: var(--brown); font-size: 30px;
-                 font-weight: 900; padding: 4px 18px; border-radius: 8px; margin-top: 12px; }
+  /* 完整一餐：滷棕底 */
+  #meal { background: var(--brown); color: var(--rice); padding: 30px; }
+  #meal .badge { width: 104px; height: 104px; border-radius: 50%; background: var(--rice); display: grid; place-items: center; }
+  #meal .badge img { width: 88px; }
+  #meal h2 { font: 900 46px/1.2 var(--serif); margin-top: 16px; letter-spacing: 1px; }
+  #meal .pill { background: var(--red); color: #fff; margin-top: 14px; font-size: 28px; }
+  #meal .eq { display: flex; align-items: center; gap: 10px; margin-top: 22px; font: 900 28px/1 var(--sans); color: var(--gold); }
+  #meal .eq span { border: 2px solid rgba(247,242,232,.5); color: var(--rice); border-radius: 12px; padding: 10px 14px; }
+  #meal p { font: 700 25px/1.3 var(--sans); margin-top: 16px; opacity: .9; }
+  #meal .price { font-size: 82px; color: var(--gold); margin-top: 12px; }
 
-  #qr { padding: 24px; }
-  #qr img.code { width: 380px; height: 380px; background: #fff; padding: 8px; border-radius: 12px; }
-  #qr h2 { font-size: 40px; margin-top: 10px; }
-  #qr img.code { box-shadow: 0 0 0 3px var(--red); }
-  #qr h2 b { color: var(--red); }
+  /* 套餐：米白底＋朱砂紅上色塊 */
+  #combo { background: var(--rice); justify-content: flex-start; }
+  #combo .top { width: 100%; height: 92px; background: var(--red); color: #fff; display: grid; place-items: center;
+                font: 900 40px/1 var(--serif); letter-spacing: 10px; }
+  #combo h2 { font: 900 56px/1.2 var(--serif); color: var(--brown); margin-top: 40px; }
+  #combo p { font: 700 30px/1.3 var(--sans); color: var(--sub); margin-top: 12px; }
+  #combo .price { font-size: 128px; color: var(--red); margin-top: 22px; }
+  #combo .pill { background: var(--gold); color: var(--brown); font-size: 30px; margin-top: 18px; padding: 10px 26px; }
+
+  /* LINE 點餐 */
+  #qr { background: var(--rice); justify-content: flex-start; padding-top: 30px; }
+  #qr img { width: 380px; height: 380px; border-radius: 16px; background: #fff; padding: 10px; box-shadow: 0 0 0 3px var(--brown); }
+  #qr .foot { position: absolute; left: 0; right: 0; bottom: 0; height: 120px; background: var(--brown); color: var(--rice);
+              display: flex; align-items: center; justify-content: center; gap: 14px; font: 900 38px/1 var(--serif); }
+  #qr .foot b { background: #06C755; color: #fff; font: 900 28px/1 var(--sans); padding: 8px 14px; border-radius: 10px; }
 </style>
 </head>
 <body>
 
 <section class="card overlay" id="lurou">
   <span class="note">圖片僅供參考</span>
-  <div class="band">
-    <span class="tag">一鍋老滷・50年不斷火</span>
-    <h3>傳香滷肉飯<em>65元</em></h3>
+  <div class="bar">
+    <span class="pill">一鍋老滷・50年不斷火</span>
+    <div class="row"><h3>傳香滷肉飯</h3><span class="price">65<small>元</small></span></div>
     <p>滷肉足足 90g・飯／拌麵都可選</p>
   </div>
 </section>
 
 <section class="card overlay" id="soup1">
   <span class="note">圖片僅供參考</span>
-  <div class="band">
-    <span class="tag">暖心湯品・10/1上市</span>
-    <h3>蒜香鮮雞腿湯<em>120元</em></h3>
+  <div class="bar">
+    <span class="pill">暖心湯品・10/1上市</span>
+    <div class="row"><h3>蒜香鮮雞腿湯</h3><span class="price">120<small>元</small></span></div>
     <p>雞高湯 300cc・雞腿肉 3 塊・蒜仁紅棗</p>
   </div>
 </section>
 
 <section class="card overlay" id="soup2">
   <span class="note">圖片僅供參考</span>
-  <div class="band">
-    <span class="tag">暖心湯品・10/1上市</span>
-    <h3>百菇鮮雞腿湯<em>120元</em></h3>
+  <div class="bar">
+    <span class="pill">暖心湯品・10/1上市</span>
+    <div class="row"><h3>百菇鮮雞腿湯</h3><span class="price">120<small>元</small></span></div>
     <p>袖珍菇・杏鮑菇・金針菇＋雞腿肉 3 塊</p>
   </div>
 </section>
 
 <section class="card solid" id="meal">
-  <img class="logo" src="assets/logo.png" alt="">
+  <div class="badge"><img src="assets/logo.png" alt=""></div>
   <h2>一碗有肉・有菜・有小食</h2>
-  <div class="brush">每一碗都是完整一餐</div>
-  <p>〔滷肉飯〕＋〔半份青菜〕<br>＋〔開胃小食〕<br>滷肉・雞絲・雞魯｜飯、拌麵都含</p>
-  <div class="big" style="font-size:84px;margin-top:8px">65<span>起</span></div>
+  <span class="pill">每一碗都是完整一餐</span>
+  <div class="eq"><span>滷肉飯</span>＋<span>半份青菜</span>＋<span>開胃小食</span></div>
+  <p>滷肉・雞絲・雞魯｜飯、拌麵都含</p>
+  <div class="price">65<small>起</small></div>
 </section>
 
 <section class="card solid" id="combo">
-  <div class="brush" style="margin-top:0">超值套餐</div>
+  <div class="top">超值套餐</div>
   <h2>傳香滷肉雙寶</h2>
   <p>滷肉飯／麵＋土魠魚羹</p>
-  <div class="big">130<span>元</span></div>
-  <span class="save">省 15</span>
+  <div class="price">130<small>元</small></div>
+  <span class="pill">省 15</span>
 </section>
 
 <section class="card solid" id="qr">
-  <img class="code" src="assets/qr.png" alt="">
-  <h2><b>LINE</b> 掃碼線上點餐・免排隊</h2>
+  <img src="assets/qr.png" alt="">
+  <div class="foot"><b>LINE</b>掃碼線上點餐・免排隊</div>
 </section>
 
 <script>
